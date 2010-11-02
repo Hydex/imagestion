@@ -1,10 +1,7 @@
-import Image
-import thread
-
 # +-----------------------------------------------------------------------+
-# | IMAGESTION                                                             |
+# | IMAGESTION                                                            |
 # |                                                                       |
-# | Copyright (C) 2005-2010, GNUCHILE.CL	- Santiago de Chile              |
+# | Copyright (C) 2005-2010, GNUCHILE.CL	- Santiago de Chile       |
 # | Licensed under the GNU GPL                                            |
 # |                                                                       |
 # | Redistribution and use in source and binary forms, with or without    |
@@ -35,6 +32,9 @@ import thread
 # +-----------------------------------------------------------------------+
 # | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 # +-----------------------------------------------------------------------+
+
+import Image
+import thread
 
 ## Referencias apoyo:
 ## http://www.pythonware.com/library/pil/handbook/introduction.htm
