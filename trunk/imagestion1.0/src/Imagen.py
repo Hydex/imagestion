@@ -9,6 +9,7 @@ class Imagen(object):
     
     def __init__(self,ruta):
         self.path = ruta
+        self.busy = 0
         self.reload()
         pass
         
@@ -19,30 +20,43 @@ class Imagen(object):
         pass
         
     def dilate(self):
+        self.busy = 0
+
         try:
-           self.R = thread.start_new_thread( self._dilate, (self.R) )
-           self.G = thread.start_new_thread( self._dilate, (self.G) )
-           self.B = thread.start_new_thread( self._dilate, (self.B) )
+           thread.start_new_thread( self._dilate, (self.R, 'R') )
+           thread.start_new_thread( self._dilate, (self.G, 'G') )
+           #thread.start_new_thread( self._dilate, (self.B, 'B') )
+           self._dilate(self.B, 'B')
         except:
            print "Error: unable to start thread"
-        pass
+
+#        print self.busy
+#        while self.busy > 0:
+#           pass
 
     def erode(self):
+        self.busy = 0
+
         try:
-           self.R = thread.start_new_thread( self._erode, (self.R) )
-           self.G = thread.start_new_thread( self._erode, (self.G) )
-           self.B = thread.start_new_thread( self._erode, (self.B) )
+           thread.start_new_thread( self._erode, (self.R, 'R') )
+           thread.start_new_thread( self._erode, (self.G, 'G') )
+           #thread.start_new_thread( self._erode, (self.B, 'B') )
+           self._dilate(self.B, 'B')
         except:
            print "Error: unable to start thread"
-        pass
+
+#        print self.busy
+#        while self.busy > 0:
+#           pass
         
-    def _dilate(self, im):
+    def _dilate(self, im, mapa):
         """
          
         @return  :
         @author
         """
-        pass
+        print "tarea dilate "+mapa
+        self.busy = self.busy +1
         im2 = im.copy()
         
         for y in range(self.alto):
@@ -64,15 +78,33 @@ class Imagen(object):
                     
                 if x<self.ancho-1 and punto>im.getpixel((x+1,y)):
                     im2.putpixel((x+1,y),punto)
+
+        print "fin tarea "+mapa
+        self.busy = self.busy -1
+
+        if mapa == 'R':
+            self.R = im2
+            return
+
+        if mapa == 'G':
+            self.G = im2
+            return
+
+        if mapa == 'B':
+            self.B = im2
+            return
+
         return im2
 
-    def _erode(self,im):
+    def _erode(self,im, mapa):
         """
          
         @return  :
         @author
         """
-        pass
+        print "tarea erode "+mapa
+        self.busy = self.busy +1
+
         im2 = im.copy()
         
         for y in range(self.alto):
@@ -94,6 +126,22 @@ class Imagen(object):
                     
                 if x<self.ancho-1 and punto>im.getpixel((x+1,y)):
                     im2.putpixel((x,y),im.getpixel((x+1,y)))
+
+        print "fin tarea "+mapa
+        self.busy = self.busy -1
+
+        if mapa == 'R':
+            self.R = im2
+            return
+
+        if mapa == 'G':
+            self.G = im2
+            return
+
+        if mapa == 'B':
+            self.B = im2
+            return
+
         return im2
 
     def rgb2gray(self):

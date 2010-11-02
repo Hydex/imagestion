@@ -23,7 +23,7 @@ from Imagen import *
 ##1504        return tuple(ims)
 
 
-img = Imagen('../webcam/img01.jpg')
+img = Imagen('../../webcam/img01.jpg')
 print 'ancho:', img.getAncho() ,' alto:', img.getAlto()
 
 #r = img.getR()
@@ -34,16 +34,16 @@ print 'ancho:', img.getAncho() ,' alto:', img.getAlto()
 #g.show()
 #b.show()
 
-img.getG().show()
+img.getRGB().show()
 
-g = img._erode(img.getG())
+#g = img._erode(img.getG())
 #G = img._erode(G)
-g = img._dilate(g)
+#g = img._dilate(g)
 
 #G.show()
 
-g.show()
+#g.show()
 
-#img.erode()
+img.dilate()
 
-#img.getRGB().show()
+img.getRGB().show()
