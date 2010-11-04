@@ -62,7 +62,6 @@ class Imagen(object):
            thread.start_new_thread( self._dilate, (self.R, 'R') )
            thread.start_new_thread( self._dilate, (self.G, 'G') )
            thread.start_new_thread( self._dilate, (self.B, 'B') )
-           #self._dilate(self.B, 'B')
         except:
            print "Error: unable to start thread"
 
@@ -77,8 +76,7 @@ class Imagen(object):
         try:
            thread.start_new_thread( self._erode, (self.R, 'R') )
            thread.start_new_thread( self._erode, (self.G, 'G') )
-           #thread.start_new_thread( self._erode, (self.B, 'B') )
-           self._dilate(self.B, 'B')
+           thread.start_new_thread( self._erode, (self.B, 'B') )
         except:
            print "Error: unable to start thread"
 
@@ -141,7 +139,7 @@ class Imagen(object):
         @return  :
         @author
         """
-        print "tarea erode "+mapa
+        print "tarea erode "+mapa+" "
         print self.busy
 
         im2 = im.copy()
@@ -167,7 +165,7 @@ class Imagen(object):
                     im2.putpixel((x,y),im.getpixel((x+1,y)))
 
         self.busy = self.busy -1
-        print "fin tarea "+mapa
+        print "fin tarea "+mapa+" "
         print self.busy
 
         if mapa == 'R':
