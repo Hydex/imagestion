@@ -56,22 +56,23 @@ class Imagen(object):
         pass
         
     def dilate(self):
-        self.busy = 0
+        self.busy = 3
 
         try:
            thread.start_new_thread( self._dilate, (self.R, 'R') )
            thread.start_new_thread( self._dilate, (self.G, 'G') )
-           #thread.start_new_thread( self._dilate, (self.B, 'B') )
-           self._dilate(self.B, 'B')
+           thread.start_new_thread( self._dilate, (self.B, 'B') )
+           #self._dilate(self.B, 'B')
         except:
            print "Error: unable to start thread"
 
-#        print self.busy
-#        while self.busy > 0:
-#           pass
+        while self.busy > 0:
+           pass
+
+        print self.busy
 
     def erode(self):
-        self.busy = 0
+        self.busy = 3
 
         try:
            thread.start_new_thread( self._erode, (self.R, 'R') )
@@ -81,9 +82,10 @@ class Imagen(object):
         except:
            print "Error: unable to start thread"
 
-#        print self.busy
-#        while self.busy > 0:
-#           pass
+        while self.busy > 0:
+           pass
+
+        print self.busy
         
     def _dilate(self, im, mapa):
         """
@@ -91,8 +93,8 @@ class Imagen(object):
         @return  :
         @author
         """
-        print "tarea dilate "+mapa
-        self.busy = self.busy +1
+        print "tarea dilate "+mapa+" "
+        print self.busy
         im2 = im.copy()
         
         for y in range(self.alto):
@@ -115,8 +117,9 @@ class Imagen(object):
                 if x<self.ancho-1 and punto>im.getpixel((x+1,y)):
                     im2.putpixel((x+1,y),punto)
 
-        print "fin tarea "+mapa
         self.busy = self.busy -1
+        print "fin tarea "+mapa+" "
+        print self.busy
 
         if mapa == 'R':
             self.R = im2
@@ -139,7 +142,7 @@ class Imagen(object):
         @author
         """
         print "tarea erode "+mapa
-        self.busy = self.busy +1
+        print self.busy
 
         im2 = im.copy()
         
@@ -163,8 +166,9 @@ class Imagen(object):
                 if x<self.ancho-1 and punto>im.getpixel((x+1,y)):
                     im2.putpixel((x,y),im.getpixel((x+1,y)))
 
-        print "fin tarea "+mapa
         self.busy = self.busy -1
+        print "fin tarea "+mapa
+        print self.busy
 
         if mapa == 'R':
             self.R = im2
