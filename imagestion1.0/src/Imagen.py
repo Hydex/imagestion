@@ -40,6 +40,7 @@ import thread
 ## http://www.pythonware.com/library/pil/handbook/introduction.htm
 ## http://www.pythonware.com/library/pil/handbook/image.htm
 ## http://www.tutorialspoint.com/python/python_multithreading.htm
+## http://ostermiller.org/dilate_and_erode.html
 
 class Imagen(object):
     
