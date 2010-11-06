@@ -60,9 +60,9 @@ class Imagen(object):
         self.busy = 3
 
         try:
-           thread.start_new_thread( self._dilate, (self.R, 'R') )
-           thread.start_new_thread( self._dilate, (self.G, 'G') )
-           thread.start_new_thread( self._dilate, (self.B, 'B') )
+           thread.start_new_thread( self._dilate, (self.R, 'R', 0, 0, self.alto, self.ancho) )
+           thread.start_new_thread( self._dilate, (self.G, 'G', 0, 0, self.alto, self.ancho) )
+           thread.start_new_thread( self._dilate, (self.B, 'B', 0, 0, self.alto, self.ancho) )
         except:
            print "Error: unable to start thread"
 
@@ -86,7 +86,7 @@ class Imagen(object):
 
         print self.busy
         
-    def _dilate(self, im, mapa):
+    def _dilate(self, im, mapa, y1, x1, y2, x2):
         """
          
         @return  :
@@ -94,7 +94,7 @@ class Imagen(object):
         """
         print "tarea dilate "+mapa+" "
         print self.busy
-        im2 = im.copy()
+        copia = im.copy()
         
         for y in range(self.alto):
             for x in range(self.ancho):
@@ -105,36 +105,36 @@ class Imagen(object):
                 ##oeste = im.getpixel((x-1,y))
 
                 if y>0 and punto>im.getpixel((x,y-1)):
-                    im2.putpixel((x,y-1),punto)
+                    copia.putpixel((x,y-1),punto)
                     
                 if x>0 and punto>im.getpixel((x-1,y)):
-                    im2.putpixel((x-1,y),punto)
+                    copia.putpixel((x-1,y),punto)
         
                 if y<self.alto-1 and punto>im.getpixel((x,y+1)):
-                    im2.putpixel((x,y+1),punto)
+                    copia.putpixel((x,y+1),punto)
                     
                 if x<self.ancho-1 and punto>im.getpixel((x+1,y)):
-                    im2.putpixel((x+1,y),punto)
+                    copia.putpixel((x+1,y),punto)
 
         self.busy = self.busy -1
         print "fin tarea "+mapa+" "
         print self.busy
 
         if mapa == 'R':
-            self.R = im2
+            self.R = copia
             return
 
         if mapa == 'G':
-            self.G = im2
+            self.G = copia
             return
 
         if mapa == 'B':
-            self.B = im2
+            self.B = copia
             return
 
         return im2
 
-    def _erode(self,im, mapa):
+    def _erode(self,im, mapa, y1, x1, y2, x2):
         """
          
         @return  :
