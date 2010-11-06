@@ -60,7 +60,7 @@ class Imagen(object):
         self.busy = 3
 
         try:
-           thread.start_new_thread( self._dilate, (self.R, 'R', 0, 0, self.alto, self.ancho) )
+           thread.start_new_thread( self._dilate, ([self.R, None], 0, 0, self.alto, self.ancho) )
            thread.start_new_thread( self._dilate, (self.G, 'G', 0, 0, self.alto, self.ancho) )
            thread.start_new_thread( self._dilate, (self.B, 'B', 0, 0, self.alto, self.ancho) )
         except:
@@ -86,13 +86,13 @@ class Imagen(object):
 
         print self.busy
         
-    def _dilate(self, im, mapa, y1, x1, y2, x2):
+    def _dilate(self, im, y1, x1, y2, x2):
         """
          
         @return  :
         @author
         """
-        print "tarea dilate "+mapa+" "
+        print "tarea dilate "
         print self.busy
         copia = im.copy()
         
@@ -120,17 +120,17 @@ class Imagen(object):
         print "fin tarea "+mapa+" "
         print self.busy
 
-        if mapa == 'R':
-            self.R = copia
-            return
-
-        if mapa == 'G':
-            self.G = copia
-            return
-
-        if mapa == 'B':
-            self.B = copia
-            return
+#        if mapa == 'R':
+#            self.R = copia
+#            return
+#
+#        if mapa == 'G':
+#            self.G = copia
+#            return
+#
+#        if mapa == 'B':
+#            self.B = copia
+#            return
 
         return im2
 
