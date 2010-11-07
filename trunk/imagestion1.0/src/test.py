@@ -1,7 +1,7 @@
 # +-----------------------------------------------------------------------+
 # | IMAGESTION                                                            |
 # |                                                                       |
-# | Copyright (C) 2010-Today, GNUCHILE.CL	- Santiago de Chile       |
+# | Copyright (C) 2010-Today, GNUCHILE.CL   - Santiago de Chile           |
 # | Licensed under the GNU GPL                                            |
 # |                                                                       |
 # | Redistribution and use in source and binary forms, with or without    |
@@ -35,6 +35,7 @@
 
 ## http://docs.python.org/reference/index.html
 from Imagen import *
+from datetime import datetime
 #from array import *
 #import thread
 
@@ -58,7 +59,7 @@ from Imagen import *
 ##1504        return tuple(ims)
 
 
-img = Imagen('../../../webcam/miguel3.jpg')
+img = Imagen('../../../webcam/miguelote.jpg')
 print 'ancho:', img.getAncho() ,' alto:', img.getAlto()
 
 #r = img.getR()
@@ -79,6 +80,13 @@ img.getRGB().show()
 
 #g.show()
 
-img.dilate()
+start = datetime.now()
+
+img.erode()
+
+stop = datetime.now()
+delay = stop - start
+
+print delay
 
 img.getRGB().show()
