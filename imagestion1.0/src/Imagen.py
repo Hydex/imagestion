@@ -60,14 +60,21 @@ class Imagen(object):
         self.busy = 3
 
         try:
-           thread.start_new_thread( self._dilate, ([self.R, None], 0, 0, self.alto, self.ancho) )
-           thread.start_new_thread( self._dilate, (self.G, 'G', 0, 0, self.alto, self.ancho) )
-           thread.start_new_thread( self._dilate, (self.B, 'B', 0, 0, self.alto, self.ancho) )
+            R = [self.R, self.R.copy()]
+            G = [self.G, self.G.copy()]
+            B = [self.B, self.B.copy()]
+            thread.start_new_thread( self._dilate, (R, 0, 0, self.alto, self.ancho) )
+            thread.start_new_thread( self._dilate, (G, 0, 0, self.alto, self.ancho) )
+            thread.start_new_thread( self._dilate, (B, 0, 0, self.alto, self.ancho) )
         except:
-           print "Error: unable to start thread"
+            print "Error: unable to start thread"
 
         while self.busy > 0:
-           pass
+            pass
+
+        self.R = R[1]
+        self.G = G[1]
+        self.B = B[1]
 
         print self.busy
 
@@ -86,7 +93,7 @@ class Imagen(object):
 
         print self.busy
         
-    def _dilate(self, im, y1, x1, y2, x2):
+    def _dilate(self, lst, y1, x1, y2, x2):
         """
          
         @return  :
@@ -94,47 +101,34 @@ class Imagen(object):
         """
         print "tarea dilate "
         print self.busy
-        copia = im.copy()
+        
+        img, copia = lst
         
         for y in range(self.alto):
             for x in range(self.ancho):
-                punto = im.getpixel((x,y))
+                punto = img.getpixel((x,y))
                 ##norte = im.getpixel((x,y-1))
                 ##sur   = im.getpixel((x,y+1))
                 ##este  = im.getpixel((x+1,y))
                 ##oeste = im.getpixel((x-1,y))
 
-                if y>0 and punto>im.getpixel((x,y-1)):
-                    copia.putpixel((x,y-1),punto)
+                if y>0 and punto>img.getpixel((x,y-1)):
+                    lst[1].putpixel((x,y-1),punto)
                     
-                if x>0 and punto>im.getpixel((x-1,y)):
-                    copia.putpixel((x-1,y),punto)
+                if x>0 and punto>img.getpixel((x-1,y)):
+                    lst[1].putpixel((x-1,y),punto)
         
-                if y<self.alto-1 and punto>im.getpixel((x,y+1)):
-                    copia.putpixel((x,y+1),punto)
+                if y<self.alto-1 and punto>img.getpixel((x,y+1)):
+                    lst[1].putpixel((x,y+1),punto)
                     
-                if x<self.ancho-1 and punto>im.getpixel((x+1,y)):
-                    copia.putpixel((x+1,y),punto)
+                if x<self.ancho-1 and punto>img.getpixel((x+1,y)):
+                    lst[1].putpixel((x+1,y),punto)
 
         self.busy = self.busy -1
-        print "fin tarea "+mapa+" "
+        print "fin tarea "
         print self.busy
 
-#        if mapa == 'R':
-#            self.R = copia
-#            return
-#
-#        if mapa == 'G':
-#            self.G = copia
-#            return
-#
-#        if mapa == 'B':
-#            self.B = copia
-#            return
-
-        return im2
-
-    def _erode(self,im, mapa, y1, x1, y2, x2):
+    def _erode(self,im, mapa):
         """
          
         @return  :

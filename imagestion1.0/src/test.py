@@ -58,7 +58,7 @@ from Imagen import *
 ##1504        return tuple(ims)
 
 
-img = Imagen('../../../webcam/img01.jpg')
+img = Imagen('../../../webcam/miguel3.jpg')
 print 'ancho:', img.getAncho() ,' alto:', img.getAlto()
 
 #r = img.getR()
