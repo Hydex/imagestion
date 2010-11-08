@@ -1,4 +1,3 @@
-import operator
 # +-----------------------------------------------------------------------+
 # | IMAGESTION                                                            |
 # |                                                                       |
@@ -36,6 +35,7 @@ import operator
 
 import Image
 import thread
+from datetime import datetime
 
 ## Referencias apoyo:
 ## http://www.pythonware.com/library/pil/handbook/introduction.htm
@@ -68,7 +68,7 @@ class Imagen(object):
             thread.start_new_thread( self._dilate, (G, 0, 0, self.alto, self.ancho) )
             thread.start_new_thread( self._dilate, (B, 0, 0, self.alto, self.ancho) )
         except:
-            print "Error: unable to start thread"
+            print "Error: unable to start thread dilate"
             self.busy = 0
 
         while self.busy > 0:
@@ -84,11 +84,9 @@ class Imagen(object):
         """
 
         @return  :
-        @author
+        @author Miguelote 
         """
-#        print "tarea dilate "
-#        print self.busy
-
+        id = self.busy
         ancho = x2 - x1
         alto  = y2 - y1
 
@@ -99,23 +97,27 @@ class Imagen(object):
             width  = ancho // 2 if(difX > 0) else ancho / 2
             height = alto // 2  if(difY > 0) else alto / 2
 
-#            print [alto, ancho]
-#            print [y1, x1, y2-height+1, x2-width+1]
-#            print [y1, x1+width, y2-height+1, x2]
-#            print [y1+height, x1, y2, x2-width+1]
-#            print [y1+height, x1+width, y2, x2]
+            #print [id, '-', alto, ancho, '-', y1,x1, y2,x2]
 
             try:
-                thread.start_new_thread( self._dilate, (lst, y1, x1, y2-height+1, x2-width+1) )
-                thread.start_new_thread( self._dilate, (lst, y1, x1+width, y2-height+1, x2) )
-                thread.start_new_thread( self._dilate, (lst, y1+height, x1, y2, x2-width+1) )
+                thread.start_new_thread( self._dilate, (lst, y1, x1, y2-height, x2-width) )
+                thread.start_new_thread( self._dilate, (lst, y1, x1+width, y2-height, x2) )
+                thread.start_new_thread( self._dilate, (lst, y1+height, x1, y2, x2-width) )
                 thread.start_new_thread( self._dilate, (lst, y1+height, x1+width, y2, x2) )
             except:
-                print "Error: unable to start thread"
+                print "Error: unable to start thread _dilate"
+                print [id, alto, ancho]
+                print [y1, x1, y2-height, x2-width]
+                print [y1, x1+width, y2-height, x2]
+                print [y1+height, x1, y2, x2-width]
+                print [y1+height, x1+width, y2, x2]
+                print self.busy
         else:
             img, copia = lst
             self.busy  = self.busy + 1
-
+            start = datetime.now()
+            print [id, '-' ,self.busy, '_dilate' , alto, ancho]
+            
             for y in xrange(y1,y2):
                 for x in xrange(x1,x2):
                     punto = img.getpixel((x,y))
@@ -136,16 +138,31 @@ class Imagen(object):
                     if x<self.ancho-1 and punto>img.getpixel((x+1,y)):
                         lst[1].putpixel((x+1,y),punto)
 
+
+                    if y>0 and x>0 and punto>img.getpixel((x-1,y-1)):
+                        lst[1].putpixel((x-1,y-1),punto)
+
+                    if y<self.alto-1 and x>0 and punto>img.getpixel((x-1,y+1)):
+                        lst[1].putpixel((x-1,y+1),punto)
+
+                    if y>0 and x<self.ancho-1 and punto>img.getpixel((x+1,y-1)):
+                        lst[1].putpixel((x+1,y-1),punto)
+
+                    if y<self.alto-1 and x<self.ancho-1 and punto>img.getpixel((x+1,y+1)):
+                        lst[1].putpixel((x+1,y+1),punto)
+
+            stop = datetime.now()
+            delay = stop - start           
+            print [id, '-' ,self.busy, "fin", delay]
+
             self.busy = self.busy -1
             
             if self.busy == 1:
                  self.busy = 0
 
-#            print "fin tarea "
-#            print self.busy
 
     def erode(self):
-        self.busy = 3
+        self.busy = 1
 
         try:
             R = [self.R, self.R.copy()]
@@ -155,10 +172,11 @@ class Imagen(object):
             thread.start_new_thread( self._erode, (G, 0, 0, self.alto, self.ancho) )
             thread.start_new_thread( self._erode, (B, 0, 0, self.alto, self.ancho) )
         except:
-           print "Error: unable to start thread"
+            print "Error: unable to start thread erode"
+            self.busy = 0
 
         while self.busy > 0:
-           pass
+            pass
 
         self.R = R[1]
         self.G = G[1]
@@ -168,52 +186,101 @@ class Imagen(object):
         
     def _erode(self, lst, y1, x1, y2, x2):
         """
-         
+
         @return  :
-        @author
+        @author Miguelote
         """
-        print "tarea erode "
-        print self.busy
+        id = self.busy
+        ancho = x2 - x1
+        alto  = y2 - y1
 
-        img, copia = lst
-        
-        for y in range(self.alto):
-            for x in range(self.ancho):
-                punto = img.getpixel((x,y))
-                ##norte = im.getpixel((x,y-1))
-                ##sur   = im.getpixel((x,y+1))
-                ##este  = im.getpixel((x+1,y))
-                ##oeste = im.getpixel((x-1,y))
+        if ancho > 100 and alto > 100:
+            difX = ancho % 2
+            difY = alto % 2
 
-                if y>0 and punto>img.getpixel((x,y-1)):
-                    lst[1].putpixel((x,y),img.getpixel((x,y-1)))
-                    
-                if x>0 and punto>img.getpixel((x-1,y)):
-                    lst[1].putpixel((x,y),img.getpixel((x-1,y)))
-        
-                if y<self.alto-1 and punto>img.getpixel((x,y+1)):
-                    lst[1].putpixel((x,y),img.getpixel((x,y+1)))
-                    
-                if x<self.ancho-1 and punto>img.getpixel((x+1,y)):
-                    lst[1].putpixel((x,y),img.getpixel((x+1,y)))
+            width  = ancho // 2 if(difX > 0) else ancho / 2
+            height = alto // 2  if(difY > 0) else alto / 2
 
-        self.busy = self.busy -1
-        print "fin tarea "
-        print self.busy
+            #print [id, '-', alto, ancho, '-', y1,x1, y2,x2]
+
+            try:
+                thread.start_new_thread( self._erode, (lst, y1, x1, y2-height, x2-width) )
+                thread.start_new_thread( self._erode, (lst, y1, x1+width, y2-height, x2) )
+                thread.start_new_thread( self._erode, (lst, y1+height, x1, y2, x2-width) )
+                thread.start_new_thread( self._erode, (lst, y1+height, x1+width, y2, x2) )
+            except:
+                print "Error: unable to start thread _erode"
+                print [id, alto, ancho]
+                print [y1, x1, y2-height, x2-width]
+                print [y1, x1+width, y2-height, x2]
+                print [y1+height, x1, y2, x2-width]
+                print [y1+height, x1+width, y2, x2]
+                print self.busy
+        else:
+            img, copia = lst
+            self.busy  = self.busy + 1
+            start = datetime.now()
+            print [id, '-' ,self.busy, '_erode' , alto, ancho]
+            
+            for y in xrange(y1,y2):
+                for x in xrange(x1,x2):
+                    punto = img.getpixel((x,y))
+                    ##norte = im.getpixel((x,y-1))
+                    ##sur   = im.getpixel((x,y+1))
+                    ##este  = im.getpixel((x+1,y))
+                    ##oeste = im.getpixel((x-1,y))
+
+                    if y>0 and punto>img.getpixel((x,y-1)):
+                        lst[1].putpixel((x,y),img.getpixel((x,y-1)))
+                        
+                    if x>0 and punto>img.getpixel((x-1,y)):
+                        lst[1].putpixel((x,y),img.getpixel((x-1,y)))
+            
+                    if y<self.alto-1 and punto>img.getpixel((x,y+1)):
+                        lst[1].putpixel((x,y),img.getpixel((x,y+1)))
+                        
+                    if x<self.ancho-1 and punto>img.getpixel((x+1,y)):
+                        lst[1].putpixel((x,y),img.getpixel((x+1,y)))
+
+
+                    if y>0 and x>0 and punto>img.getpixel((x-1,y-1)):
+                        lst[1].putpixel((x,y),img.getpixel((x-1,y-1)))
+                        
+                    if y>0 and x<self.ancho-1 and punto>img.getpixel((x+1,y-1)):
+                        lst[1].putpixel((x,y),img.getpixel((x+1,y-1)))
+            
+                    if y<self.alto-1 and x>0 and punto>img.getpixel((x-1,y+1)):
+                        lst[1].putpixel((x,y),img.getpixel((x-1,y+1)))
+                        
+                    if y<self.alto-1 and x<self.ancho-1 and punto>img.getpixel((x+1,y+1)):
+                        lst[1].putpixel((x,y),img.getpixel((x+1,y+1)))
+
+            stop = datetime.now()
+            delay = stop - start           
+            print [id, '-' ,self.busy, "fin", delay]
+
+            self.busy = self.busy -1
+            
+            if self.busy == 1:
+                 self.busy = 0
 
     def rgb2gray(self):
         """
          
         @return  :
-        @author
+        @author Miguelote
         """
+        pass
+
+    def substract(self,img):
+        
         pass
 
     def getR(self):
         """
          
         @return int[][] :
-        @author
+        @author Miguelote
         """
         return self.R
         pass
@@ -222,7 +289,7 @@ class Imagen(object):
         """
          
         @return int[][] :
-        @author
+        @author Miguelote
         """
         return self.G
         pass
@@ -231,7 +298,7 @@ class Imagen(object):
         """
          
         @return int[][] :
-        @author
+        @author Miguelote
         """
         return self.B
         pass
@@ -240,7 +307,7 @@ class Imagen(object):
         """
          
         @return int[][][3] :
-        @author
+        @author Miguelote
         """
         self.RGB = Image.merge("RGB", (self.R, self.G, self.B))
         return self.RGB
