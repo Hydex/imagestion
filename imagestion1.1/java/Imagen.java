@@ -35,6 +35,12 @@
 
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  * Class Imagen
@@ -53,6 +59,7 @@ public class Imagen {
   private int[][] B;
   private int[][] gray;
   private Image RGB;
+  private static BufferedImage imagen;
   
   //
   // Constructors
