@@ -64,7 +64,13 @@ public class Imagen {
   //
   // Constructors
   //
-  public Imagen () { };
+  public Imagen (String path) throws IOException
+  {
+        path    = path;
+        imagen  = ImageIO.read(new File(this.path));
+        alto    = imagen.getHeight();
+        ancho   = imagen.getWidth();
+  };
   
   //
   // Methods
