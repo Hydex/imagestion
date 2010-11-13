@@ -60,23 +60,70 @@ public class Imagen {
   private int[][] gray;
   private Image RGB;
   private static BufferedImage imagen;
+  private int busy;
   
   //
   // Constructors
   //
-  public Imagen (String path) throws IOException
+  public Imagen (String ruta) throws IOException
   {
-        path    = path;
+        path    = ruta;
         imagen  = ImageIO.read(new File(this.path));
         alto    = imagen.getHeight();
         ancho   = imagen.getWidth();
+        busy    = 0;
+        reload();
   };
-  
+
+  public void reload()
+  {
+        copyFrame('R',R,0,0,alto,ancho);
+        copyFrame('G',G,0,0,alto,ancho);
+        copyFrame('B',B,0,0,alto,ancho);
+  }
+
+  private void copyFrame(char frame, int[][] map, int y1, int x1, int y2, int x2)
+  {
+      int mask;
+
+      for(int y=y1; y<y2; y++)
+        for(int x=x1; x<x2; x++)
+        {
+            int pixel = imagen.getRGB(y, x);
+            int color = 0;
+
+            switch (frame)
+            {
+                case 'R':
+                  mask = 0xFF0000;
+                  color = pixel & mask;
+                  color >>= 16;
+                  break;
+                case 'G':
+                  mask = 0x00FF00;
+                  color = pixel & mask;
+                  color >>= 8;
+                  break;
+                case 'B':
+                  mask = 0x0000FF;
+                  color = pixel & mask;
+                  break;
+            }
+
+            map[y][x] = color;
+        }
+  }
+
   //
   // Methods
   //
 
-
+    public void Guardar(String nombre) throws IOException
+    {
+        /* "png" "jpeg" format desired, no "gif" yet. */
+        ImageIO.write( imagen, "jpeg" , new File ( nombre ) );
+    }
+    
   //
   // Accessor methods
   //
