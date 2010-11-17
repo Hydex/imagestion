@@ -45,74 +45,93 @@ import javax.imageio.ImageIO;
 /**
  * Class Imagen
  */
-public class Imagen {
+public class Imagen
+{
 
   //
   // Fields
   //
 
-  private String path;
-  private int alto;
-  private int ancho;
-  private int[][] R;
-  private int[][] G;
-  private int[][] B;
-  private int[][] gray;
-  private Image RGB;
-  private static BufferedImage imagen;
-  private int busy;
-  
+    private String path;
+    private int alto;
+    private int ancho;
+    protected int[][] R;
+    protected int[][] G;
+    protected int[][] B;
+    private int[][] gray;
+    private Image RGB;
+    private static BufferedImage imagen;
+    private int busy;
+
+
+    protected class CopyFrame extends Thread
+    {
+        public CopyFrame(char frame, int[][] map, int y1, int x1, int y2, int x2) throws IOException
+        {
+            int mask;
+
+            for(int y=y1; y<y2; y++)
+                for(int x=x1; x<x2; x++)
+                {
+                    int pixel = imagen.getRGB(y, x);
+                    int color = 0;
+
+                    switch (frame)
+                    {
+                        case 'R':
+                          mask = 0xFF0000;
+                          color = pixel & mask;
+                          color >>= 16;
+                          break;
+                        case 'G':
+                          mask = 0x00FF00;
+                          color = pixel & mask;
+                          color >>= 8;
+                          break;
+                        case 'B':
+                          mask = 0x0000FF;
+                          color = pixel & mask;
+                          break;
+                    }
+
+                    map[y][x] = color;
+                }
+        }
+
+        public void run()
+        {
+
+        }
+    }
   //
   // Constructors
   //
-  public Imagen (String ruta) throws IOException
-  {
+    public Imagen (String ruta) throws IOException
+    {
         path    = ruta;
         imagen  = ImageIO.read(new File(this.path));
         alto    = imagen.getHeight();
         ancho   = imagen.getWidth();
         busy    = 0;
         reload();
-  };
+    };
 
-  public void reload()
-  {
-        copyFrame('R',R,0,0,alto,ancho);
-        copyFrame('G',G,0,0,alto,ancho);
-        copyFrame('B',B,0,0,alto,ancho);
-  }
+    public void reload()
+    {
+        try {
+            CopyFrame Red   = new CopyFrame('R', R, 0, 0, alto, ancho);
+            CopyFrame Green = new CopyFrame('G', G, 0, 0, alto, ancho);
+            CopyFrame Blue  = new CopyFrame('B', B, 0, 0, alto, ancho);
 
-  private void copyFrame(char frame, int[][] map, int y1, int x1, int y2, int x2)
-  {
-      int mask;
-
-      for(int y=y1; y<y2; y++)
-        for(int x=x1; x<x2; x++)
-        {
-            int pixel = imagen.getRGB(y, x);
-            int color = 0;
-
-            switch (frame)
-            {
-                case 'R':
-                  mask = 0xFF0000;
-                  color = pixel & mask;
-                  color >>= 16;
-                  break;
-                case 'G':
-                  mask = 0x00FF00;
-                  color = pixel & mask;
-                  color >>= 8;
-                  break;
-                case 'B':
-                  mask = 0x0000FF;
-                  color = pixel & mask;
-                  break;
-            }
-
-            map[y][x] = color;
+            Red.start();
+            Green.start();
+            Blue.start();
+        } catch (IOException ex) {
+            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
         }
-  }
+    }
+
+
 
   //
   // Methods
