@@ -64,7 +64,7 @@ public class Imagen
     private int busy;
 
 
-    protected class CopyFrame extends Thread
+    protected class Layer extends Thread
     {
         char frame;
         int[][] map;
@@ -73,7 +73,7 @@ public class Imagen
         int y2;
         int x2;
         
-        public CopyFrame(char _frame, int[][] _map, int _y1, int _x1, int _y2, int _x2)
+        public Layer(char _frame, int[][] _map, int _y1, int _x1, int _y2, int _x2)
         {
             frame = _frame;
             map   = _map;
@@ -83,7 +83,7 @@ public class Imagen
             x2    = _x2;
         }
 
-        public void run()
+        public void copy()
         {
             int mask;
 
@@ -114,6 +114,11 @@ public class Imagen
                     map[y][x] = color;
                 }
         }
+
+        public void run()
+        {
+
+        }
     }
 
   //
@@ -132,9 +137,9 @@ public class Imagen
 
     public void reload()
     {
-        CopyFrame Red   = new CopyFrame('R', R, 0, 0, alto, ancho);
-        CopyFrame Green = new CopyFrame('G', G, 0, 0, alto, ancho);
-        CopyFrame Blue  = new CopyFrame('B', B, 0, 0, alto, ancho);
+        Layer Red   = new Layer('R', R, 0, 0, alto, ancho);
+        Layer Green = new Layer('G', G, 0, 0, alto, ancho);
+        Layer Blue  = new Layer('B', B, 0, 0, alto, ancho);
 
         Red.start();
         Green.start();
