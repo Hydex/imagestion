@@ -66,7 +66,24 @@ public class Imagen
 
     protected class CopyFrame extends Thread
     {
-        public CopyFrame(char frame, int[][] map, int y1, int x1, int y2, int x2) throws IOException
+        char frame;
+        int[][] map;
+        int y1;
+        int x1;
+        int y2;
+        int x2;
+        
+        public CopyFrame(char _frame, int[][] _map, int _y1, int _x1, int _y2, int _x2)
+        {
+            frame = _frame;
+            map   = _map;
+            y1    = _y1;
+            x1    = _x1;
+            y2    = _y2;
+            x2    = _x2;
+        }
+
+        public void run()
         {
             int mask;
 
@@ -97,15 +114,12 @@ public class Imagen
                     map[y][x] = color;
                 }
         }
-
-        public void run()
-        {
-
-        }
     }
+
   //
   // Constructors
   //
+
     public Imagen (String ruta) throws IOException
     {
         path    = ruta;
@@ -118,17 +132,13 @@ public class Imagen
 
     public void reload()
     {
-        try {
-            CopyFrame Red   = new CopyFrame('R', R, 0, 0, alto, ancho);
-            CopyFrame Green = new CopyFrame('G', G, 0, 0, alto, ancho);
-            CopyFrame Blue  = new CopyFrame('B', B, 0, 0, alto, ancho);
+        CopyFrame Red   = new CopyFrame('R', R, 0, 0, alto, ancho);
+        CopyFrame Green = new CopyFrame('G', G, 0, 0, alto, ancho);
+        CopyFrame Blue  = new CopyFrame('B', B, 0, 0, alto, ancho);
 
-            Red.start();
-            Green.start();
-            Blue.start();
-        } catch (IOException ex) {
-            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Red.start();
+        Green.start();
+        Blue.start();
     }
 
 
@@ -151,6 +161,7 @@ public class Imagen
    * Set the value of path
    * @param newVar the new value of path
    */
+    
   public void setPath ( String newVar ) {
     path = newVar;
   }
