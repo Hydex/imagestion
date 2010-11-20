@@ -50,6 +50,7 @@ public class Imagen
     private static final int COPIAR = 1;
     private static final int ERODE  = 2;
     private static final int DILATE = 3;
+    private static final int BORDER = 4;
 
   //
   // Fields
@@ -122,18 +123,44 @@ public class Imagen
 
         public void run()
         {
-            int alto  = y2 - y1;
-            int ancho = x2 - x1;
+            int alto    = y2 - y1;
+            int ancho   = x2 - x1;
+            int difY    = alto  % 2;
+            int difX    = ancho % 2;
+            int offsetY = difY==0 ?alto/2  :(alto/2)+difY;
+            int offsetX = difX==0 ?ancho/2 :(ancho/2)+difX;
 
-            switch(accion)
+            try
             {
-                case COPIAR:
-                    copy();
-                    break;
-                case ERODE:
-                    break;
-                case DILATE:
-                    break;
+                if(alto > 100 && ancho > 100)
+                {
+                    Layer ne = new Layer(accion,frame,map,y1,x1,y2+offsetY,x2-offsetX);
+                    Layer no = new Layer(accion,frame,map,y1,x1+offsetX,y2-offsetY,x2);
+                    Layer se = new Layer(accion,frame,map,y1+offsetY,x1,y2,x2-offsetX);
+                    Layer so = new Layer(accion,frame,map,y1+offsetY,x1+offsetX,y2,x2);
+
+                    ne.start();
+                    no.start();
+                    se.start();
+                    so.start();
+                }
+                else
+                    switch(accion)
+                    {
+                        case COPIAR:
+                            copy();
+                            break;
+                        case ERODE:
+                            break;
+                        case DILATE:
+                            break;
+                        case BORDER:
+                            break;
+                    }
+            }
+            catch(Exception ex)
+            {
+                Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -169,7 +196,7 @@ public class Imagen
   // Methods
   //
 
-    public void Guardar(String nombre) throws IOException
+    public void guardar(String nombre) throws IOException
     {
         /* "png" "jpeg" format desired, no "gif" yet. */
         ImageIO.write( imagen, "jpeg" , new File ( nombre ) );
