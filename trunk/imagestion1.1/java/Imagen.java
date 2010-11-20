@@ -47,6 +47,9 @@ import javax.imageio.ImageIO;
  */
 public class Imagen
 {
+    private static final int COPIAR = 1;
+    private static final int ERODE  = 2;
+    private static final int DILATE = 3;
 
   //
   // Fields
@@ -72,15 +75,17 @@ public class Imagen
         int x1;
         int y2;
         int x2;
+        int accion = 0;
         
-        public Layer(char _frame, int[][] _map, int _y1, int _x1, int _y2, int _x2)
+        public Layer(int action, char _frame, int[][] _map, int _y1, int _x1, int _y2, int _x2)
         {
-            frame = _frame;
-            map   = _map;
-            y1    = _y1;
-            x1    = _x1;
-            y2    = _y2;
-            x2    = _x2;
+            frame  = _frame;
+            map    = _map;
+            y1     = _y1;
+            x1     = _x1;
+            y2     = _y2;
+            x2     = _x2;
+            accion = action;
         }
 
         public void copy()
@@ -117,7 +122,19 @@ public class Imagen
 
         public void run()
         {
+            int alto  = y2 - y1;
+            int ancho = x2 - x1;
 
+            switch(accion)
+            {
+                case COPIAR:
+                    copy();
+                    break;
+                case ERODE:
+                    break;
+                case DILATE:
+                    break;
+            }
         }
     }
 
@@ -137,9 +154,9 @@ public class Imagen
 
     public void reload()
     {
-        Layer Red   = new Layer('R', R, 0, 0, alto, ancho);
-        Layer Green = new Layer('G', G, 0, 0, alto, ancho);
-        Layer Blue  = new Layer('B', B, 0, 0, alto, ancho);
+        Layer Red   = new Layer(COPIAR, 'R', R, 0, 0, alto, ancho);
+        Layer Green = new Layer(COPIAR, 'G', G, 0, 0, alto, ancho);
+        Layer Blue  = new Layer(COPIAR, 'B', B, 0, 0, alto, ancho);
 
         Red.start();
         Green.start();
