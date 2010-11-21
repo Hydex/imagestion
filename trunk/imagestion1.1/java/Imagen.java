@@ -154,35 +154,68 @@ public class Imagen
 
         public void dilate()
         {
-            int mask;
+            int mask,color,punto;
+            int n,ne,e,se,s,so,o,no;
+
             instancia++;
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
                 {
                     int pixel = imagen.getRGB(y, x);
-                    int color = 0;
-                    int punto = 0;
+                    color = punto = 0;
+                    ne = se = so = no = 0;
+                    n = s = e = o = 0;
 
                     switch (frame)
                     {
                         case 'R':
-                          mask  = 0xFF0000;
-                          punto = R[y][x];
-                          color = pixel & mask;
-                          color >>= 16;
-                          break;
+                            mask  = 0xFF0000;
+                            punto = R[y][x];
+                            color = pixel & mask;
+                            color >>= 16;
+
+                            if(y>0)                n  = R[y-1][x];
+                            if(y<alto)             s  = R[y+1][x];
+                            if(x>0)                o  = R[y][x-1];
+                            if(x<ancho)            e  = R[y][x+1];
+                            if(y>0 && x>0)         no = R[y-1][x-1];
+                            if(y<alto && x>0)      so = R[y+1][x-1];
+                            if(y>0 && x<ancho)     ne = R[y-1][x+1];
+                            if(y<alto && x<ancho)  se = R[y+1][x+1];
+
+                            break;
                         case 'G':
-                          mask  = 0x00FF00;
-                          punto = G[y][x];
-                          color = pixel & mask;
-                          color >>= 8;
-                          break;
+                            mask  = 0x00FF00;
+                            punto = G[y][x];
+                            color = pixel & mask;
+                            color >>= 8;
+
+                            if(y>0)                n  = G[y-1][x];
+                            if(y<alto)             s  = G[y+1][x];
+                            if(x>0)                o  = G[y][x-1];
+                            if(x<ancho)            e  = G[y][x+1];
+                            if(y>0 && x>0)         no = G[y-1][x-1];
+                            if(y<alto && x>0)      so = G[y+1][x-1];
+                            if(y>0 && x<ancho)     ne = G[y-1][x+1];
+                            if(y<alto && x<ancho)  se = G[y+1][x+1];
+
+                            break;
                         case 'B':
-                          mask  = 0x0000FF;
-                          punto = B[y][x];
-                          color = pixel & mask;
-                          break;
+                            mask  = 0x0000FF;
+                            punto = B[y][x];
+                            color = pixel & mask;
+
+                            if(y>0)                n  = B[y-1][x];
+                            if(y<alto)             s  = B[y+1][x];
+                            if(x>0)                o  = B[y][x-1];
+                            if(x<ancho)            e  = B[y][x+1];
+                            if(y>0 && x>0)         no = B[y-1][x-1];
+                            if(y<alto && x>0)      so = B[y+1][x-1];
+                            if(y>0 && x<ancho)     ne = B[y-1][x+1];
+                            if(y<alto && x<ancho)  se = B[y+1][x+1];
+
+                            break;
                     }
 
                     if(y>0 && punto > color)
