@@ -162,64 +162,81 @@ public class Imagen
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
                 {
-                    int pixel = imagen.getRGB(y, x);
-                    color = punto = 0;
                     ne = se = so = no = 0;
-                    n = s = e = o = 0;
+                    n  = s  = e  = o  = 0;
+                    color = punto = 0;
+                    mask  = frame == 'R' ?0xFF0000
+                           :frame == 'G' ?0x00FF00
+                                         :0x0000FF;
+
+                    int pixel = mask & imagen.getRGB(y, x);
+
+                    if(y>0)                n  = mask & imagen.getRGB(y-1,x);
+                    if(y<alto)             s  = mask & imagen.getRGB(y+1,x);
+                    if(x>0)                o  = mask & imagen.getRGB(y,x-1);
+                    if(x<ancho)            e  = mask & imagen.getRGB(y,x+1);
+                    if(y>0 && x>0)         no = mask & imagen.getRGB(y-1,x-1);
+                    if(y<alto && x>0)      so = mask & imagen.getRGB(y+1,x-1);
+                    if(y>0 && x<ancho)     ne = mask & imagen.getRGB(y-1,x+1);
+                    if(y<alto && x<ancho)  se = mask & imagen.getRGB(y+1,x+1);
 
                     switch (frame)
                     {
                         case 'R':
-                            mask  = 0xFF0000;
-                            punto = R[y][x];
-                            color = pixel & mask;
-                            color >>= 16;
+                            pixel >>= 16;
+                            n  >>= 16;
+                            s  >>= 16;
+                            o  >>= 16;
+                            e  >>= 16;
+                            no >>= 16;
+                            so >>= 16;
+                            ne >>= 16;
+                            se >>= 16;
 
-                            if(y>0)                n  = R[y-1][x];
-                            if(y<alto)             s  = R[y+1][x];
-                            if(x>0)                o  = R[y][x-1];
-                            if(x<ancho)            e  = R[y][x+1];
-                            if(y>0 && x>0)         no = R[y-1][x-1];
-                            if(y<alto && x>0)      so = R[y+1][x-1];
-                            if(y>0 && x<ancho)     ne = R[y-1][x+1];
-                            if(y<alto && x<ancho)  se = R[y+1][x+1];
+                            if(y>0 && pixel>n)                     R[y-1][x]   = pixel;
+                            if(x>0 && pixel>o)                     R[y][x-1]   = pixel;
+                            if(y<alto-1 && pixel>s)                R[y+1][x]   = pixel;
+                            if(x<ancho-1 && pixel>e)               R[y][x+1]   = pixel;
+                            if(y>0 && x>0 && pixel>no)             R[y-1][x-1] = pixel;
+                            if(y>0 && x<ancho-1 && pixel>ne)       R[y-1][x+1] = pixel;
+                            if(y<alto-1 && x>0 && pixel>so)        R[y+1][x-1] = pixel;
+                            if(y<alto-1 && x<ancho-1 && pixel>se)  R[y+1][x+1] = pixel;
 
                             break;
                         case 'G':
-                            mask  = 0x00FF00;
-                            punto = G[y][x];
-                            color = pixel & mask;
-                            color >>= 8;
+                            pixel >>= 8;
+                            n  >>= 8;
+                            s  >>= 8;
+                            o  >>= 8;
+                            e  >>= 8;
+                            no >>= 8;
+                            so >>= 8;
+                            ne >>= 8;
+                            se >>= 8;
 
-                            if(y>0)                n  = G[y-1][x];
-                            if(y<alto)             s  = G[y+1][x];
-                            if(x>0)                o  = G[y][x-1];
-                            if(x<ancho)            e  = G[y][x+1];
-                            if(y>0 && x>0)         no = G[y-1][x-1];
-                            if(y<alto && x>0)      so = G[y+1][x-1];
-                            if(y>0 && x<ancho)     ne = G[y-1][x+1];
-                            if(y<alto && x<ancho)  se = G[y+1][x+1];
+                            if(y>0 && pixel>n)                     G[y-1][x]   = pixel;
+                            if(x>0 && pixel>o)                     G[y][x-1]   = pixel;
+                            if(y<alto-1 && pixel>s)                G[y+1][x]   = pixel;
+                            if(x<ancho-1 && pixel>e)               G[y][x+1]   = pixel;
+                            if(y>0 && x>0 && pixel>no)             G[y-1][x-1] = pixel;
+                            if(y>0 && x<ancho-1 && pixel>ne)       G[y-1][x+1] = pixel;
+                            if(y<alto-1 && x>0 && pixel>so)        G[y+1][x-1] = pixel;
+                            if(y<alto-1 && x<ancho-1 && pixel>se)  G[y+1][x+1] = pixel;
 
                             break;
                         case 'B':
-                            mask  = 0x0000FF;
-                            punto = B[y][x];
-                            color = pixel & mask;
-
-                            if(y>0)                n  = B[y-1][x];
-                            if(y<alto)             s  = B[y+1][x];
-                            if(x>0)                o  = B[y][x-1];
-                            if(x<ancho)            e  = B[y][x+1];
-                            if(y>0 && x>0)         no = B[y-1][x-1];
-                            if(y<alto && x>0)      so = B[y+1][x-1];
-                            if(y>0 && x<ancho)     ne = B[y-1][x+1];
-                            if(y<alto && x<ancho)  se = B[y+1][x+1];
+                            if(y>0 && pixel>n)                     B[y-1][x]   = pixel;
+                            if(x>0 && pixel>o)                     B[y][x-1]   = pixel;
+                            if(y<alto-1 && pixel>s)                B[y+1][x]   = pixel;
+                            if(x<ancho-1 && pixel>e)               B[y][x+1]   = pixel;
+                            if(y>0 && x>0 && pixel>no)             B[y-1][x-1] = pixel;
+                            if(y>0 && x<ancho-1 && pixel>ne)       B[y-1][x+1] = pixel;
+                            if(y<alto-1 && x>0 && pixel>so)        B[y+1][x-1] = pixel;
+                            if(y<alto-1 && x<ancho-1 && pixel>se)  B[y+1][x+1] = pixel;
 
                             break;
                     }
 
-                    if(y>0 && punto > color)
-                        ;
                 }
 
             instancia--;
