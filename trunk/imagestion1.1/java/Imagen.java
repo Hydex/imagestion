@@ -51,6 +51,7 @@ public class Imagen
     private static final int ERODE  = 2;
     private static final int DILATE = 3;
     private static final int BORDER = 4;
+    private static final int JOIN   = 5;
 
   //
   // Fields
@@ -126,6 +127,74 @@ public class Imagen
                 instancia = 0;
         }
 
+        public void joint()
+        {
+            instancia++;
+
+            for(int y=y1; y<y2; y++)
+                for(int x=x1; x<x2; x++)
+                {
+                    int colorR = R[y][x];
+                    int colorG = G[y][x];
+                    int colorB = B[y][x];
+
+                    colorR <<= 16;
+                    colorG <<= 8;
+
+                    int color = colorR | colorG | colorB;
+
+                    imagen.setRGB(x, y, color);
+                }
+
+            instancia--;
+
+            if(instancia == 1)
+                instancia = 0;
+        }
+
+        public void dilate()
+        {
+            int mask;
+            instancia++;
+
+            for(int y=y1; y<y2; y++)
+                for(int x=x1; x<x2; x++)
+                {
+                    int pixel = imagen.getRGB(y, x);
+                    int color = 0;
+                    int punto = 0;
+
+                    switch (frame)
+                    {
+                        case 'R':
+                          mask  = 0xFF0000;
+                          punto = R[y][x];
+                          color = pixel & mask;
+                          color >>= 16;
+                          break;
+                        case 'G':
+                          mask  = 0x00FF00;
+                          punto = G[y][x];
+                          color = pixel & mask;
+                          color >>= 8;
+                          break;
+                        case 'B':
+                          mask  = 0x0000FF;
+                          punto = B[y][x];
+                          color = pixel & mask;
+                          break;
+                    }
+
+                    if(y>0 && punto > color)
+                        ;
+                }
+
+            instancia--;
+
+            if(instancia == 1)
+                instancia = 0;
+        }
+
         public void run()
         {
             int alto    = y2 - y1;
@@ -161,6 +230,9 @@ public class Imagen
                             break;
                         case BORDER:
                             break;
+                        case JOIN:
+                            joint();
+                            break;
                     }
             }
             catch(Exception ex)
@@ -188,8 +260,8 @@ public class Imagen
     {
         instancia = 1;
 
-        try
-        {
+//        try
+//        {
             Layer Red   = new Layer(COPIAR, 'R', 0, 0, alto, ancho);
             Layer Green = new Layer(COPIAR, 'G', 0, 0, alto, ancho);
             Layer Blue  = new Layer(COPIAR, 'B', 0, 0, alto, ancho);
@@ -199,11 +271,11 @@ public class Imagen
             Blue.start();
 
             while(instancia > 0) {}
-        }
-        catch(Exception ex)
-        {
-            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        }
+//        catch(Exception ex)
+//        {
+//            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
 
@@ -374,6 +446,8 @@ public class Imagen
    */
   public void dilate(  )
   {
+      instancia = 1;
+
   }
 
 
