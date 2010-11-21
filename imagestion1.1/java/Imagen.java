@@ -66,22 +66,20 @@ public class Imagen
     private Image RGB;
     private static BufferedImage imagen;
     private int busy;
-
+    public static int instancia = 0;
 
     protected class Layer extends Thread
     {
         char frame;
-        int[][] map;
         int y1;
         int x1;
         int y2;
         int x2;
         int accion = 0;
         
-        public Layer(int action, char _frame, int[][] _map, int _y1, int _x1, int _y2, int _x2)
+        public Layer(int action, char _frame, int _y1, int _x1, int _y2, int _x2)
         {
             frame  = _frame;
-            map    = _map;
             y1     = _y1;
             x1     = _x1;
             y2     = _y2;
@@ -92,6 +90,7 @@ public class Imagen
         public void copy()
         {
             int mask;
+            instancia++;
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
@@ -105,20 +104,26 @@ public class Imagen
                           mask = 0xFF0000;
                           color = pixel & mask;
                           color >>= 16;
+                          R[y][x] = color;
                           break;
                         case 'G':
                           mask = 0x00FF00;
                           color = pixel & mask;
                           color >>= 8;
+                          G[y][x] = color;
                           break;
                         case 'B':
                           mask = 0x0000FF;
                           color = pixel & mask;
+                          B[y][x] = color;
                           break;
                     }
-
-                    map[y][x] = color;
                 }
+
+            instancia--;
+
+            if(instancia == 1)
+                instancia = 0;
         }
 
         public void run()
@@ -134,10 +139,10 @@ public class Imagen
             {
                 if(alto > 100 && ancho > 100)
                 {
-                    Layer ne = new Layer(accion,frame,map,y1,x1,y2+offsetY,x2-offsetX);
-                    Layer no = new Layer(accion,frame,map,y1,x1+offsetX,y2-offsetY,x2);
-                    Layer se = new Layer(accion,frame,map,y1+offsetY,x1,y2,x2-offsetX);
-                    Layer so = new Layer(accion,frame,map,y1+offsetY,x1+offsetX,y2,x2);
+                    Layer ne = new Layer(accion,frame,y1,x1,y2+offsetY,x2-offsetX);
+                    Layer no = new Layer(accion,frame,y1,x1+offsetX,y2-offsetY,x2);
+                    Layer se = new Layer(accion,frame,y1+offsetY,x1,y2,x2-offsetX);
+                    Layer so = new Layer(accion,frame,y1+offsetY,x1+offsetX,y2,x2);
 
                     ne.start();
                     no.start();
@@ -181,13 +186,24 @@ public class Imagen
 
     public void reload()
     {
-        Layer Red   = new Layer(COPIAR, 'R', R, 0, 0, alto, ancho);
-        Layer Green = new Layer(COPIAR, 'G', G, 0, 0, alto, ancho);
-        Layer Blue  = new Layer(COPIAR, 'B', B, 0, 0, alto, ancho);
+        instancia = 1;
 
-        Red.start();
-        Green.start();
-        Blue.start();
+        try
+        {
+            Layer Red   = new Layer(COPIAR, 'R', 0, 0, alto, ancho);
+            Layer Green = new Layer(COPIAR, 'G', 0, 0, alto, ancho);
+            Layer Blue  = new Layer(COPIAR, 'B', 0, 0, alto, ancho);
+
+            Red.start();
+            Green.start();
+            Blue.start();
+
+            while(instancia > 0) {}
+        }
+        catch(Exception ex)
+        {
+            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 
