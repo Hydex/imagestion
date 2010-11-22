@@ -77,6 +77,7 @@ public class Imagen
         int y2;
         int x2;
         int accion = 0;
+        int id;
         
         public Layer(int action, char _frame, int _y1, int _x1, int _y2, int _x2)
         {
@@ -86,12 +87,15 @@ public class Imagen
             y2     = _y2;
             x2     = _x2;
             accion = action;
+            id     = instancia;
+            System.out.println("ID:"+id+" - Layer(act:"+accion+",frm:"+frame+",y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+")");
         }
 
         public void copy()
         {
             int mask;
             instancia++;
+            System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" IN");
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
@@ -122,6 +126,7 @@ public class Imagen
                 }
 
             instancia--;
+            System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" OUT");
 
             if(instancia == 1)
                 instancia = 0;
@@ -130,6 +135,7 @@ public class Imagen
         public void joint()
         {
             instancia++;
+            System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" IN");
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
@@ -147,6 +153,7 @@ public class Imagen
                 }
 
             instancia--;
+            System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" OUT");
 
             if(instancia == 1)
                 instancia = 0;
@@ -158,6 +165,7 @@ public class Imagen
             int n,ne,e,se,s,so,o,no;
 
             instancia++;
+            System.out.println("ID:"+id+" - Layer.dilate - Instancia:"+instancia+" IN");
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
@@ -240,6 +248,7 @@ public class Imagen
                 }
 
             instancia--;
+            System.out.println("ID:"+id+" - Layer.dilate - Instancia:"+instancia+" OUT");
 
             if(instancia == 1)
                 instancia = 0;
@@ -312,13 +321,13 @@ public class Imagen
 
 //        try
 //        {
-            Layer Red   = new Layer(COPIAR, 'R', 0, 0, alto, ancho);
-            Layer Green = new Layer(COPIAR, 'G', 0, 0, alto, ancho);
-            Layer Blue  = new Layer(COPIAR, 'B', 0, 0, alto, ancho);
+            Layer red   = new Layer(COPIAR, 'R', 0, 0, alto, ancho);
+            Layer green = new Layer(COPIAR, 'G', 0, 0, alto, ancho);
+            Layer blue  = new Layer(COPIAR, 'B', 0, 0, alto, ancho);
 
-            Red.start();
-            Green.start();
-            Blue.start();
+            red.start();
+            green.start();
+            blue.start();
 
             while(instancia > 0) {}
 //        }
@@ -496,8 +505,30 @@ public class Imagen
    */
   public void dilate(  )
   {
-      instancia = 1;
+        instancia = 1;
 
+//        try
+//        {
+            Layer red   = new Layer(DILATE, 'R', 0, 0, alto, ancho);
+            Layer green = new Layer(DILATE, 'G', 0, 0, alto, ancho);
+            Layer blue  = new Layer(DILATE, 'B', 0, 0, alto, ancho);
+            Layer rgb   = new Layer(JOIN  , ' ', 0, 0, alto, ancho);
+
+            red.start();
+            green.start();
+            blue.start();
+
+            while(instancia > 0) {}
+
+            instancia = 1;
+            rgb.start();
+            
+            while(instancia > 0) {}
+//        }
+//        catch(Exception ex)
+//        {
+//            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
+//        }
   }
 
 
