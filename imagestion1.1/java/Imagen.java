@@ -65,7 +65,8 @@ public class Imagen
     protected Integer[][] B;
     private Image RGB;
     private static BufferedImage imagen;
-    public static int instancia = 0;
+    protected static int instancia = 0;
+    public boolean debug = false;
 
     protected class Layer extends Thread
     {
@@ -86,7 +87,7 @@ public class Imagen
             x2     = _x2;
             accion = action;
             id     = instancia;
-            System.out.println("ID:"+id+" - Layer(act:"+accion+",frm:"+frame+",y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+")");
+            if(debug) System.out.println("ID:"+id+" - Layer(act:"+accion+",frm:"+frame+",y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+")");
         }
 
         public void copy()
@@ -97,7 +98,7 @@ public class Imagen
             String msg = "";
             
             instancia++;
-            System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" IN");
+            if(debug) System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" IN");
 
             try
             {
@@ -137,7 +138,7 @@ public class Imagen
             }
 
             instancia--;
-            System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" OUT"+msg);
+            if(debug) System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" OUT"+msg);
 
             if(instancia == 1)
                 instancia = 0;
@@ -146,7 +147,7 @@ public class Imagen
         public void joint()
         {
             instancia++;
-            System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" IN");
+            if(debug) System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" IN");
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
@@ -164,7 +165,7 @@ public class Imagen
                 }
 
             instancia--;
-            System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" OUT");
+            if(debug) System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" OUT");
 
             if(instancia == 1)
                 instancia = 0;
@@ -176,7 +177,7 @@ public class Imagen
             int n,ne,e,se,s,so,o,no;
 
             instancia++;
-            System.out.println("ID:"+id+" - Layer.dilate - Instancia:"+instancia+" IN");
+            if(debug) System.out.println("ID:"+id+" - Layer.dilate - Instancia:"+instancia+" IN");
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
@@ -259,7 +260,7 @@ public class Imagen
                 }
 
             instancia--;
-            System.out.println("ID:"+id+" - Layer.dilate - Instancia:"+instancia+" OUT");
+            if(debug) System.out.println("ID:"+id+" - Layer.dilate - Instancia:"+instancia+" OUT");
 
             if(instancia == 1)
                 instancia = 0;
@@ -331,7 +332,7 @@ public class Imagen
     public void reload()
     {
         instancia = 1;
-        System.out.println("Imagen.reload - Instancia:"+instancia+" IN");
+        if(debug) System.out.println("Imagen.reload - Instancia:"+instancia+" IN");
 
         Layer red   = new Layer(COPIAR, 'R', 0, 0, alto, ancho);
         Layer green = new Layer(COPIAR, 'G', 0, 0, alto, ancho);
@@ -343,7 +344,7 @@ public class Imagen
 
         while(instancia > 0) {}
 
-        System.out.println("Imagen.reload - Instancia:"+instancia+" OUT");
+        if(debug) System.out.println("Imagen.reload - Instancia:"+instancia+" OUT");
     }
 
 
@@ -500,7 +501,7 @@ public class Imagen
   public void dilate(  )
   {
         instancia = 1;
-        System.out.println("Imagen.dilate - Instancia:"+instancia+" IN");
+        if(debug) System.out.println("Imagen.dilate - Instancia:"+instancia+" IN");
 
         Layer red   = new Layer(DILATE, 'R', 0, 0, alto, ancho);
         Layer green = new Layer(DILATE, 'G', 0, 0, alto, ancho);
@@ -518,7 +519,7 @@ public class Imagen
 
         while(instancia > 0) {}
 
-        System.out.println("Imagen.dilate - Instancia:"+instancia+" OUT");
+        if(debug) System.out.println("Imagen.dilate - Instancia:"+instancia+" OUT");
   }
 
 
