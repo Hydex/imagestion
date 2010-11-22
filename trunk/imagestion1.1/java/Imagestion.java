@@ -40,24 +40,23 @@
 public class Imagestion {
     public static void main(String args[])
     {
-        String file = new String();
+        String file  = new String();
         String file2 = new String();
 
         if(args.length != 1)
         {
-            System.out.println("Digite: java Bordes <archivo.jpg>");
+            System.out.println("Digite: java -jar Imagestion 'archivo.jpg'");
             System.exit(1);
         }
         else
         {
             file = args[0];
-            file2 = file+".bordes.jpg";
+            file2 = file+".dilated.jpg";
 
             try
             {
                 Imagen img = new Imagen(file);
                 img.dilate();
-
                 img.guardar(file2);
 
                 System.out.println(file2+"\nOK\n");
