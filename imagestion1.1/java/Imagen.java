@@ -94,6 +94,7 @@ public class Imagen
             int mask;
             int x = 0;
             int y = 0;
+            String msg = "";
             
             instancia++;
             System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" IN");
@@ -103,7 +104,7 @@ public class Imagen
                 for(y=y1; y<y2; y++)
                     for(x=x1; x<x2; x++)
                     {
-                        int pixel = imagen.getRGB(y, x);
+                        int pixel = imagen.getRGB(x,y);
                         int color = 0;
 
                         switch (frame)
@@ -130,12 +131,13 @@ public class Imagen
             }
             catch(Exception ex)
             {
-                System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" ERROR: y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+" ["+y+","+x+"]");
+                System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" ERROR: frm:"+frame+",y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+" [y:"+y+",x:"+x+"] "+ex.getMessage());
                 Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
+                msg = " with error";
             }
 
             instancia--;
-            System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" OUT");
+            System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" OUT"+msg);
 
             if(instancia == 1)
                 instancia = 0;
@@ -186,16 +188,16 @@ public class Imagen
                            :frame == 'G' ?0x00FF00
                                          :0x0000FF;
 
-                    int pixel = mask & imagen.getRGB(y, x);
+                    int pixel = mask & imagen.getRGB(x,y);
 
-                    if(y>0)                n  = mask & imagen.getRGB(y-1,x);
-                    if(y<alto)             s  = mask & imagen.getRGB(y+1,x);
-                    if(x>0)                o  = mask & imagen.getRGB(y,x-1);
-                    if(x<ancho)            e  = mask & imagen.getRGB(y,x+1);
-                    if(y>0 && x>0)         no = mask & imagen.getRGB(y-1,x-1);
-                    if(y<alto && x>0)      so = mask & imagen.getRGB(y+1,x-1);
-                    if(y>0 && x<ancho)     ne = mask & imagen.getRGB(y-1,x+1);
-                    if(y<alto && x<ancho)  se = mask & imagen.getRGB(y+1,x+1);
+                    if(y>0)                n  = mask & imagen.getRGB(x,y-1);
+                    if(y<alto)             s  = mask & imagen.getRGB(x,y+1);
+                    if(x>0)                o  = mask & imagen.getRGB(x-1,y);
+                    if(x<ancho)            e  = mask & imagen.getRGB(x+1,y);
+                    if(y>0 && x>0)         no = mask & imagen.getRGB(x-1,y-1);
+                    if(y<alto && x>0)      so = mask & imagen.getRGB(x-1,y+1);
+                    if(y>0 && x<ancho)     ne = mask & imagen.getRGB(x+1,y-1);
+                    if(y<alto && x<ancho)  se = mask & imagen.getRGB(x+1,y+1);
 
                     switch (frame)
                     {
@@ -269,8 +271,8 @@ public class Imagen
             int ancho   = x2 - x1;
             int difY    = alto  % 2;
             int difX    = ancho % 2;
-            int offsetY = difY==0 ?alto/2  :(alto/2)+difY;
-            int offsetX = difX==0 ?ancho/2 :(ancho/2)+difX;
+            int offsetY = alto/2;  //difY==0 ?alto/2  :(alto/2)+difY;
+            int offsetX = ancho/2; //difX==0 ?ancho/2 :(ancho/2)+difX;
 
             try
             {
@@ -329,23 +331,19 @@ public class Imagen
     public void reload()
     {
         instancia = 1;
+        System.out.println("Imagen.reload - Instancia:"+instancia+" IN");
 
-//        try
-//        {
-            Layer red   = new Layer(COPIAR, 'R', 0, 0, alto, ancho);
-            Layer green = new Layer(COPIAR, 'G', 0, 0, alto, ancho);
-            Layer blue  = new Layer(COPIAR, 'B', 0, 0, alto, ancho);
+        Layer red   = new Layer(COPIAR, 'R', 0, 0, alto, ancho);
+        Layer green = new Layer(COPIAR, 'G', 0, 0, alto, ancho);
+        Layer blue  = new Layer(COPIAR, 'B', 0, 0, alto, ancho);
 
-            red.start();
-            green.start();
-            blue.start();
+        red.start();
+        green.start();
+        blue.start();
 
-            while(instancia > 0) {}
-//        }
-//        catch(Exception ex)
-//        {
-//            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        while(instancia > 0) {}
+
+        System.out.println("Imagen.reload - Instancia:"+instancia+" OUT");
     }
 
 
@@ -502,29 +500,25 @@ public class Imagen
   public void dilate(  )
   {
         instancia = 1;
+        System.out.println("Imagen.dilate - Instancia:"+instancia+" IN");
 
-//        try
-//        {
-            Layer red   = new Layer(DILATE, 'R', 0, 0, alto, ancho);
-            Layer green = new Layer(DILATE, 'G', 0, 0, alto, ancho);
-            Layer blue  = new Layer(DILATE, 'B', 0, 0, alto, ancho);
-            Layer rgb   = new Layer(JOIN  , ' ', 0, 0, alto, ancho);
+        Layer red   = new Layer(DILATE, 'R', 0, 0, alto, ancho);
+        Layer green = new Layer(DILATE, 'G', 0, 0, alto, ancho);
+        Layer blue  = new Layer(DILATE, 'B', 0, 0, alto, ancho);
 
-            red.start();
-            green.start();
-            blue.start();
+        red.start();
+        green.start();
+        blue.start();
 
-            while(instancia > 0) {}
+        while(instancia > 0) {}
 
-            instancia = 1;
-            rgb.start();
-            
-            while(instancia > 0) {}
-//        }
-//        catch(Exception ex)
-//        {
-//            Logger.getLogger(Imagen.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        instancia = 1;
+        Layer rgb = new Layer(JOIN  , ' ', 0, 0, alto, ancho);
+        rgb.start();
+
+        while(instancia > 0) {}
+
+        System.out.println("Imagen.dilate - Instancia:"+instancia+" OUT");
   }
 
 
