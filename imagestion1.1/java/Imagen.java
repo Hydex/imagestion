@@ -146,26 +146,37 @@ public class Imagen
 
         public void joint()
         {
+            int x=0, y=0;
+            String msg = "";
             instancia++;
             if(debug) System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" IN");
 
-            for(int y=y1; y<y2; y++)
-                for(int x=x1; x<x2; x++)
-                {
-                    int colorR = R[y][x];
-                    int colorG = G[y][x];
-                    int colorB = B[y][x];
+            try
+            {
+                for(y=y1; y<y2; y++)
+                    for(x=x1; x<x2; x++)
+                    {
+                        int colorR = R[y][x];
+                        int colorG = G[y][x];
+                        int colorB = B[y][x];
 
-                    colorR <<= 16;
-                    colorG <<= 8;
+                        colorR <<= 16;
+                        colorG <<= 8;
 
-                    int color = colorR | colorG | colorB;
+                        int color = colorR | colorG | colorB;
 
-                    imagen.setRGB(x, y, color);
-                }
+                        imagen.setRGB(x, y, color);
+                    }
+            }
+            catch(Exception ex)
+            {
+                System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" ERROR: y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+" [y:"+y+",x:"+x+"] "+ex.getMessage());
+                Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
+                msg = " with error";
+            }
 
             instancia--;
-            if(debug) System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" OUT");
+            if(debug) System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" OUT"+msg);
 
             if(instancia == 1)
                 instancia = 0;
@@ -355,6 +366,12 @@ public class Imagen
 
     public void guardar(String nombre) throws IOException
     {
+        instancia = 1;
+        Layer rgb = new Layer(JOIN  , ' ', 0, 0, alto, ancho);
+        rgb.start();
+
+        while(instancia > 0) {}
+
         /* "png" "jpeg" format desired, no "gif" yet. */
         ImageIO.write( imagen, "jpeg" , new File ( nombre ) );
     }
@@ -510,12 +527,6 @@ public class Imagen
         red.start();
         green.start();
         blue.start();
-
-        while(instancia > 0) {}
-
-        instancia = 1;
-        Layer rgb = new Layer(JOIN  , ' ', 0, 0, alto, ancho);
-        rgb.start();
 
         while(instancia > 0) {}
 
