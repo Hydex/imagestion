@@ -60,13 +60,11 @@ public class Imagen
     private String path;
     private int alto;
     private int ancho;
-    protected int[][] R;
-    protected int[][] G;
-    protected int[][] B;
-    private int[][] gray;
+    protected Integer[][] R;
+    protected Integer[][] G;
+    protected Integer[][] B;
     private Image RGB;
     private static BufferedImage imagen;
-    private int busy;
     public static int instancia = 0;
 
     protected class Layer extends Thread
@@ -94,36 +92,47 @@ public class Imagen
         public void copy()
         {
             int mask;
+            int x = 0;
+            int y = 0;
+            
             instancia++;
             System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" IN");
 
-            for(int y=y1; y<y2; y++)
-                for(int x=x1; x<x2; x++)
-                {
-                    int pixel = imagen.getRGB(y, x);
-                    int color = 0;
-
-                    switch (frame)
+            try
+            {
+                for(y=y1; y<y2; y++)
+                    for(x=x1; x<x2; x++)
                     {
-                        case 'R':
-                          mask = 0xFF0000;
-                          color = pixel & mask;
-                          color >>= 16;
-                          R[y][x] = color;
-                          break;
-                        case 'G':
-                          mask = 0x00FF00;
-                          color = pixel & mask;
-                          color >>= 8;
-                          G[y][x] = color;
-                          break;
-                        case 'B':
-                          mask = 0x0000FF;
-                          color = pixel & mask;
-                          B[y][x] = color;
-                          break;
+                        int pixel = imagen.getRGB(y, x);
+                        int color = 0;
+
+                        switch (frame)
+                        {
+                            case 'R':
+                              mask = 0xFF0000;
+                              color = pixel & mask;
+                              color >>= 16;
+                              R[y][x] = color;
+                              break;
+                            case 'G':
+                              mask = 0x00FF00;
+                              color = pixel & mask;
+                              color >>= 8;
+                              G[y][x] = color;
+                              break;
+                            case 'B':
+                              mask = 0x0000FF;
+                              color = pixel & mask;
+                              B[y][x] = color;
+                              break;
+                        }
                     }
-                }
+            }
+            catch(Exception ex)
+            {
+                System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" ERROR: y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+" ["+y+","+x+"]");
+                Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             instancia--;
             System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" OUT");
@@ -267,7 +276,7 @@ public class Imagen
             {
                 if(alto > 100 && ancho > 100)
                 {
-                    Layer ne = new Layer(accion,frame,y1,x1,y2+offsetY,x2-offsetX);
+                    Layer ne = new Layer(accion,frame,y1,x1,y2-offsetY,x2-offsetX);
                     Layer no = new Layer(accion,frame,y1,x1+offsetX,y2-offsetY,x2);
                     Layer se = new Layer(accion,frame,y1+offsetY,x1,y2,x2-offsetX);
                     Layer so = new Layer(accion,frame,y1+offsetY,x1+offsetX,y2,x2);
@@ -311,7 +320,9 @@ public class Imagen
         imagen  = ImageIO.read(new File(this.path));
         alto    = imagen.getHeight();
         ancho   = imagen.getWidth();
-        busy    = 0;
+        R       = new Integer[alto][ancho];
+        G       = new Integer[alto][ancho];
+        B       = new Integer[alto][ancho];
         reload();
     };
 
@@ -406,7 +417,7 @@ public class Imagen
    * Set the value of R
    * @param newVar the new value of R
    */
-  public void setR ( int[][] newVar ) {
+  public void setR ( Integer[][] newVar ) {
     R = newVar;
   }
 
@@ -414,7 +425,7 @@ public class Imagen
    * Get the value of R
    * @return the value of R
    */
-  public int[][] getR ( ) {
+  public Integer[][] getR ( ) {
     return R;
   }
 
@@ -422,7 +433,7 @@ public class Imagen
    * Set the value of G
    * @param newVar the new value of G
    */
-  public void setG ( int[][] newVar ) {
+  public void setG ( Integer[][] newVar ) {
     G = newVar;
   }
 
@@ -430,7 +441,7 @@ public class Imagen
    * Get the value of G
    * @return the value of G
    */
-  public int[][] getG ( ) {
+  public Integer[][] getG ( ) {
     return G;
   }
 
@@ -438,7 +449,7 @@ public class Imagen
    * Set the value of B
    * @param newVar the new value of B
    */
-  public void setB ( int[][] newVar ) {
+  public void setB ( Integer[][] newVar ) {
     B = newVar;
   }
 
@@ -446,26 +457,11 @@ public class Imagen
    * Get the value of B
    * @return the value of B
    */
-  public int[][] getB ( ) {
+  public Integer[][] getB ( ) {
     return B;
   }
 
-  /**
-   * Set the value of gray
-   * @param newVar the new value of gray
-   */
-  public void setGray ( int[][] newVar ) {
-    gray = newVar;
-  }
-
-  /**
-   * Get the value of gray
-   * @return the value of gray
-   */
-  public int[][] getGray ( ) {
-    return gray;
-  }
-
+ 
   /**
    * Set the value of RGB
    * @param newVar the new value of RGB
