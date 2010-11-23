@@ -96,9 +96,8 @@ public class Imagen
             int x = 0;
             int y = 0;
             String msg = "";
-            
-            instancia++;
-            if(debug) System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" IN");
+
+            if(debug) System.out.println("ID:"+id+" - Layer.copy - act:"+accion+" - Instancia:"+instancia+" IN");
 
             try
             {
@@ -136,20 +135,14 @@ public class Imagen
                 Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
                 msg = " with error";
             }
-
-            instancia--;
-            if(debug) System.out.println("ID:"+id+" - Layer.copy - Instancia:"+instancia+" OUT"+msg);
-
-            if(instancia == 1)
-                instancia = 0;
         }
 
         public void joint()
         {
             int x=0, y=0;
             String msg = "";
-            instancia++;
-            if(debug) System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" IN");
+
+            if(debug) System.out.println("ID:"+id+" - Layer.joint - act:"+accion+" - Instancia:"+instancia+" IN");
 
             try
             {
@@ -174,12 +167,6 @@ public class Imagen
                 Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
                 msg = " with error";
             }
-
-            instancia--;
-            if(debug) System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" OUT"+msg);
-
-            if(instancia == 1)
-                instancia = 0;
         }
 
         public void dilate()
@@ -187,8 +174,7 @@ public class Imagen
             int mask,color,punto;
             int n,ne,e,se,s,so,o,no;
 
-            instancia++;
-            if(debug) System.out.println("ID:"+id+" - Layer.dilate - Instancia:"+instancia+" IN");
+            if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" IN");
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
@@ -202,14 +188,14 @@ public class Imagen
 
                     int pixel = mask & imagen.getRGB(x,y);
 
-                    if(y>0)                n  = mask & imagen.getRGB(x,y-1);
-                    if(y<alto)             s  = mask & imagen.getRGB(x,y+1);
-                    if(x>0)                o  = mask & imagen.getRGB(x-1,y);
-                    if(x<ancho)            e  = mask & imagen.getRGB(x+1,y);
-                    if(y>0 && x>0)         no = mask & imagen.getRGB(x-1,y-1);
-                    if(y<alto && x>0)      so = mask & imagen.getRGB(x-1,y+1);
-                    if(y>0 && x<ancho)     ne = mask & imagen.getRGB(x+1,y-1);
-                    if(y<alto && x<ancho)  se = mask & imagen.getRGB(x+1,y+1);
+                    if(y>0)                    n  = mask & imagen.getRGB(x,y-1);
+                    if(y<alto-1)               s  = mask & imagen.getRGB(x,y+1);
+                    if(x>0)                    o  = mask & imagen.getRGB(x-1,y);
+                    if(x<ancho-1)              e  = mask & imagen.getRGB(x+1,y);
+                    if(y>0 && x>0)             no = mask & imagen.getRGB(x-1,y-1);
+                    if(y<alto-1 && x>0)        so = mask & imagen.getRGB(x-1,y+1);
+                    if(y>0 && x<ancho-1)       ne = mask & imagen.getRGB(x+1,y-1);
+                    if(y<alto-1 && x<ancho-1)  se = mask & imagen.getRGB(x+1,y+1);
 
                     switch (frame)
                     {
@@ -270,13 +256,9 @@ public class Imagen
 
                 }
 
-            instancia--;
-            if(debug) System.out.println("ID:"+id+" - Layer.dilate - Instancia:"+instancia+" OUT");
-
-            if(instancia == 1)
-                instancia = 0;
         }
 
+        @Override
         public void run()
         {
             int alto    = y2 - y1;
@@ -285,6 +267,7 @@ public class Imagen
             int difX    = ancho % 2;
             int offsetY = alto/2;  //difY==0 ?alto/2  :(alto/2)+difY;
             int offsetX = ancho/2; //difX==0 ?ancho/2 :(ancho/2)+difX;
+            String method = "";
 
             try
             {
@@ -301,21 +284,35 @@ public class Imagen
                     so.start();
                 }
                 else
+                {
+                    instancia++;
+
                     switch(accion)
                     {
                         case COPIAR:
                             copy();
+                            method = "Layer.copy";
                             break;
                         case ERODE:
                             break;
                         case DILATE:
+                            dilate();
+                            method = "Layer.dilate";
                             break;
                         case BORDER:
                             break;
                         case JOIN:
                             joint();
+                            method = "Layer.joint";
                             break;
                     }
+
+                    instancia--;
+                    if(debug) System.out.println("ID:"+id+" - "+method+" - act:"+accion+" - Instancia:"+instancia+" OUT");
+
+                    if(instancia == 1)
+                        instancia = 0;
+                }
             }
             catch(Exception ex)
             {
@@ -358,7 +355,18 @@ public class Imagen
         if(debug) System.out.println("Imagen.reload - Instancia:"+instancia+" OUT");
     }
 
+    private void join()
+    {
+        instancia = 1;
+        if(debug) System.out.println("Imagen.join - Instancia:"+instancia+" IN");
 
+        Layer rgb = new Layer(JOIN  , ' ', 0, 0, alto, ancho);
+        rgb.start();
+
+        while(instancia > 0) {}
+
+        if(debug) System.out.println("Imagen.join - Instancia:"+instancia+" OUT");
+    }
 
   //
   // Methods
@@ -366,12 +374,6 @@ public class Imagen
 
     public void guardar(String nombre) throws IOException
     {
-        instancia = 1;
-        Layer rgb = new Layer(JOIN  , ' ', 0, 0, alto, ancho);
-        rgb.start();
-
-        while(instancia > 0) {}
-
         /* "png" "jpeg" format desired, no "gif" yet. */
         ImageIO.write( imagen, "jpeg" , new File ( nombre ) );
     }
@@ -531,6 +533,8 @@ public class Imagen
         while(instancia > 0) {}
 
         if(debug) System.out.println("Imagen.dilate - Instancia:"+instancia+" OUT");
+
+        join();
   }
 
 
