@@ -105,28 +105,9 @@ public class Imagen
                     for(x=x1; x<x2; x++)
                     {
                         int pixel = imagen.getRGB(x,y);
-                        int color = 0;
-
-                        switch (frame)
-                        {
-                            case 'R':
-                              mask = 0xFF0000;
-                              color = pixel & mask;
-                              //color >>= 16;
-                              R[y][x] = color;
-                              break;
-                            case 'G':
-                              mask = 0x00FF00;
-                              color = pixel & mask;
-                              //color >>= 8;
-                              G[y][x] = color;
-                              break;
-                            case 'B':
-                              mask = 0x0000FF;
-                              color = pixel & mask;
-                              B[y][x] = color;
-                              break;
-                        }
+                        R[y][x] = pixel & 0xFF0000;
+                        G[y][x] = pixel & 0x00FF00;
+                        B[y][x] = pixel & 0x0000FF;
                     }
             }
             catch(Exception ex)
@@ -171,62 +152,127 @@ public class Imagen
 
         public void dilate()
         {
-            int mask,color,punto;
-            int n,ne,e,se,s,so,o,no;
+            int maskR = 0xFF0000;
+            int maskG = 0x00FF00;
+            int maskB = 0x0000FF;
 
             if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" IN");
 
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
                 {
-                    ne = se = so = no = 0;
-                    n  = s  = e  = o  = 0;
-                   
-                    int maskR = 0xFF0000;
-                    int maskG = 0x00FF00;
-                    int maskB = 0x0000FF;
-                    int pixel = imagen.getRGB(x,y);
-                    int colR  = pixel & 0x00FFFF;
-                    int colG  = pixel & 0xFF00FF;
-                    int colB  = pixel & 0xFFFF00;
+                    int pixel  = imagen.getRGB(x,y);
+                    int pixelR = pixel & maskR;
+                    int pixelG = pixel & maskG;
+                    int pixelB = pixel & maskB;
 
-                    if(y>0)                    n  = imagen.getRGB(x,y-1);
-                    if(y<alto-1)               s  = imagen.getRGB(x,y+1);
-                    if(x>0)                    o  = imagen.getRGB(x-1,y);
-                    if(x<ancho-1)              e  = imagen.getRGB(x+1,y);
-                    if(y>0 && x>0)             no = imagen.getRGB(x-1,y-1);
-                    if(y<alto-1 && x>0)        so = imagen.getRGB(x-1,y+1);
-                    if(y>0 && x<ancho-1)       ne = imagen.getRGB(x+1,y-1);
-                    if(y<alto-1 && x<ancho-1)  se = imagen.getRGB(x+1,y+1);
+                    if(y>0)                    
+                    {
+                        int color = 0;                   
+                        int pix = imagen.getRGB(x,y-1);
+                        int n[] = {pix&maskR, pix&maskG, pix&maskB};
+                        //int n[] = {R[y-1][x], G[y-1][x], B[y-1][x]};
+                         
+                        R[y-1][x]= (pixelR > n[0]) ?pixelR :n[0];
+                        G[y-1][x]= (pixelG > n[1]) ?pixelG :n[1];
+                        B[y-1][x]= (pixelB > n[2]) ?pixelB :n[2];
+                        
+                        //imagen.setRGB(x,y-1,color);
+                    }
 
-                    if(R[y][x]>(n&maskR)  && y>0)                    imagen.setRGB(x,y-1,  colR|R[y][x]);
-                    if(R[y][x]>(o&maskR)  && x>0)                    imagen.setRGB(x-1,y,  colR|R[y][x]);
-                    if(R[y][x]>(s&maskR)  && y<alto-1)               imagen.setRGB(x,y+1,  colR|R[y][x]);
-                    if(R[y][x]>(e&maskR)  && x<ancho-1)              imagen.setRGB(x+1,y,  colR|R[y][x]);
-                    if(R[y][x]>(no&maskR) && y>0 && x>0)             imagen.setRGB(x-1,y-1,colR|R[y][x]);
-                    if(R[y][x]>(ne&maskR) && y>0 && x<ancho-1)       imagen.setRGB(x+1,y-1,colR|R[y][x]);
-                    if(R[y][x]>(so&maskR) && y<alto-1 && x>0)        imagen.setRGB(x-1,y+1,colR|R[y][x]);
-                    if(R[y][x]>(se&maskR) && y<alto-1 && x<ancho-1)  imagen.setRGB(x+1,y+1,colR|R[y][x]);
+                    if(y<alto-1)
+                    {
+                        int color = 0;
+                        int pix = imagen.getRGB(x,y+1);
+                        int s[] = {pix&maskR, pix&maskG, pix&maskB};
+                        //int s[] = {R[y+1][x], G[y+1][x], B[y+1][x]};
+                        
+                        R[y+1][x]= (pixelR > s[0]) ?pixelR :s[0];
+                        G[y+1][x]= (pixelG > s[1]) ?pixelG :s[1];
+                        B[y+1][x]= (pixelB > s[2]) ?pixelB :s[2];
+                        
+                        //imagen.setRGB(x,y+1,color);
+                    }
 
-                    if(G[y][x]>(n&maskG)  && y>0)                    imagen.setRGB(x,y-1,  colG|G[y][x]);
-                    if(G[y][x]>(o&maskG)  && x>0)                    imagen.setRGB(x-1,y,  colG|G[y][x]);
-                    if(G[y][x]>(s&maskG)  && y<alto-1)               imagen.setRGB(x,y+1,  colG|G[y][x]);
-                    if(G[y][x]>(e&maskG)  && x<ancho-1)              imagen.setRGB(x+1,y,  colG|G[y][x]);
-                    if(G[y][x]>(no&maskG) && y>0 && x>0)             imagen.setRGB(x-1,y-1,colG|G[y][x]);
-                    if(G[y][x]>(ne&maskG) && y>0 && x<ancho-1)       imagen.setRGB(x+1,y-1,colG|G[y][x]);
-                    if(G[y][x]>(so&maskG) && y<alto-1 && x>0)        imagen.setRGB(x-1,y+1,colG|G[y][x]);
-                    if(G[y][x]>(se&maskG) && y<alto-1 && x<ancho-1)  imagen.setRGB(x+1,y+1,colG|G[y][x]);
+                    if(x>0)
+                    {
+                        int color = 0;
+                        int pix = imagen.getRGB(x-1,y);
+                        int o[] = {pix&maskR, pix&maskG, pix&maskB};
+                        //int o[] = {R[y][x-1], G[y][x-1], B[y][x-1]};
+                        
+                        R[y][x-1]= (pixelR > o[0]) ?pixelR :o[0];
+                        G[y][x-1]= (pixelG > o[1]) ?pixelG :o[1];
+                        B[y][x-1]= (pixelB > o[2]) ?pixelB :o[2];
+                        
+                        //imagen.setRGB(x-1,y,color);
+                    }
 
-                    if(B[y][x]>(n&maskB)  && y>0)                    imagen.setRGB(x,y-1,  colB|B[y][x]);
-                    if(B[y][x]>(o&maskB)  && x>0)                    imagen.setRGB(x-1,y,  colB|B[y][x]);
-                    if(G[y][x]>(s&maskB)  && y<alto-1)               imagen.setRGB(x,y+1,  colB|B[y][x]);
-                    if(B[y][x]>(e&maskB)  && x<ancho-1)              imagen.setRGB(x+1,y,  colB|B[y][x]);
-                    if(B[y][x]>(no&maskB) && y>0 && x>0)             imagen.setRGB(x-1,y-1,colB|B[y][x]);
-                    if(B[y][x]>(ne&maskB) && y>0 && x<ancho-1)       imagen.setRGB(x+1,y-1,colB|B[y][x]);
-                    if(B[y][x]>(so&maskB) && y<alto-1 && x>0)        imagen.setRGB(x-1,y+1,colB|B[y][x]);
-                    if(B[y][x]>(se&maskB) && y<alto-1 && x<ancho-1)  imagen.setRGB(x+1,y+1,colB|B[y][x]);
+                    if(x<ancho-1)
+                    {
+                        int color = 0;
+                        int pix = imagen.getRGB(x+1,y);
+                        int e[] = {pix&maskR, pix&maskG, pix&maskB};
+                        //int e[] = {R[y][x+1], G[y][x+1], B[y][x+1]};
+                        
+                        R[y][x+1]= (pixelR > e[0]) ?pixelR :e[0];
+                        G[y][x+1]= (pixelG > e[1]) ?pixelG :e[1];
+                        B[y][x+1]= (pixelB > e[2]) ?pixelB :e[2];
+                        
+                        //imagen.setRGB(x+1,y,color);
+                    }
+
+//                    if(y>0 && x>0)
+//                    {
+//                        int color = 0;
+//                        int pix = imagen.getRGB(x-1,y-1);
+//                        int no[] = {pix&maskR, pix&maskG, pix&maskB};
+//
+//                        if(R[y][x]>(no[0]&maskR)) color |= colR;
+//                        if(G[y][x]>(no[1]&maskG)) color |= colG;
+//                        if(B[y][x]>(no[2]&maskB)) color |= colB;
+//
+//                        imagen.setRGB(x-1,y-1,color);
+//                    }
+//
+//                    if(y<alto-1 && x>0)
+//                    {
+//                        int color = 0;
+//                        int pix = imagen.getRGB(x-1,y+1);
+//                        int so[] = {pix&maskR, pix&maskG, pix&maskB};
+//
+//                        if(R[y][x]>(so[0]&maskR)) color |= colR;
+//                        if(G[y][x]>(so[1]&maskG)) color |= colG;
+//                        if(B[y][x]>(so[2]&maskB)) color |= colB;
+//
+//                        imagen.setRGB(x-1,y+1,color);
+//                    }
+//
+//                    if(y>0 && x<ancho-1){
+//                        int color = 0;
+//                        int pix = imagen.getRGB(x+1,y-1);
+//                        int ne[] = {pix&maskR, pix&maskG, pix&maskB};
+//
+//                        if(R[y][x]>(ne[0]&maskR)) color |= colR;
+//                        if(G[y][x]>(ne[1]&maskG)) color |= colG;
+//                        if(B[y][x]>(ne[2]&maskB)) color |= colB;
+//
+//                        imagen.setRGB(x+1,y-1,color);
+//                    }
+//
+//                    if(y<alto-1 && x<ancho-1)
+//                    {
+//                        int color = 0;
+//                        int pix = imagen.getRGB(x+1,y+1);
+//                        int se[] = {pix&maskR, pix&maskG, pix&maskB};
+//
+//                        if(R[y][x]>(se[0]&maskR)) color |= colR;
+//                        if(G[y][x]>(se[1]&maskG)) color |= colG;
+//                        if(B[y][x]>(se[2]&maskB)) color |= colB;
+//
+//                        imagen.setRGB(x+1,y+1,color);
+//                    }
                 }
-
         }
 
         @Override
@@ -313,13 +359,8 @@ public class Imagen
         instancia = 1;
         if(debug) System.out.println("Imagen.reload - Instancia:"+instancia+" IN");
 
-        Layer red   = new Layer(COPIAR, 'R', 0, 0, alto, ancho);
-        Layer green = new Layer(COPIAR, 'G', 0, 0, alto, ancho);
-        Layer blue  = new Layer(COPIAR, 'B', 0, 0, alto, ancho);
-
-        red.start();
-        green.start();
-        blue.start();
+        Layer img   = new Layer(COPIAR, ' ', 0, 0, alto, ancho);
+        img.start();
 
         while(instancia > 0) {}
 
@@ -498,9 +539,14 @@ public class Imagen
 
         while(instancia > 0) {}
 
-        if(debug) System.out.println("Imagen.dilate - Instancia:"+instancia+" OUT");
-
         join();
+
+//        Layer img   = new Layer(COPIAR, ' ', 0, 0, alto, ancho);
+//        img.start();
+//
+//        while(instancia > 0) {}
+
+        if(debug) System.out.println("Imagen.dilate - Instancia:"+instancia+" OUT");
   }
 
 
