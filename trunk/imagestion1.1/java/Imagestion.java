@@ -56,9 +56,9 @@ public class Imagestion {
             try
             {
                 Imagen img = new Imagen(file);
-                //img.debug = true;
+                img.debug = true;
                 img.dilate();
-                img.dilate();
+                //img.dilate();
                 img.guardar(file2);
 
                 System.out.println(file2+"\nOK\n");
