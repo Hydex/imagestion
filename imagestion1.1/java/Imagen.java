@@ -47,11 +47,7 @@ import javax.imageio.ImageIO;
  */
 public class Imagen
 {
-    private static final int COPIAR = 1;
-    private static final int ERODE  = 2;
-    private static final int DILATE = 3;
-    private static final int BORDER = 4;
-    private static final int JOIN   = 5;
+    enum operacion {UNDEFINED, COPIAR, ERODE, QERODE, DILATE, QDILATE, BORDER, JOIN};
 
   //
   // Fields
@@ -75,10 +71,10 @@ public class Imagen
         int x1;
         int y2;
         int x2;
-        int accion = 0;
+        operacion accion = operacion.UNDEFINED;
         int id;
         
-        public Layer(int action, char _frame, int _y1, int _x1, int _y2, int _x2)
+        public Layer(operacion action, char _frame, int _y1, int _x1, int _y2, int _x2)
         {
             frame  = _frame;
             y1     = _y1;
@@ -146,7 +142,7 @@ public class Imagen
             }
         }
 
-        public void _dilate()
+        public void dilate()
         {
             int mask,color,punto;
             int n,ne,e,se,s,so,o,no;
@@ -213,7 +209,7 @@ public class Imagen
                 }
         }
 
-        public void dilate()
+        public void dilate_quick()
         {
             int maskR = 0xFF0000;
             int maskG = 0x00FF00;
@@ -224,150 +220,65 @@ public class Imagen
             for(int y=y1; y<y2; y++)
                 for(int x=x1; x<x2; x++)
                 {
-//                    int pixel  = imagen.getRGB(x,y);
-//                    int pixelR = pixel & maskR;
-//                    int pixelG = pixel & maskG;
-//                    int pixelB = pixel & maskB;
-
+                    int pixel  = imagen.getRGB(x,y);
                     int pixelR = R[y][x];
                     int pixelG = G[y][x];
                     int pixelB = B[y][x];
 
                     if(x>0)
                     {
-//                        int pix = imagen.getRGB(x-1,y);
-//                        int o[] = {pix&maskR, pix&maskG, pix&maskB};
-//                        R[y][x-1]= (pixelR > o[0]) ?pixelR :o[0];
-//                        G[y][x-1]= (pixelG > o[1]) ?pixelG :o[1];
-//                        B[y][x-1]= (pixelB > o[2]) ?pixelB :o[2];
-
-                        int color = 0;
                         int col[] = {R[y][x-1], G[y][x-1], B[y][x-1]};
-                        color |= (pixelR > col[0]) ?pixelR :col[0];
-                        color |= (pixelG > col[1]) ?pixelG :col[1];
-                        color |= (pixelB > col[2]) ?pixelB :col[2];
-                        imagen.setRGB(x-1,y,color);
+                        if(pixelR > col[0] && pixelG > col[1] && pixelB > col[2])
+                            imagen.setRGB(x-1,y,pixel);
                     }
 
                     if(y>0)
                     {
-//                        int pix = imagen.getRGB(x,y-1);
-//                        int n[] = {pix&maskR, pix&maskG, pix&maskB};
-//                        R[y-1][x]= (pixelR > n[0]) ?pixelR :n[0];
-//                        G[y-1][x]= (pixelG > n[1]) ?pixelG :n[1];
-//                        B[y-1][x]= (pixelB > n[2]) ?pixelB :n[2];
-
-                        int color = 0;
                         int col[] = {R[y-1][x], G[y-1][x], B[y-1][x]};
-                        color |= (pixelR > col[0]) ?pixelR :col[0];
-                        color |= (pixelG > col[1]) ?pixelG :col[1];
-                        color |= (pixelB > col[2]) ?pixelB :col[2];
-                        imagen.setRGB(x,y-1,color);
+                        if(pixelR > col[0] && pixelG > col[1] && pixelB > col[2])
+                            imagen.setRGB(x,y-1,pixel);
                     }
 
                     if(x<ancho-1)
                     {
-//                        int pix = imagen.getRGB(x+1,y);
-//                        int e[] = {pix&maskR, pix&maskG, pix&maskB};
-//                        R[y][x+1]= (pixelR > e[0]) ?pixelR :e[0];
-//                        G[y][x+1]= (pixelG > e[1]) ?pixelG :e[1];
-//                        B[y][x+1]= (pixelB > e[2]) ?pixelB :e[2];
-
-                        int color = 0;
                         int col[] = {R[y][x+1], G[y][x+1], B[y][x+1]};
-                        color |= (pixelR > col[0]) ?pixelR :col[0];
-                        color |= (pixelG > col[1]) ?pixelG :col[1];
-                        color |= (pixelB > col[2]) ?pixelB :col[2];
-                        imagen.setRGB(x+1,y,color);
+                        if(pixelR > col[0] && pixelG > col[1] && pixelB > col[2])
+                            imagen.setRGB(x+1,y,pixel);
                     }
 
                     if(y<alto-1)
                     {
-//                        int pix = imagen.getRGB(x,y+1);
-//                        int s[] = {pix&maskR, pix&maskG, pix&maskB};
-//                        R[y+1][x]= (pixelR > s[0]) ?pixelR :s[0];
-//                        G[y+1][x]= (pixelG > s[1]) ?pixelG :s[1];
-//                        B[y+1][x]= (pixelB > s[2]) ?pixelB :s[2];
-                        
-                        
-                        int color = 0;
                         int col[] = {R[y+1][x], G[y+1][x], B[y+1][x]};
-                        color |= (pixelR > col[0]) ?pixelR :col[0];
-                        color |= (pixelG > col[1]) ?pixelG :col[1];
-                        color |= (pixelB > col[2]) ?pixelB :col[2];
-                        imagen.setRGB(x,y+1,color);
+                        if(pixelR > col[0] && pixelG > col[1] && pixelB > col[2])
+                            imagen.setRGB(x,y+1,pixel);
                     }
 
                     if(y>0 && x>0)
                     {
-//                        int color = 0;
-//                        int pix = imagen.getRGB(x-1,y-1);
-//                        int no[] = {pix&maskR, pix&maskG, pix&maskB};
-//
-//                        if(R[y][x]>(no[0]&maskR)) color |= colR;
-//                        if(G[y][x]>(no[1]&maskG)) color |= colG;
-//                        if(B[y][x]>(no[2]&maskB)) color |= colB;
-                        int color = 0;
                         int col[] = {R[y-1][x-1], G[y-1][x-1], B[y-1][x-1]};
-                        color |= (pixelR > col[0]) ?pixelR :col[0];
-                        color |= (pixelG > col[1]) ?pixelG :col[1];
-                        color |= (pixelB > col[2]) ?pixelB :col[2];
-
-                        imagen.setRGB(x-1,y-1,color);
+                        if(pixelR > col[0] && pixelG > col[1] && pixelB > col[2])
+                            imagen.setRGB(x-1,y-1,pixel);
                     }
 
                     if(y<alto-1 && x>0)
                     {
-//                        int color = 0;
-//                        int pix = imagen.getRGB(x-1,y+1);
-//                        int so[] = {pix&maskR, pix&maskG, pix&maskB};
-//
-//                        if(R[y][x]>(so[0]&maskR)) color |= colR;
-//                        if(G[y][x]>(so[1]&maskG)) color |= colG;
-//                        if(B[y][x]>(so[2]&maskB)) color |= colB;
-//
-                        int color = 0;
                         int col[] = {R[y+1][x-1], G[y+1][x-1], B[y+1][x-1]};
-                        color |= (pixelR > col[0]) ?pixelR :col[0];
-                        color |= (pixelG > col[1]) ?pixelG :col[1];
-                        color |= (pixelB > col[2]) ?pixelB :col[2];
-
-                        imagen.setRGB(x-1,y+1,color);
+                        if(pixelR > col[0] && pixelG > col[1] && pixelB > col[2])
+                            imagen.setRGB(x-1,y+1,pixel);
                     }
 
-                    if(y>0 && x<ancho-1){
-//                        int color = 0;
-//                        int pix = imagen.getRGB(x+1,y-1);
-//                        int ne[] = {pix&maskR, pix&maskG, pix&maskB};
-//
-//                        if(R[y][x]>(ne[0]&maskR)) color |= colR;
-//                        if(G[y][x]>(ne[1]&maskG)) color |= colG;
-//                        if(B[y][x]>(ne[2]&maskB)) color |= colB;
-                        int color = 0;
+                    if(y>0 && x<ancho-1)
+                    {
                         int col[] = {R[y-1][x+1], G[y-1][x+1], B[y-1][x+1]};
-                        color |= (pixelR > col[0]) ?pixelR :col[0];
-                        color |= (pixelG > col[1]) ?pixelG :col[1];
-                        color |= (pixelB > col[2]) ?pixelB :col[2];
-
-                        imagen.setRGB(x+1,y-1,color);
+                        if(pixelR > col[0] && pixelG > col[1] && pixelB > col[2])
+                            imagen.setRGB(x+1,y-1,pixel);
                     }
 
                     if(y<alto-1 && x<ancho-1)
                     {
-//                        int color = 0;
-//                        int pix = imagen.getRGB(x+1,y+1);
-//                        int se[] = {pix&maskR, pix&maskG, pix&maskB};
-//
-//                        if(R[y][x]>(se[0]&maskR)) color |= colR;
-//                        if(G[y][x]>(se[1]&maskG)) color |= colG;
-//                        if(B[y][x]>(se[2]&maskB)) color |= colB;
-                        int color = 0;
                         int col[] = {R[y+1][x+1], G[y+1][x+1], B[y+1][x+1]};
-                        color |= (pixelR > col[0]) ?pixelR :col[0];
-                        color |= (pixelG > col[1]) ?pixelG :col[1];
-                        color |= (pixelB > col[2]) ?pixelB :col[2];
-
-                        imagen.setRGB(x+1,y+1,color);
+                        if(pixelR > col[0] && pixelG > col[1] && pixelB > col[2])
+                            imagen.setRGB(x+1,y+1,pixel);
                     }
                 }
         }
@@ -377,15 +288,13 @@ public class Imagen
         {
             int alto    = y2 - y1;
             int ancho   = x2 - x1;
-            int difY    = alto  % 2;
-            int difX    = ancho % 2;
-            int offsetY = alto/2;  //difY==0 ?alto/2  :(alto/2)+difY;
-            int offsetX = ancho/2; //difX==0 ?ancho/2 :(ancho/2)+difX;
+            int offsetY = alto/2;  
+            int offsetX = ancho/2; 
             String method = "";
 
             try
             {
-                if(alto > 1000 && ancho > 1000)
+                if(alto > 400 && ancho > 600)
                 {
                     Layer ne = new Layer(accion,frame,y1,x1,y2-offsetY,x2-offsetX);
                     Layer no = new Layer(accion,frame,y1,x1+offsetX,y2-offsetY,x2);
@@ -409,8 +318,14 @@ public class Imagen
                             break;
                         case ERODE:
                             break;
+                        case QERODE:
+                            break;
                         case DILATE:
-                            _dilate();
+                            dilate();
+                            method = "Layer.dilate";
+                            break;
+                        case QDILATE:
+                            dilate_quick();
                             method = "Layer.dilate";
                             break;
                         case BORDER:
@@ -456,7 +371,7 @@ public class Imagen
         instancia = 1;
         if(debug) System.out.println("Imagen.reload - Instancia:"+instancia+" IN");
 
-        Layer img   = new Layer(COPIAR, ' ', 0, 0, alto, ancho);
+        Layer img   = new Layer(operacion.COPIAR, ' ', 0, 0, alto, ancho);
         img.start();
 
         while(instancia > 0) {}
@@ -469,14 +384,24 @@ public class Imagen
         instancia = 1;
         if(debug) System.out.println("Imagen.join - Instancia:"+instancia+" IN");
 
-        Layer rgb = new Layer(JOIN  , ' ', 0, 0, alto, ancho);
+        Layer rgb = new Layer(operacion.JOIN  , ' ', 0, 0, alto, ancho);
         rgb.start();
-
         while(instancia > 0) {}
 
         if(debug) System.out.println("Imagen.join - Instancia:"+instancia+" OUT");
     }
 
+    private void copiar()
+    {
+        instancia = 1;
+        if(debug) System.out.println("Imagen.copiar - Instancia:"+instancia+" IN");
+
+        Layer img   = new Layer(operacion.COPIAR, ' ', 0, 0, alto, ancho);
+        img.start();
+        while(instancia > 0) {}
+
+        if(debug) System.out.println("Imagen.copiar - Instancia:"+instancia+" OUT");
+    }
   //
   // Methods
   //
@@ -631,26 +556,35 @@ public class Imagen
         instancia = 1;
         if(debug) System.out.println("Imagen.dilate - Instancia:"+instancia+" IN");
 
-//        Layer colorR = new Layer(DILATE, 'R', 0, 0, alto, ancho);
-//        Layer colorG = new Layer(DILATE, 'G', 0, 0, alto, ancho);
-//        Layer colorB = new Layer(DILATE, 'B', 0, 0, alto, ancho);
-//        colorR.start();
-//        colorG.start();
-//        colorB.start();
-
-        Layer color = new Layer(DILATE, ' ', 0, 0, alto, ancho);
-        color.start();
+        Layer colorR = new Layer(operacion.DILATE, 'R', 0, 0, alto, ancho);
+        Layer colorG = new Layer(operacion.DILATE, 'G', 0, 0, alto, ancho);
+        Layer colorB = new Layer(operacion.DILATE, 'B', 0, 0, alto, ancho);
+        colorR.start();
+        colorG.start();
+        colorB.start();
 
         while(instancia > 0) {}
 
-        //join();
-
-//        Layer img   = new Layer(COPIAR, ' ', 0, 0, alto, ancho);
-//        img.start();
-//
-//        while(instancia > 0) {}
+        join();
 
         if(debug) System.out.println("Imagen.dilate - Instancia:"+instancia+" OUT");
+  }
+
+
+/**
+   */
+  public void quickDilate(  )
+  {
+        instancia = 1;
+        if(debug) System.out.println("Imagen.quickDilate - Instancia:"+instancia+" IN");
+
+        Layer color = new Layer(operacion.QDILATE, ' ', 0, 0, alto, ancho);
+        color.start();
+        while(instancia > 0) {}
+
+        copiar();
+
+        if(debug) System.out.println("Imagen.quickDilate - Instancia:"+instancia+" OUT");
   }
 
 
