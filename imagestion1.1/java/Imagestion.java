@@ -55,12 +55,15 @@ public class Imagestion {
 
             try
             {
+                Integer[][] elementoEstructurante = {{0,1,1,0},{1,1,1,1},{1,1,1,1},{0,1,1,0}};
+                
                 Imagen img = new Imagen(file);
+                img.setElementoEstructurante(4, 4, elementoEstructurante);
                 //img.debug = true;
 //                img.quickDilate();
 //                img.quickDilate();
-                img.dilate();
-                img.dilate();
+//                img.dilate();
+//                img.dilate();
                 img.dilate();
                 img.guardar(file2);
 
