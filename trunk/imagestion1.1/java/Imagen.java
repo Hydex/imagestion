@@ -59,6 +59,9 @@ public class Imagen
     protected Integer[][] R;
     protected Integer[][] G;
     protected Integer[][] B;
+    protected Integer[][] struct;
+    protected int structWd;
+    protected int structHg;
     private Image RGB;
     private static BufferedImage imagen;
     protected static int instancia = 0;
@@ -142,6 +145,39 @@ public class Imagen
             }
         }
 
+        public void setPunto(int x, int y, char frame, int pixel)
+        {
+            int height = structHg;
+            int width  = structWd;
+            int i=0, j=0;
+            int cy     = height>1     ?height/2 :0;
+            int cx     = width>1      ?width/2  :0;
+            int mask   = frame == 'R' ?0xFF0000
+                        :frame == 'G' ?0x00FF00
+                                      :0x0000FF;
+
+            for(i=0; i<height; i++)
+                for(j=0; j<width; j++)
+                    switch(frame)
+                    {
+                        case 'R':
+                            if(0 < y+i && 0 < x+j && alto > y+i && ancho > x+j)
+                                if(struct[i][j]>0)
+                                    R[y+i][x+j] = pixel & mask;
+                            break;
+                        case 'G':
+                            if(0 < y+i && 0 < x+j && alto > y+i && ancho > x+j)
+                                if(struct[i][j]>0)
+                                    G[y+i][x+j] = pixel & mask;
+                            break;
+                        case 'B':
+                            if(0 < y+i && 0 < x+j && alto > y+i && ancho > x+j)
+                                if(struct[i][j]>0)
+                                    B[y+i][x+j] = pixel & mask;
+                            break;
+                    }
+        }
+
         public void dilate()
         {
             int mask,color,punto;
@@ -170,42 +206,52 @@ public class Imagen
                     if(y>0 && x<ancho-1)       ne = mask & imagen.getRGB(x+1,y-1);
                     if(y<alto-1 && x<ancho-1)  se = mask & imagen.getRGB(x+1,y+1);
 
-                    switch (frame)
-                    {
-                        case 'R':
-                            if(y>0 && pixel>n)                     R[y-1][x]   = pixel;
-                            if(x>0 && pixel>o)                     R[y][x-1]   = pixel;
-                            if(y<alto-1 && pixel>s)                R[y+1][x]   = pixel;
-                            if(x<ancho-1 && pixel>e)               R[y][x+1]   = pixel;
-                            if(y>0 && x>0 && pixel>no)             R[y-1][x-1] = pixel;
-                            if(y>0 && x<ancho-1 && pixel>ne)       R[y-1][x+1] = pixel;
-                            if(y<alto-1 && x>0 && pixel>so)        R[y+1][x-1] = pixel;
-                            if(y<alto-1 && x<ancho-1 && pixel>se)  R[y+1][x+1] = pixel;
+                    if(y>0 && pixel>n)                     setPunto(x,y-1,frame,pixel); //R[y-1][x]   = pixel;
+                    if(x>0 && pixel>o)                     setPunto(x-1,y,frame,pixel); //R[y][x-1]   = pixel;
+                    if(y<alto-1 && pixel>s)                setPunto(x,y+1,frame,pixel); //R[y+1][x]   = pixel;
+                    if(x<ancho-1 && pixel>e)               setPunto(x+1,y,frame,pixel); //R[y][x+1]   = pixel;
+                    if(y>0 && x>0 && pixel>no)             setPunto(x-1,y-1,frame,pixel); //R[y-1][x-1] = pixel;
+                    if(y>0 && x<ancho-1 && pixel>ne)       setPunto(x+1,y-1,frame,pixel); //R[y-1][x+1] = pixel;
+                    if(y<alto-1 && x>0 && pixel>so)        setPunto(x-1,y+1,frame,pixel); //R[y+1][x-1] = pixel;
+                    if(y<alto-1 && x<ancho-1 && pixel>se)  setPunto(x+1,y+1,frame,pixel); //R[y+1][x+1] = pixel;
 
-                            break;
-                        case 'G':
-                            if(y>0 && pixel>n)                     G[y-1][x]   = pixel;
-                            if(x>0 && pixel>o)                     G[y][x-1]   = pixel;
-                            if(y<alto-1 && pixel>s)                G[y+1][x]   = pixel;
-                            if(x<ancho-1 && pixel>e)               G[y][x+1]   = pixel;
-                            if(y>0 && x>0 && pixel>no)             G[y-1][x-1] = pixel;
-                            if(y>0 && x<ancho-1 && pixel>ne)       G[y-1][x+1] = pixel;
-                            if(y<alto-1 && x>0 && pixel>so)        G[y+1][x-1] = pixel;
-                            if(y<alto-1 && x<ancho-1 && pixel>se)  G[y+1][x+1] = pixel;
 
-                            break;
-                        case 'B':
-                            if(y>0 && pixel>n)                     B[y-1][x]   = pixel;
-                            if(x>0 && pixel>o)                     B[y][x-1]   = pixel;
-                            if(y<alto-1 && pixel>s)                B[y+1][x]   = pixel;
-                            if(x<ancho-1 && pixel>e)               B[y][x+1]   = pixel;
-                            if(y>0 && x>0 && pixel>no)             B[y-1][x-1] = pixel;
-                            if(y>0 && x<ancho-1 && pixel>ne)       B[y-1][x+1] = pixel;
-                            if(y<alto-1 && x>0 && pixel>so)        B[y+1][x-1] = pixel;
-                            if(y<alto-1 && x<ancho-1 && pixel>se)  B[y+1][x+1] = pixel;
-
-                            break;
-                    }
+//                    switch (frame)
+//                    {
+//                        case 'R':
+//                            if(y>0 && pixel>n)                     R[y-1][x]   = pixel;
+//                            if(x>0 && pixel>o)                     R[y][x-1]   = pixel;
+//                            if(y<alto-1 && pixel>s)                R[y+1][x]   = pixel;
+//                            if(x<ancho-1 && pixel>e)               R[y][x+1]   = pixel;
+//                            if(y>0 && x>0 && pixel>no)             R[y-1][x-1] = pixel;
+//                            if(y>0 && x<ancho-1 && pixel>ne)       R[y-1][x+1] = pixel;
+//                            if(y<alto-1 && x>0 && pixel>so)        R[y+1][x-1] = pixel;
+//                            if(y<alto-1 && x<ancho-1 && pixel>se)  R[y+1][x+1] = pixel;
+//
+//                            break;
+//                        case 'G':
+//                            if(y>0 && pixel>n)                     G[y-1][x]   = pixel;
+//                            if(x>0 && pixel>o)                     G[y][x-1]   = pixel;
+//                            if(y<alto-1 && pixel>s)                G[y+1][x]   = pixel;
+//                            if(x<ancho-1 && pixel>e)               G[y][x+1]   = pixel;
+//                            if(y>0 && x>0 && pixel>no)             G[y-1][x-1] = pixel;
+//                            if(y>0 && x<ancho-1 && pixel>ne)       G[y-1][x+1] = pixel;
+//                            if(y<alto-1 && x>0 && pixel>so)        G[y+1][x-1] = pixel;
+//                            if(y<alto-1 && x<ancho-1 && pixel>se)  G[y+1][x+1] = pixel;
+//
+//                            break;
+//                        case 'B':
+//                            if(y>0 && pixel>n)                     B[y-1][x]   = pixel;
+//                            if(x>0 && pixel>o)                     B[y][x-1]   = pixel;
+//                            if(y<alto-1 && pixel>s)                B[y+1][x]   = pixel;
+//                            if(x<ancho-1 && pixel>e)               B[y][x+1]   = pixel;
+//                            if(y>0 && x>0 && pixel>no)             B[y-1][x-1] = pixel;
+//                            if(y>0 && x<ancho-1 && pixel>ne)       B[y-1][x+1] = pixel;
+//                            if(y<alto-1 && x>0 && pixel>so)        B[y+1][x-1] = pixel;
+//                            if(y<alto-1 && x<ancho-1 && pixel>se)  B[y+1][x+1] = pixel;
+//
+//                            break;
+//                    }
                 }
         }
 
@@ -363,6 +409,11 @@ public class Imagen
         R       = new Integer[alto][ancho];
         G       = new Integer[alto][ancho];
         B       = new Integer[alto][ancho];
+        struct  = new Integer[1][1];
+        struct[0][0] = 1;
+        structWd = 1;
+        structHg = 1;
+        
         reload();
     };
 
@@ -594,4 +645,14 @@ public class Imagen
   {
   }
 
+  public void setElementoEstructurante(int alto, int ancho, Integer[][] matriz)
+  {
+    structWd = ancho;
+    structHg = alto;
+    struct   = new Integer[alto][ancho];
+
+    for(int y=0; y<alto; y++)
+        for(int x=0; x<ancho; x++)
+            struct[y][x] = matriz!=null ?matriz[y][x] :1;
+  }
 }
