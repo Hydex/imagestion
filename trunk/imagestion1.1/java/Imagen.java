@@ -161,19 +161,19 @@ public class Imagen
                     switch(frame)
                     {
                         case 'R':
-                            if(0 < y+i && 0 < x+j && alto > y+i && ancho > x+j)
-                                if(struct[i][j]>0)
-                                    R[y+i][x+j] = pixel & mask;
+                            if(struct[i][j]>0)
+                                if(0 < y+i-cy && 0 < x+j-cx && alto > y+i-cy && ancho > x+j-cx)
+                                    R[y+i-cy][x+j-cx] = pixel & mask;
                             break;
                         case 'G':
-                            if(0 < y+i && 0 < x+j && alto > y+i && ancho > x+j)
-                                if(struct[i][j]>0)
-                                    G[y+i][x+j] = pixel & mask;
+                            if(struct[i][j]>0)
+                                if(0 < y+i-cy && 0 < x+j-cx && alto > y+i-cy && ancho > x+j-cx)
+                                    G[y+i-cy][x+j-cx] = pixel & mask;
                             break;
                         case 'B':
-                            if(0 < y+i && 0 < x+j && alto > y+i && ancho > x+j)
-                                if(struct[i][j]>0)
-                                    B[y+i][x+j] = pixel & mask;
+                            if(struct[i][j]>0)
+                                if(0 < y+i-cy && 0 < x+j-cx && alto > y+i-cy && ancho > x+j-cx)
+                                    B[y+i-cy][x+j-cx] = pixel & mask;
                             break;
                     }
         }
@@ -182,11 +182,13 @@ public class Imagen
         {
             int mask,color,punto;
             int n,ne,e,se,s,so,o,no;
+            int despX = structWd;
+            int despY = structHg;
 
             if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" IN");
 
-            for(int y=y1; y<y2; y++)
-                for(int x=x1; x<x2; x++)
+            for(int y=y1; y<y2; y += 1+despY)
+                for(int x=x1; x<x2; x += 1+despX)
                 {
                     ne = se = so = no = 0;
                     n  = s  = e  = o  = 0;
@@ -214,44 +216,6 @@ public class Imagen
                     if(y>0 && x<ancho-1 && pixel>ne)       setPunto(x+1,y-1,frame,pixel); //R[y-1][x+1] = pixel;
                     if(y<alto-1 && x>0 && pixel>so)        setPunto(x-1,y+1,frame,pixel); //R[y+1][x-1] = pixel;
                     if(y<alto-1 && x<ancho-1 && pixel>se)  setPunto(x+1,y+1,frame,pixel); //R[y+1][x+1] = pixel;
-
-
-//                    switch (frame)
-//                    {
-//                        case 'R':
-//                            if(y>0 && pixel>n)                     R[y-1][x]   = pixel;
-//                            if(x>0 && pixel>o)                     R[y][x-1]   = pixel;
-//                            if(y<alto-1 && pixel>s)                R[y+1][x]   = pixel;
-//                            if(x<ancho-1 && pixel>e)               R[y][x+1]   = pixel;
-//                            if(y>0 && x>0 && pixel>no)             R[y-1][x-1] = pixel;
-//                            if(y>0 && x<ancho-1 && pixel>ne)       R[y-1][x+1] = pixel;
-//                            if(y<alto-1 && x>0 && pixel>so)        R[y+1][x-1] = pixel;
-//                            if(y<alto-1 && x<ancho-1 && pixel>se)  R[y+1][x+1] = pixel;
-//
-//                            break;
-//                        case 'G':
-//                            if(y>0 && pixel>n)                     G[y-1][x]   = pixel;
-//                            if(x>0 && pixel>o)                     G[y][x-1]   = pixel;
-//                            if(y<alto-1 && pixel>s)                G[y+1][x]   = pixel;
-//                            if(x<ancho-1 && pixel>e)               G[y][x+1]   = pixel;
-//                            if(y>0 && x>0 && pixel>no)             G[y-1][x-1] = pixel;
-//                            if(y>0 && x<ancho-1 && pixel>ne)       G[y-1][x+1] = pixel;
-//                            if(y<alto-1 && x>0 && pixel>so)        G[y+1][x-1] = pixel;
-//                            if(y<alto-1 && x<ancho-1 && pixel>se)  G[y+1][x+1] = pixel;
-//
-//                            break;
-//                        case 'B':
-//                            if(y>0 && pixel>n)                     B[y-1][x]   = pixel;
-//                            if(x>0 && pixel>o)                     B[y][x-1]   = pixel;
-//                            if(y<alto-1 && pixel>s)                B[y+1][x]   = pixel;
-//                            if(x<ancho-1 && pixel>e)               B[y][x+1]   = pixel;
-//                            if(y>0 && x>0 && pixel>no)             B[y-1][x-1] = pixel;
-//                            if(y>0 && x<ancho-1 && pixel>ne)       B[y-1][x+1] = pixel;
-//                            if(y<alto-1 && x>0 && pixel>so)        B[y+1][x-1] = pixel;
-//                            if(y<alto-1 && x<ancho-1 && pixel>se)  B[y+1][x+1] = pixel;
-//
-//                            break;
-//                    }
                 }
         }
 
