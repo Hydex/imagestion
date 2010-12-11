@@ -145,16 +145,13 @@ public class Imagen
             }
         }
 
-        public void setPunto(int x, int y, char frame, int pixel)
+        private void setPunto(int x, int y, char frame, int pixel)
         {
             int height = structHg;
             int width  = structWd;
             int i=0, j=0;
             int cy     = height>1     ?height/2 :0;
             int cx     = width>1      ?width/2  :0;
-            int mask   = frame == 'R' ?0xFF0000
-                        :frame == 'G' ?0x00FF00
-                                      :0x0000FF;
 
             for(i=0; i<height; i++)
                 for(j=0; j<width; j++)
@@ -163,60 +160,99 @@ public class Imagen
                         case 'R':
                             if(struct[i][j]>0)
                                 if(0 < y+i-cy && 0 < x+j-cx && alto > y+i-cy && ancho > x+j-cx)
-                                    R[y+i-cy][x+j-cx] = pixel & mask;
+                                    R[y+i-cy][x+j-cx] = pixel;
                             break;
                         case 'G':
                             if(struct[i][j]>0)
                                 if(0 < y+i-cy && 0 < x+j-cx && alto > y+i-cy && ancho > x+j-cx)
-                                    G[y+i-cy][x+j-cx] = pixel & mask;
+                                    G[y+i-cy][x+j-cx] = pixel;
                             break;
                         case 'B':
                             if(struct[i][j]>0)
                                 if(0 < y+i-cy && 0 < x+j-cx && alto > y+i-cy && ancho > x+j-cx)
-                                    B[y+i-cy][x+j-cx] = pixel & mask;
+                                    B[y+i-cy][x+j-cx] = pixel;
                             break;
                     }
         }
 
+        private int getMinimo(int x, int y, char frame)
+        {
+            int height = structHg;
+            int width  = structWd;
+            int cy     = height>1     ?height/2 :0;
+            int cx     = width>1      ?width/2  :0;
+            int mask   = frame == 'R' ?0xFF0000
+                        :frame == 'G' ?0x00FF00
+                                      :0x0000FF;
+            int min    = mask;
+
+            for(int i=0; i<height; i++)
+                for(int j=0; j<width; j++)
+                    if(struct[i][j]>0)
+                        if(0 < y+i-cy && 0 < x+j-cx && alto > y+i-cy && ancho > x+j-cx)
+                        {
+                            int pixel = mask & imagen.getRGB(x+j-cx,y+i-cy);
+                            min = min > pixel ?pixel :min;
+                        }
+
+            return min;
+        }
+
+        private int getMaximo(int x, int y, char frame)
+        {
+            int height = structHg;
+            int width  = structWd;
+            int cy     = height>1 ?height/2 :0;
+            int cx     = width>1  ?width/2  :0;
+            int mask   = frame == 'R' ?0xFF0000
+                        :frame == 'G' ?0x00FF00
+                                      :0x0000FF;
+            int max    = 0;
+
+            for(int i=0; i<height; i++)
+                for(int j=0; j<width; j++)
+                    if(struct[i][j]>0)
+                        if(0 < y+i-cy && 0 < x+j-cx && alto > y+i-cy && ancho > x+j-cx)
+                        {
+                            int pixel = mask & imagen.getRGB(x+j-cx,y+i-cy);
+                            max = max < pixel ?pixel :max;
+                        }
+
+            return max;
+        }
+
         public void dilate()
         {
-            int mask,color,punto;
-            int n,ne,e,se,s,so,o,no;
             int despX = structWd;
             int despY = structHg;
 
             if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" IN");
 
-            for(int y=y1; y<y2; y += 1+despY)
-                for(int x=x1; x<x2; x += 1+despX)
+            for(int y=y1; y<y2; y++)
+                for(int x=x1; x<x2; x++)
                 {
-                    ne = se = so = no = 0;
-                    n  = s  = e  = o  = 0;
-                    color = punto = 0;
-                    mask  = frame == 'R' ?0xFF0000
-                           :frame == 'G' ?0x00FF00
-                                         :0x0000FF;
-
-                    int pixel = mask & imagen.getRGB(x,y);
-
-                    if(y>0)                    n  = mask & imagen.getRGB(x,y-1);
-                    if(y<alto-1)               s  = mask & imagen.getRGB(x,y+1);
-                    if(x>0)                    o  = mask & imagen.getRGB(x-1,y);
-                    if(x<ancho-1)              e  = mask & imagen.getRGB(x+1,y);
-                    if(y>0 && x>0)             no = mask & imagen.getRGB(x-1,y-1);
-                    if(y<alto-1 && x>0)        so = mask & imagen.getRGB(x-1,y+1);
-                    if(y>0 && x<ancho-1)       ne = mask & imagen.getRGB(x+1,y-1);
-                    if(y<alto-1 && x<ancho-1)  se = mask & imagen.getRGB(x+1,y+1);
-
-                    if(y>0 && pixel>n)                     setPunto(x,y-1,frame,pixel); //R[y-1][x]   = pixel;
-                    if(x>0 && pixel>o)                     setPunto(x-1,y,frame,pixel); //R[y][x-1]   = pixel;
-                    if(y<alto-1 && pixel>s)                setPunto(x,y+1,frame,pixel); //R[y+1][x]   = pixel;
-                    if(x<ancho-1 && pixel>e)               setPunto(x+1,y,frame,pixel); //R[y][x+1]   = pixel;
-                    if(y>0 && x>0 && pixel>no)             setPunto(x-1,y-1,frame,pixel); //R[y-1][x-1] = pixel;
-                    if(y>0 && x<ancho-1 && pixel>ne)       setPunto(x+1,y-1,frame,pixel); //R[y-1][x+1] = pixel;
-                    if(y<alto-1 && x>0 && pixel>so)        setPunto(x-1,y+1,frame,pixel); //R[y+1][x-1] = pixel;
-                    if(y<alto-1 && x<ancho-1 && pixel>se)  setPunto(x+1,y+1,frame,pixel); //R[y+1][x+1] = pixel;
+                    int color = getMaximo(x,y,frame);
+                    setPunto(x,y-1,frame,color);
                 }
+
+            if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" OUT");
+        }
+
+        public void erode()
+        {
+            int despX = structWd;
+            int despY = structHg;
+
+            if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" IN");
+
+            for(int y=y1; y<y2; y++)
+                for(int x=x1; x<x2; x++)
+                {
+                    int color = getMinimo(x,y,frame);
+                    setPunto(x,y-1,frame,color);
+                }
+
+            if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" OUT");
         }
 
         public void dilate_quick()
@@ -304,7 +340,7 @@ public class Imagen
 
             try
             {
-                if(alto > 400 && ancho > 600)
+                if(alto > 480 && ancho > 640)
                 {
                     Layer ne = new Layer(accion,frame,y1,x1,y2-offsetY,x2-offsetX);
                     Layer no = new Layer(accion,frame,y1,x1+offsetX,y2-offsetY,x2);
@@ -327,6 +363,8 @@ public class Imagen
                             method = "Layer.copy";
                             break;
                         case ERODE:
+                            erode();
+                            method = "Layer.erode";
                             break;
                         case QERODE:
                             break;
@@ -561,6 +599,21 @@ public class Imagen
    */
   public void erode(  )
   {
+        instancia = 1;
+        if(debug) System.out.println("Imagen.erode - Instancia:"+instancia+" IN");
+
+        Layer colorR = new Layer(operacion.ERODE, 'R', 0, 0, alto, ancho);
+        Layer colorG = new Layer(operacion.ERODE, 'G', 0, 0, alto, ancho);
+        Layer colorB = new Layer(operacion.ERODE, 'B', 0, 0, alto, ancho);
+        colorR.start();
+        colorG.start();
+        colorB.start();
+
+        while(instancia > 0) {}
+
+        join();
+
+        if(debug) System.out.println("Imagen.erode - Instancia:"+instancia+" OUT");
   }
 
 

@@ -51,20 +51,20 @@ public class Imagestion {
         else
         {
             file = args[0];
-            file2 = file+".dilated.jpg";
+            file2 = file+".dilate.erode.jpg";
 
             try
             {
-                Integer[][] elementoEstructurante = null; //{{0,1,1,0},{1,1,1,1},{1,1,1,1},{0,1,1,0}};
+                Integer[][] se = {{0,1,1,0},{1,1,1,1},{1,1,1,1},{0,1,1,0}};
                 
                 Imagen img = new Imagen(file);
-                //img.setElementoEstructurante(2, 2, elementoEstructurante);
+                img.setElementoEstructurante(4, 4, se);
                 //img.debug = true;
 //                img.quickDilate();
 //                img.quickDilate();
 //                img.dilate();
-                //img.dilate();
                 img.dilate();
+                img.erode();
                 img.guardar(file2);
 
                 System.out.println(file2+"\nOK\n");
