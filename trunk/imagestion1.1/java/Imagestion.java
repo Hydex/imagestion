@@ -51,7 +51,7 @@ public class Imagestion {
         else
         {
             file = args[0];
-            file2 = file+".dilate.erode.jpg";
+            file2 = file+".erode.dilate.jpg";
 
             try
             {
@@ -60,11 +60,9 @@ public class Imagestion {
                 Imagen img = new Imagen(file);
                 img.setElementoEstructurante(4, 4, se);
                 //img.debug = true;
-//                img.quickDilate();
-//                img.quickDilate();
-//                img.dilate();
-                img.dilate();
                 img.erode();
+                //img.setElementoEstructurante(2, 2, null);
+                img.dilate();
                 img.guardar(file2);
 
                 System.out.println(file2+"\nOK\n");

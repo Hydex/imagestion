@@ -232,7 +232,7 @@ public class Imagen
                 for(int x=x1; x<x2; x++)
                 {
                     int color = getMaximo(x,y,frame);
-                    setPunto(x,y-1,frame,color);
+                    setPunto(x,y,frame,color);
                 }
 
             if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" OUT");
@@ -249,7 +249,7 @@ public class Imagen
                 for(int x=x1; x<x2; x++)
                 {
                     int color = getMinimo(x,y,frame);
-                    setPunto(x,y-1,frame,color);
+                    setPunto(x,y,frame,color);
                 }
 
             if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" OUT");
