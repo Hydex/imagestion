@@ -655,6 +655,11 @@ public class Imagen
         if(debug) System.out.println("Imagen.quickDilate - Instancia:"+instancia+" OUT");
   }
 
+  public void setBorder(int borde)
+  {
+    if(structWd==1 && structHg==1)
+        setElementoEstructurante(borde,borde,null);
+  }
 
   /**
    */
