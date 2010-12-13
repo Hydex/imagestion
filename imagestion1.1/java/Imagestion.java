@@ -51,7 +51,7 @@ public class Imagestion {
         else
         {
             file = args[0];
-            file2 = file+".erode.dilate.jpg";
+            file2 = file+".borde.jpg";
 
             try
             {
@@ -59,10 +59,20 @@ public class Imagestion {
                 
                 Imagen img = new Imagen(file);
                 img.setElementoEstructurante(4, 4, se);
+                img.rgb2gray();
                 //img.debug = true;
                 img.erode();
-                //img.setElementoEstructurante(2, 2, null);
                 img.dilate();
+
+                Imagen img2 = new Imagen(file);
+                img2.setRGB(img.getRGB());
+
+                img2.setElementoEstructurante(2, 2, null);
+                img2.rgb2gray();
+                img2.erode();
+                img2.dilate();
+
+                img.resta(img2);
                 img.guardar(file2);
 
                 System.out.println(file2+"\nOK\n");
