@@ -67,6 +67,29 @@ public class Imagen
     protected static int instancia = 0;
     public boolean debug = false;
 
+    //
+    // Constructors
+    //
+
+    public Imagen (String ruta) throws IOException
+    {
+        path    = ruta;
+        imagen  = ImageIO.read(new File(this.path));
+        alto    = imagen.getHeight();
+        ancho   = imagen.getWidth();
+        R       = new Integer[alto][ancho];
+        G       = new Integer[alto][ancho];
+        B       = new Integer[alto][ancho];
+        struct  = new Integer[1][1];
+        struct[0][0] = 1;
+        structWd = 1;
+        structHg = 1;
+
+        reload();
+    };
+
+    private Imagen() {  }
+
     protected class Layer extends Thread
     {
         char frame;
@@ -398,26 +421,6 @@ public class Imagen
         }
     }
 
-  //
-  // Constructors
-  //
-
-    public Imagen (String ruta) throws IOException
-    {
-        path    = ruta;
-        imagen  = ImageIO.read(new File(this.path));
-        alto    = imagen.getHeight();
-        ancho   = imagen.getWidth();
-        R       = new Integer[alto][ancho];
-        G       = new Integer[alto][ancho];
-        B       = new Integer[alto][ancho];
-        struct  = new Integer[1][1];
-        struct[0][0] = 1;
-        structWd = 1;
-        structHg = 1;
-        
-        reload();
-    };
 
     public void reload()
     {
@@ -655,16 +658,73 @@ public class Imagen
         if(debug) System.out.println("Imagen.quickDilate - Instancia:"+instancia+" OUT");
   }
 
-  public void setBorder(int borde)
+  public int getPixel(int x, int y)
   {
-    if(structWd==1 && structHg==1)
-        setElementoEstructurante(borde,borde,null);
+      return this.imagen.getRGB(x, y);
+  }
+
+  public void setPixel(int x, int y, int color)
+  {
+      this.imagen.setRGB(x, y, color);
+  }
+
+  public void resta(Imagen img)
+  {
+    for(int y=0; y<this.alto; y++)
+        for(int x=0; x<this.ancho; x++)
+        {
+            int pix1 = this.imagen.getRGB(x, y);
+            int pix2 = img.getPixel(x, y);
+            int r = (pix1 & 0xFF0000 - pix2 & 0xFF0000);
+            int g = (pix1 & 0x00FF00 - pix2 & 0x00FF00);
+            int b = (pix1 & 0x0000FF - pix2 & 0x0000FF);
+            this.imagen.setRGB(x, y, Math.abs(r|g|b));
+        }
+  }
+  
+  public void setBorder(int borde) throws IOException
+  {
+//    if (structWd == 1 && structHg == 1)
+//        this.setElementoEstructurante(borde, borde, null);
+    
+    this.rgb2gray();
+//    Imagen img = new Imagen();
+//    img.setRGB(this.getRGB());
+
+    this.erode();
+    this.dilate();
+
+    Imagen img = new Imagen(this.getPath());
+    img.setRGB(this.getRGB());
+
+    img.setElementoEstructurante(borde, borde, null);
+    img.rgb2gray();
+    img.erode();
+    img.dilate();
+
+    this.resta(img);
+    //this.dilate();
   }
 
   /**
    */
   public void rgb2gray(  )
   {
+    for(int y=0; y<this.alto; y++)
+        for(int x=0; x<this.ancho; x++)
+        {
+            int pixel = this.getPixel(x, y);
+            int r = (pixel & 0xFF0000)>>16;
+            int g = (pixel & 0x00FF00)>>8;
+            int b = pixel & 0x0000FF;
+
+            int avg = r;
+            avg = avg<g ?g :avg;
+            avg = avg<b ?b: avg;
+            
+            int gris = (avg<<16 | avg<<8 | avg);
+            this.setPixel(x, y, gris);
+        }
   }
 
   public void setElementoEstructurante(int alto, int ancho, Integer[][] matriz)
