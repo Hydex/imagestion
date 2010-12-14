@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 /**
  * Class Imagen
@@ -88,7 +89,22 @@ public class Imagen
         reload();
     };
 
-    private Imagen() {  }
+    public Imagen(Imagen img)
+    {
+        path    = img.getPath();
+        this.setRGB(img.getRGB());
+        alto    = img.getAlto();
+        ancho   = img.getAncho();
+        R       = new Integer[alto][ancho];
+        G       = new Integer[alto][ancho];
+        B       = new Integer[alto][ancho];
+        struct  = new Integer[1][1];
+        struct[0][0] = 1;
+        structWd = 1;
+        structHg = 1;
+
+        reload();
+    }
 
     protected class Layer extends Thread
     {
@@ -574,8 +590,9 @@ public class Imagen
    * Set the value of RGB
    * @param newVar the new value of RGB
    */
-  public void setRGB ( Image newVar ) {
-    RGB = newVar;
+  public void setRGB ( Image newVar )
+  {
+    RGB = new ImageIcon(newVar).getImage();
   }
 
   /**
@@ -675,10 +692,10 @@ public class Imagen
         {
             int pix1 = this.imagen.getRGB(x, y);
             int pix2 = img.getPixel(x, y);
-            int r = (pix1 & 0xFF0000 - pix2 & 0xFF0000);
-            int g = (pix1 & 0x00FF00 - pix2 & 0x00FF00);
-            int b = (pix1 & 0x0000FF - pix2 & 0x0000FF);
-            this.imagen.setRGB(x, y, Math.abs(r|g|b));
+            int r = Math.abs(pix1 & 0xFF0000 - pix2 & 0xFF0000);
+            int g = Math.abs(pix1 & 0x00FF00 - pix2 & 0x00FF00);
+            int b = Math.abs(pix1 & 0x0000FF - pix2 & 0x0000FF);
+            this.imagen.setRGB(x, y, (r|g|b));
         }
   }
   

@@ -59,16 +59,18 @@ public class Imagestion {
                 
                 Imagen img = new Imagen(file);
                 img.setElementoEstructurante(4, 4, se);
-                img.rgb2gray();
+                //img.rgb2gray();
                 //img.debug = true;
                 img.erode();
                 img.dilate();
+                //img.setElementoEstructurante(4, 4, null);
+                //img.dilate();
 
                 Imagen img2 = new Imagen(file);
-                img2.setRGB(img.getRGB());
+                //img2.setRGB(img.getRGB());
 
-                img2.setElementoEstructurante(2, 2, null);
-                img2.rgb2gray();
+                img2.setElementoEstructurante(4, 4, se);
+                //img2.rgb2gray();
                 img2.erode();
                 img2.dilate();
 
