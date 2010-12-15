@@ -59,7 +59,6 @@ public class Imagestion {
                 
                 Imagen img = new Imagen(file);
                 img.setElementoEstructurante(4, 4, se);
-                //img.rgb2gray();
                 //img.debug = true;
                 img.erode();
                 img.dilate();
@@ -69,12 +68,15 @@ public class Imagestion {
                 Imagen img2 = new Imagen(file);
                 //img2.setRGB(img.getRGB());
 
-                img2.setElementoEstructurante(4, 4, se);
-                //img2.rgb2gray();
+                img2.setElementoEstructurante(5, 5, null);
                 img2.erode();
                 img2.dilate();
 
+                //img.setElementoEstructurante(2, 2, null);
+                //img.dilate();
+
                 img.resta(img2);
+                img.rgb2gray();
                 img.guardar(file2);
 
                 System.out.println(file2+"\nOK\n");
