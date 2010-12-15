@@ -63,8 +63,7 @@ public class Imagen
     protected Integer[][] struct;
     protected int structWd;
     protected int structHg;
-    private Image RGB;
-    private static BufferedImage imagen;
+    private BufferedImage imagen;
     protected static int instancia = 0;
     public boolean debug = false;
 
@@ -85,6 +84,7 @@ public class Imagen
         struct[0][0] = 1;
         structWd = 1;
         structHg = 1;
+        //RGB      = imagen.getSubimage(0, 0, ancho, alto);
 
         reload();
     };
@@ -92,7 +92,7 @@ public class Imagen
     public Imagen(Imagen img)
     {
         path    = img.getPath();
-        this.setRGB(img.getRGB());
+        this.setImagen(img.getImagen());
         alto    = img.getAlto();
         ancho   = img.getAncho();
         R       = new Integer[alto][ancho];
@@ -590,17 +590,17 @@ public class Imagen
    * Set the value of RGB
    * @param newVar the new value of RGB
    */
-  public void setRGB ( Image newVar )
+  public void setImagen ( BufferedImage img )
   {
-    RGB = new ImageIcon(newVar).getImage();
+    this.imagen = img.getSubimage(0, 0, img.getWidth(), img.getHeight()); //new ImageIcon(newVar).getImage();
   }
 
   /**
    * Get the value of RGB
    * @return the value of RGB
    */
-  public Image getRGB ( ) {
-    return RGB;
+  public BufferedImage getImagen ( ) {
+    return this.imagen;
   }
 
   //
@@ -692,35 +692,30 @@ public class Imagen
         {
             int pix1 = this.imagen.getRGB(x, y);
             int pix2 = img.getPixel(x, y);
-            int r = Math.abs(pix1 & 0xFF0000 - pix2 & 0xFF0000);
-            int g = Math.abs(pix1 & 0x00FF00 - pix2 & 0x00FF00);
-            int b = Math.abs(pix1 & 0x0000FF - pix2 & 0x0000FF);
-            this.imagen.setRGB(x, y, (r|g|b));
+            int xor = pix1 ^ pix2;
+            this.imagen.setRGB(x, y, xor);
         }
   }
   
   public void setBorder(int borde) throws IOException
   {
-//    if (structWd == 1 && structHg == 1)
-//        this.setElementoEstructurante(borde, borde, null);
-    
-    this.rgb2gray();
-//    Imagen img = new Imagen();
-//    img.setRGB(this.getRGB());
+    if (structWd == 1 && structHg == 1)
+        this.setElementoEstructurante(borde, borde, null);
 
     this.erode();
     this.dilate();
 
-    Imagen img = new Imagen(this.getPath());
-    img.setRGB(this.getRGB());
+    Imagen img = new Imagen(this);
+    //img.setRGB(this.getRGB());
 
-    img.setElementoEstructurante(borde, borde, null);
-    img.rgb2gray();
+    img.setElementoEstructurante(borde+1, borde+1, null);
+    //img.rgb2gray();
     img.erode();
     img.dilate();
 
     this.resta(img);
-    //this.dilate();
+    this.rgb2gray();
+    this.dilate();
   }
 
   /**
