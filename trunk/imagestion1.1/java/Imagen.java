@@ -705,8 +705,7 @@ public class Imagen
     this.erode();
     this.dilate();
 
-    Imagen img = new Imagen(this);
-    //img.setRGB(this.getRGB());
+    Imagen img = new Imagen(this.path);
 
     img.setElementoEstructurante(borde+1, borde+1, null);
     //img.rgb2gray();
