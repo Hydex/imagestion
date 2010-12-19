@@ -48,7 +48,7 @@ import javax.swing.ImageIcon;
  */
 public class Imagen
 {
-    enum operacion {UNDEFINED, COPIAR, ERODE, QERODE, DILATE, QDILATE, BORDER, JOIN};
+    enum operacion {UNDEFINED, COPIAR, ERODE, QERODE, DILATE, QDILATE, BORDER, JOIN, RGB2GRAY, RESTAR};
 
   //
   // Fields
@@ -128,7 +128,7 @@ public class Imagen
             if(debug) System.out.println("ID:"+id+" - Layer(act:"+accion+",frm:"+frame+",y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+")");
         }
 
-        public void copy()
+        public void copy_()
         {
             int mask;
             int x = 0;
@@ -156,7 +156,7 @@ public class Imagen
             }
         }
 
-        public void joint()
+        public void joint_()
         {
             int x=0, y=0;
             String msg = "";
@@ -179,6 +179,36 @@ public class Imagen
             catch(Exception ex)
             {
                 System.out.println("ID:"+id+" - Layer.joint - Instancia:"+instancia+" ERROR: y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+" [y:"+y+",x:"+x+"] "+ex.getMessage());
+                Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
+                msg = " with error";
+            }
+        }
+
+        public void rgb2gray_()
+        {
+            String msg = "";
+            int x=0, y=0;
+
+            try {
+                for(y=y1; y<y2; y++)
+                    for(x=x1; x<x2; x++)
+                    {
+                        int pixel = getPixel(x, y);
+                        int r = (pixel & 0xFF0000)>>16;
+                        int g = (pixel & 0x00FF00)>>8;
+                        int b = pixel & 0x0000FF;
+
+                        int avg = r;
+                        avg = avg<g ?g :avg;
+                        avg = avg<b ?b: avg;
+
+                        int gris = (avg<<16 | avg<<8 | avg);
+                        setPixel(x, y, gris);
+                    }
+            }
+            catch(Exception ex)
+            {
+                System.out.println("ID:"+id+" - Layer.rgb2gray_ - Instancia:"+instancia+" ERROR: frm:"+frame+",y1:"+y1+",x1:"+x1+",y2:"+y2+",x2:"+x2+" [y:"+y+",x:"+x+"] "+ex.getMessage());
                 Logger.getLogger(Layer.class.getName()).log(Level.SEVERE, null, ex);
                 msg = " with error";
             }
@@ -260,7 +290,7 @@ public class Imagen
             return max;
         }
 
-        public void dilate()
+        public void dilate_()
         {
             int despX = structWd;
             int despY = structHg;
@@ -277,7 +307,7 @@ public class Imagen
             if(debug) System.out.println("ID:"+id+" - Layer.dilate - act:"+accion+" - Instancia:"+instancia+" OUT");
         }
 
-        public void erode()
+        public void erode_()
         {
             int despX = structWd;
             int despY = structHg;
@@ -376,10 +406,11 @@ public class Imagen
             int offsetY = alto/2;  
             int offsetX = ancho/2; 
             String method = "";
+            boolean bypass = accion == operacion.BORDER ?true :false;
 
             try
             {
-                if(alto > 480 && ancho > 640)
+                if(alto > 480 && ancho > 640 && !bypass)
                 {
                     Layer ne = new Layer(accion,frame,y1,x1,y2-offsetY,x2-offsetX);
                     Layer no = new Layer(accion,frame,y1,x1+offsetX,y2-offsetY,x2);
@@ -398,17 +429,15 @@ public class Imagen
                     switch(accion)
                     {
                         case COPIAR:
-                            copy();
+                            copy_();
                             method = "Layer.copy";
                             break;
                         case ERODE:
-                            erode();
+                            erode_();
                             method = "Layer.erode";
                             break;
-                        case QERODE:
-                            break;
                         case DILATE:
-                            dilate();
+                            dilate_();
                             method = "Layer.dilate";
                             break;
                         case QDILATE:
@@ -416,10 +445,16 @@ public class Imagen
                             method = "Layer.dilate";
                             break;
                         case BORDER:
+                            dilate();
+                            erode();
                             break;
                         case JOIN:
-                            joint();
+                            joint_();
                             method = "Layer.joint";
+                            break;
+                        case RGB2GRAY:
+                            rgb2gray_();
+                            method = "Layer.rgb2gray";
                             break;
                     }
 
@@ -445,8 +480,7 @@ public class Imagen
 
         Layer img   = new Layer(operacion.COPIAR, ' ', 0, 0, alto, ancho);
         img.start();
-
-        while(instancia > 0) {}
+        waitUntilFinnish();
 
         if(debug) System.out.println("Imagen.reload - Instancia:"+instancia+" OUT");
     }
@@ -458,7 +492,7 @@ public class Imagen
 
         Layer rgb = new Layer(operacion.JOIN  , ' ', 0, 0, alto, ancho);
         rgb.start();
-        while(instancia > 0) {}
+        waitUntilFinnish();
 
         if(debug) System.out.println("Imagen.join - Instancia:"+instancia+" OUT");
     }
@@ -470,7 +504,7 @@ public class Imagen
 
         Layer img   = new Layer(operacion.COPIAR, ' ', 0, 0, alto, ancho);
         img.start();
-        while(instancia > 0) {}
+        waitUntilFinnish();
 
         if(debug) System.out.println("Imagen.copiar - Instancia:"+instancia+" OUT");
     }
@@ -614,6 +648,10 @@ public class Imagen
   {
   }
 
+  public void waitUntilFinnish()
+  {
+      while(instancia > 0) {}
+  }
 
   /**
    */
@@ -625,11 +663,12 @@ public class Imagen
         Layer colorR = new Layer(operacion.ERODE, 'R', 0, 0, alto, ancho);
         Layer colorG = new Layer(operacion.ERODE, 'G', 0, 0, alto, ancho);
         Layer colorB = new Layer(operacion.ERODE, 'B', 0, 0, alto, ancho);
+
         colorR.start();
         colorG.start();
         colorB.start();
 
-        while(instancia > 0) {}
+        waitUntilFinnish();
 
         join();
 
@@ -647,11 +686,12 @@ public class Imagen
         Layer colorR = new Layer(operacion.DILATE, 'R', 0, 0, alto, ancho);
         Layer colorG = new Layer(operacion.DILATE, 'G', 0, 0, alto, ancho);
         Layer colorB = new Layer(operacion.DILATE, 'B', 0, 0, alto, ancho);
+
         colorR.start();
         colorG.start();
         colorB.start();
 
-        while(instancia > 0) {}
+        waitUntilFinnish();
 
         join();
 
@@ -668,7 +708,8 @@ public class Imagen
 
         Layer color = new Layer(operacion.QDILATE, ' ', 0, 0, alto, ancho);
         color.start();
-        while(instancia > 0) {}
+
+        waitUntilFinnish();
 
         copiar();
 
@@ -699,43 +740,46 @@ public class Imagen
   
   public void setBorder(int borde) throws IOException
   {
-    if (structWd == 1 && structHg == 1)
-        this.setElementoEstructurante(borde, borde, null);
+    if(debug) System.out.println("Imagen.setBorder - Instancia IN");
+
+    Imagen img = new Imagen(this.path);
+    img.setElementoEstructurante(borde+1, borde+1, null);
+
+    //if (structWd == 1 && structHg == 1)
+    this.setElementoEstructurante(borde, borde, null);
+
+//    instancia = 1;
+//    Layer border = new Layer(operacion.BORDER, ' ', 0, 0, alto, ancho);
+//    border.start();
 
     this.erode();
     this.dilate();
 
-    Imagen img = new Imagen(this.path);
-
-    img.setElementoEstructurante(borde+1, borde+1, null);
-    //img.rgb2gray();
     img.erode();
     img.dilate();
 
+    //waitUntilFinnish();
+
     this.resta(img);
     this.rgb2gray();
-    this.dilate();
+    //this.dilate();
+
+    if(debug) System.out.println("Imagen.setBorder - Instancia OUT");
   }
 
   /**
    */
   public void rgb2gray(  )
   {
-    for(int y=0; y<this.alto; y++)
-        for(int x=0; x<this.ancho; x++)
-        {
-            int pixel = this.getPixel(x, y);
-            int r = (pixel & 0xFF0000)>>16;
-            int g = (pixel & 0x00FF00)>>8;
-            int b = pixel & 0x0000FF;
+        instancia = 1;
+        if(debug) System.out.println("Imagen.rgb2gray - Instancia:"+instancia+" IN");
 
-            int avg = r;
-            avg = avg<g ?g :avg;
-            avg = avg<b ?b: avg;
-            
-            int gris = (avg<<16 | avg<<8 | avg);
-            this.setPixel(x, y, gris);
-        }
+        Layer gray = new Layer(operacion.RGB2GRAY  , ' ', 0, 0, alto, ancho);
+        gray.start();
+
+        waitUntilFinnish();
+
+        if(debug) System.out.println("Imagen.rgb2gray - Instancia:"+instancia+" OUT");
   }
 
   public void setElementoEstructurante(int alto, int ancho, Integer[][] matriz)

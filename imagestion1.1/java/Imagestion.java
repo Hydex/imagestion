@@ -58,27 +58,10 @@ public class Imagestion {
                 Integer[][] se = {{0,1,1,0},{1,1,1,1},{1,1,1,1},{0,1,1,0}};
                 
                 Imagen img = new Imagen(file);
-                img.setElementoEstructurante(4, 4, se);
-                //img.debug = true;
-//                img.erode();
-//                img.dilate();
-//                //img.setElementoEstructurante(4, 4, null);
-//                //img.dilate();
-//
-//                Imagen img2 = new Imagen(img);
-//                //img2.setRGB(img.getRGB());
-//
-//                img2.setElementoEstructurante(5, 5, null);
-//                img2.erode();
-//                img2.dilate();
-//
-//                //img.setElementoEstructurante(2, 2, null);
-//
-//                img.resta(img2);
-//                img.rgb2gray();
-//                img.dilate();
 
-                img.setBorder(2);
+                img.setBorder(1);
+                img.setElementoEstructurante(4, 4, se);
+                img.dilate();
                 img.guardar(file2);
 
                 System.out.println(file2+"\nOK\n");
