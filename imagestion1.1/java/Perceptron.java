@@ -38,27 +38,113 @@
  */
 public class Perceptron {
 
-  //
-  // Fields
-  //
+    //
+    // Fields
+    //
+    public  Double[] entradas;
+    private Double[] pesos;
+    public  Double   bias;
+    private Double   wBias;
+    public  Double   salida;
 
+    //
+    // Constructors
+    //
+    public Perceptron (int inputs)
+    {
+        entradas = new Double[inputs];
+        pesos    = new Double[inputs];
+        wBias    = 0.0;
+        salida   = 0.0;
+
+        for(int i=0; i<inputs; i++)
+            entradas[i] = pesos[i] = 0.0;
+
+    }
   
-  //
-  // Constructors
-  //
-  public Perceptron () { };
-  
-  //
-  // Methods
-  //
+    //
+    // Methods
+    //
+    private Double hardlim(double val)
+    {
+        return val<0.0 ?0.0 :1.0;
+    }
 
+    private Double hardlims(double val)
+    {
+        return val<0 ?-1.0 :1.0;
+    }
 
-  //
-  // Accessor methods
-  //
+    private Double poslin(double val)
+    {
+        return val<0.0 ?0.0 :val;
+    }
 
-  //
-  // Other methods
-  //
+    private Double purelin(double val)
+    {
+        return val;
+    }
+
+    private Double satlin(double val)
+    {
+        return  val<0.0 ?0.0 :
+                val>1.0 ?1.0 :val;
+    }
+
+    private Double satlins(double val)
+    {
+        return  val<-1.0 ?-1.0 :
+                val>1.0  ?1.0  :val;
+    }
+
+    private Double logsig(double val)
+    {
+        return null;
+    }
+
+    private Double tansig(double val)
+    {
+        return null;
+    }
+
+    //
+    // Accessor methods
+    //
+    public Double getBias() {
+        return bias;
+    }
+
+    public void setBias(Double bias) {
+        this.bias = bias;
+    }
+
+    public Double getSalida() {
+        return salida;
+    }
+
+    public void setSalida(Double salida) {
+        this.salida = salida;
+    }
+
+    public Double getwBias() {
+        return wBias;
+    }
+
+    public void setwBias(Double wBias) {
+        this.wBias = wBias;
+    }
+
+    public void setPeso(int idx, Double valor)
+    {
+        this.pesos[idx] = valor;
+    }
+
+    public Double getPeso(int idx)
+    {
+        return this.pesos[idx];
+    }
+    //
+    // Other methods
+    //
 
 }
