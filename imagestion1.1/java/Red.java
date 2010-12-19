@@ -1,3 +1,6 @@
+
+import java.util.ArrayList;
+
 /*-----------------------------------------------------------------------*\
  | IMAGESTION                                                            |
  |                                                                       |
@@ -38,27 +41,30 @@
  */
 public class Red {
 
-  //
-  // Fields
-  //
+    //
+    // Fields
+    //
+    int entradas;
+    int salidas;
+    int nCapas;
+    ArrayList[] capas;
 
-  
-  //
-  // Constructors
-  //
-  public Red () { };
-  
-  //
-  // Methods
-  //
+    //
+    // Constructors
+    //
+    public Red () { };
+
+    //
+    // Methods
+    //
 
 
-  //
-  // Accessor methods
-  //
+    //
+    // Accessor methods
+    //
 
-  //
-  // Other methods
-  //
+    //
+    // Other methods
+    //
 
 }
