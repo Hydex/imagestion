@@ -1,6 +1,3 @@
-
-import java.util.ArrayList;
-
 /*-----------------------------------------------------------------------*\
  | IMAGESTION                                                            |
  |                                                                       |
@@ -44,25 +41,96 @@ public class Red {
     //
     // Fields
     //
-    int entradas;
-    int salidas;
-    int nCapas;
-    ArrayList[] capas;
+    private int entradas = 0;
+    private int salidas  = 0;
+    private int nCapas;
+    private Perceptron[][] capas;
+    private Double[][] sinapsis;
 
     //
     // Constructors
     //
-    public Red () { };
+    public Red (int[] inputs, int outputs, String[] funciones) 
+    { 
+        nCapas   = inputs.length;
+        entradas = inputs[0];
+        salidas  = outputs;
+        int max  = 0;
+
+        for(int i=0; i<nCapas; i++)
+            max = inputs[i]>max ?inputs[i] :max;
+
+        capas    = new Perceptron[nCapas][max];
+        sinapsis = new Double[nCapas][max];
+        limpiarSinapsis();
+
+        for(int i=0; i<nCapas; i++)
+            for(int j=0; j<max; j++)
+                capas[i][j] = j<inputs[i] ?new Perceptron(inputs[i], funciones[i]) :null;
+    }
+    
+    public Red(String xml)
+    {
+        
+    }
 
     //
     // Methods
     //
+    private void limpiarSinapsis()
+    {
+        for(int i=0; i<sinapsis.length; i++)
+            for(int j=0; j<sinapsis[i].length; j++)
+                sinapsis[i][j] = null;
+    }
 
+    public Double simular(Double[] inputs)
+    {
+        for(int i=0; i<inputs.length && i<sinapsis[0].length; i++)
+            sinapsis[0][i] = inputs[i];
+
+        for(int i=0; i<nCapas; i++)
+        {
+            for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+            {
+                for(int n=0; n<sinapsis[i].length && sinapsis[i][n] != null; n++)
+                    capas[i][j].entradas[n] = sinapsis[i][n];
+                
+                sinapsis[i+1][j] = capas[i][j].simular();
+            }
+        }
+        
+        return null;
+    }
 
     //
     // Accessor methods
     //
 
+    public int getEntradas() {
+        return entradas;
+    }
+
+    public void setEntradas(int entradas) {
+        this.entradas = entradas;
+    }
+
+    public int getNcapas() {
+        return nCapas;
+    }
+
+    public void setNcapas(int nCapas) {
+        this.nCapas = nCapas;
+    }
+
+    public int getSalidas() {
+        return salidas;
+    }
+
+    public void setSalidas(int salidas) {
+        this.salidas = salidas;
+    }
+    
     //
     // Other methods
     //

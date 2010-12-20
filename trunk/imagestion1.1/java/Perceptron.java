@@ -33,10 +33,12 @@
  | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 \*-----------------------------------------------------------------------*/
 
+
 /**
  * Class Perceptron
  */
-public class Perceptron {
+public class Perceptron
+{
 
     //
     // Fields
@@ -47,10 +49,14 @@ public class Perceptron {
     private Double   wBias;
     public  Double   salida;
 
+
+    private enum FuncionesTransferencia {HARDLIM, HARDLIMS, POSLIN, PURELIN, SATLIN, SATLINS, LOGSIS, TANSIG, UNDEFINED};
+    private FuncionesTransferencia funcion = FuncionesTransferencia.UNDEFINED;
+
     //
     // Constructors
     //
-    public Perceptron (int inputs)
+    public Perceptron (int inputs, String funcion)
     {
         entradas = new Double[inputs];
         pesos    = new Double[inputs];
@@ -107,6 +113,15 @@ public class Perceptron {
         return null;
     }
 
+    public Double simular()
+    {
+        return null;
+    }
+
+    public Double entrenar()
+    {
+        return null;
+    }
     //
     // Accessor methods
     //
@@ -147,4 +162,13 @@ public class Perceptron {
     // Other methods
     //
 
+    public String getConfiguracion()
+    {
+        return null;
+    }
+
+    public void setConfiguracion()
+    {
+
+    }
 }
