@@ -61,7 +61,7 @@ public class Red {
             max = inputs[i]>max ?inputs[i] :max;
 
         capas    = new Perceptron[nCapas][max];
-        sinapsis = new Double[nCapas][max];
+        sinapsis = new Double[nCapas+1][max];
         limpiarSinapsis();
 
         for(int i=0; i<nCapas; i++)
