@@ -86,8 +86,8 @@ public class Red {
 
     public Double simular(Double[] inputs)
     {
-        for(int i=0; i<inputs.length && i<sinapsis[0].length; i++)
-            sinapsis[0][i] = inputs[i];
+        for(int n=0; n<inputs.length && n<sinapsis[0].length; n++)
+            sinapsis[0][n] = inputs[n];
 
         for(int i=0; i<nCapas; i++)
         {
