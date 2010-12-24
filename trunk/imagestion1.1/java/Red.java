@@ -96,7 +96,7 @@ public class Red {
                 for(int n=0; n<sinapsis[i].length && sinapsis[i][n] != null; n++)
                     capas[i][j].entradas[n] = sinapsis[i][n];
                 
-                sinapsis[i+1][j] = capas[i][j].simular();
+                sinapsis[i+1][j] = capas[i][j].calcular();
             }
         }
         
