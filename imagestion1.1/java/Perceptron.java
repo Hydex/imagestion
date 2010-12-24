@@ -108,7 +108,17 @@ public class Perceptron
         return 1/(1 + Math.exp(-val));
     }
 
+    private Double logsig_derivada(double val)
+    {
+        return val*(1-val);
+    }
+
     private Double tansig(double val)
+    {
+        return (Math.exp(val) - Math.exp(-val))/(Math.exp(val) + Math.exp(-val));
+    }
+
+    private Double tansig_derivada(double val)
     {
         return (Math.exp(val) - Math.exp(-val))/(Math.exp(val) + Math.exp(-val));
     }
