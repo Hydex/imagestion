@@ -105,17 +105,23 @@ public class Perceptron
 
     private Double logsig(double val)
     {
-        return null;
+        return 1/(1 + Math.exp(-val));
     }
 
     private Double tansig(double val)
     {
-        return null;
+        return (Math.exp(val) - Math.exp(-val))/(Math.exp(val) + Math.exp(-val));
     }
 
-    public Double simular()
+    public Double calcular()
     {
-        return null;
+        Double suma = 0.0;
+
+        for(int i=0; i<this.entradas.length; i++)
+            suma += this.entradas[i] * this.pesos[i];
+
+        this.salida = suma + this.bias;
+        return this.salida;
     }
 
     public Double entrenar()
