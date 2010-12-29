@@ -120,7 +120,7 @@ public class Perceptron
 
     private Double tansig_derivada(double val)
     {
-        return (Math.exp(val) - Math.exp(-val))/(Math.exp(val) + Math.exp(-val));
+        return 1 - Math.pow(this.tansig(val),2);
     }
 
     public Double calcular()
