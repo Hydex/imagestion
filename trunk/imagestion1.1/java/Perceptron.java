@@ -43,15 +43,16 @@ public class Perceptron
     //
     // Fields
     //
-    public  Double[] entradas;
-    private Double[] pesos;
-    public  Double   bias;
-    private Double   wBias;
-    public  Double   salida;
+    public  Double[]   entradas;
+    private Double[]   pesos;
+    public  Double     bias;
+    private Double     wBias;
+    public  Double     salida;
+    private Activacion fnTransf;
 
 
-    private enum FuncionesTransferencia {HARDLIM, HARDLIMS, POSLIN, PURELIN, SATLIN, SATLINS, LOGSIS, TANSIG, UNDEFINED};
-    private FuncionesTransferencia funcion = FuncionesTransferencia.UNDEFINED;
+//    private enum FuncionesTransferencia {HARDLIM, HARDLIMS, POSLIN, PURELIN, SATLIN, SATLINS, LOGSIG, TANSIG, UNDEFINED};
+//    private FuncionesTransferencia funcion = FuncionesTransferencia.UNDEFINED;
 
     //
     // Constructors
@@ -62,6 +63,7 @@ public class Perceptron
         pesos    = new Double[inputs];
         wBias    = 0.0;
         salida   = 0.0;
+        fnTransf = new Activacion(funcion);
 
         for(int i=0; i<inputs; i++)
             entradas[i] = pesos[i] = 0.0;
@@ -71,58 +73,6 @@ public class Perceptron
     //
     // Methods
     //
-    private Double hardlim(double val)
-    {
-        return val<0.0 ?0.0 :1.0;
-    }
-
-    private Double hardlims(double val)
-    {
-        return val<0 ?-1.0 :1.0;
-    }
-
-    private Double poslin(double val)
-    {
-        return val<0.0 ?0.0 :val;
-    }
-
-    private Double purelin(double val)
-    {
-        return val;
-    }
-
-    private Double satlin(double val)
-    {
-        return  val<0.0 ?0.0 :
-                val>1.0 ?1.0 :val;
-    }
-
-    private Double satlins(double val)
-    {
-        return  val<-1.0 ?-1.0 :
-                val>1.0  ?1.0  :val;
-    }
-
-    private Double logsig(double val)
-    {
-        return 1/(1 + Math.exp(-val));
-    }
-
-    private Double logsig_derivada(double val)
-    {
-        return val*(1-val);
-    }
-
-    private Double tansig(double val)
-    {
-        return (Math.exp(val) - Math.exp(-val))/(Math.exp(val) + Math.exp(-val));
-    }
-
-    private Double tansig_derivada(double val)
-    {
-        return 1 - Math.pow(this.tansig(val),2);
-    }
-
     public Double calcular()
     {
         Double suma = 0.0;
@@ -131,7 +81,8 @@ public class Perceptron
             suma += this.entradas[i] * this.pesos[i];
 
         this.salida = suma + this.bias;
-        return this.salida;
+
+        return this.fnTransf.exec(this.salida);
     }
 
     public Double entrenar()

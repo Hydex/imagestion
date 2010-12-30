@@ -33,12 +33,80 @@
  | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 \*-----------------------------------------------------------------------*/
 
-
+enum FuncionesTransferencia {HARDLIM, HARDLIMS, POSLIN, PURELIN, SATLIN, SATLINS,
+                             LOGSIG, TANSIG, RADBAS, D_LOGSIG, D_TANSIG, D_RADBAS,
+                             UNDEFINED};
 /**
  *
  * @author miguel
  */
-public class Activacion {
+public class Activacion
+{
+    private FuncionesTransferencia funcion  = FuncionesTransferencia.UNDEFINED;
+    private FuncionesTransferencia training = FuncionesTransferencia.UNDEFINED;
+
+    public Activacion(String tipo)
+    {
+        this.funcion = tipo.equalsIgnoreCase("HARDLIM")  ?FuncionesTransferencia.HARDLIM  :
+                       tipo.equalsIgnoreCase("HARDLIMS") ?FuncionesTransferencia.HARDLIMS :
+                       tipo.equalsIgnoreCase("POSLIN")   ?FuncionesTransferencia.POSLIN   :
+                       tipo.equalsIgnoreCase("PURELIN")  ?FuncionesTransferencia.PURELIN  :
+                       tipo.equalsIgnoreCase("SATLIN")   ?FuncionesTransferencia.SATLIN   :
+                       tipo.equalsIgnoreCase("SATLINS")  ?FuncionesTransferencia.SATLINS  :
+                       tipo.equalsIgnoreCase("LOGSIG")   ?FuncionesTransferencia.LOGSIG   :
+                       tipo.equalsIgnoreCase("TANSIG")   ?FuncionesTransferencia.TANSIG   :
+                       tipo.equalsIgnoreCase("RADBAS")   ?FuncionesTransferencia.RADBAS   :FuncionesTransferencia.UNDEFINED;
+        
+        this.training = tipo.equalsIgnoreCase("LOGSIG")  ?FuncionesTransferencia.D_LOGSIG :
+                        tipo.equalsIgnoreCase("TANSIG")  ?FuncionesTransferencia.D_TANSIG :
+                        tipo.equalsIgnoreCase("RADBAS")  ?FuncionesTransferencia.D_RADBAS :FuncionesTransferencia.UNDEFINED;
+    }
+    
+    public Double exec(Double val)
+    {
+        switch(this.funcion)
+        {
+            case HARDLIM:
+                return this.hardlim(val);
+            case HARDLIMS:
+                return this.hardlims(val);
+            case POSLIN:
+                return this.poslin(val);
+            case PURELIN:
+                return this.purelin(val);
+            case SATLIN:
+                return this.satlin(val);
+            case SATLINS:
+                return this.satlins(val);
+            case LOGSIG:
+                return this.logsig(val);
+            case TANSIG:
+                return this.tansig(val);
+            case RADBAS:
+                return null;
+            default:
+                break;
+        }
+        
+        return null;
+    }
+    
+    public Double train(Double val)
+    {
+        switch(this.training)
+        {
+            case D_LOGSIG:
+                return this.logsig_derivada(val);
+            case D_TANSIG:
+                return this.tansig_derivada(val);
+            case D_RADBAS:
+                return null;
+            default:
+                break;            
+        }
+        
+        return null;
+    }
     //
     // Methods
     //
@@ -89,8 +157,9 @@ public class Activacion {
         return (Math.exp(val) - Math.exp(-val))/(Math.exp(val) + Math.exp(-val));
     }
 
-    private Double tansig_derivada(double val)
+    private Double tansig_derivada(Double val)
     {
-        return 1 - Math.pow(this.tansig(val),2);
+        val = this.tansig(val);
+        return 1 - val*val;
     }
 }
