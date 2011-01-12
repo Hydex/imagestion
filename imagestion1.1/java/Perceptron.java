@@ -98,7 +98,7 @@ public class Perceptron
     public Double backPropagation(double Sigma)  // valor Sigma debe provenir del controlador del ciclo principal
     {
         // ver la forma de ir registrando los valoes de los pesos y salidas de cada iteracion
-        for(int i = 0; i<this.pesos.length; i++)
+        for(int i = 0; i<this.pesos.length && this.pesos[i] != null; i++)
         {
             double peso = pesos[i];
             double delta = rata * Sigma * salida;
