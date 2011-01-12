@@ -48,6 +48,8 @@ public class Perceptron
     public  Double     bias;
     private Double     wBias;
     public  Double     salida;
+    public  double     sigma;
+    public  double     rata;
     private Activacion fnTransf;
 
 
@@ -61,8 +63,10 @@ public class Perceptron
     {
         entradas = new Double[inputs];
         pesos    = new Double[inputs];
-        wBias    = 0.0;
-        salida   = 0.0;
+        wBias    = 0d;
+        salida   = 0d;
+        sigma    = 0d;
+        rata     = 1d;   // valor inicial con tolerancia 100%    rango [0..1]
         fnTransf = new Activacion(funcion);
 
         for(int i=0; i<inputs; i++)
@@ -85,9 +89,23 @@ public class Perceptron
         return this.fnTransf.exec(this.salida);
     }
 
-    public Double entrenar()
+    public double setError(double error)   // error = diferencia del parametro de entrada contra valor esperado del entrenamiento
     {
-        return null;
+        sigma = this.fnTransf.train(salida) * error;
+        return sigma;
+    }
+
+    public Double backPropagation(double Sigma)  // valor Sigma debe provenir del controlador del ciclo principal
+    {
+        // ver la forma de ir registrando los valoes de los pesos y salidas de cada iteracion
+        for(int i = 0; i<this.pesos.length; i++)
+        {
+            double peso = pesos[i];
+            double delta = rata * Sigma * salida;
+            pesos[i] = peso * delta;
+        }
+
+        return null;  // evaluar si debe retornar valor
     }
     //
     // Accessor methods
@@ -125,6 +143,23 @@ public class Perceptron
     {
         return this.pesos[idx];
     }
+
+    public double getRata() {
+        return rata;
+    }
+
+    public void setRata(double rata) {
+        this.rata = rata;
+    }
+
+    public double getSigma() {
+        return sigma;
+    }
+
+    public void setSigma(double sigma) {
+        this.sigma = sigma;
+    }
+
     //
     // Other methods
     //
