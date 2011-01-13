@@ -89,6 +89,19 @@ public class Perceptron
         return this.fnTransf.exec(this.salida);
     }
 
+    /** backPropagation
+     *
+     * Algoritmo de retropropagación
+     *
+     * El procedimiento de retropropagación es una forma relativamente eficiente
+     * de calcular qué tanto se mejora el desempeño con los cambios individuales
+     * en los pesos. Se conoce como procedimiento de retropropagación porque,
+     * primero calcula cambios en la capa final, reutiliza gran parte de los
+     * mismos cálculos para calcular los cambios de los pesos de la penúltima
+     * capa y, finalmente, regresa a la capa inicial.
+     *
+     */
+
     public Double backPropagation(double Sigma)  // valor Sigma debe provenir del controlador del ciclo principal
     {
         // ver la forma de ir registrando los valoes de los pesos y salidas de cada iteracion
@@ -154,22 +167,15 @@ public class Perceptron
         this.sigma = sigma;
     }
 
-    /*
-     * Algoritmo de retropropagación
-     *
-     * El procedimiento de retropropagación es una forma relativamente eficiente
-     * de calcular qué tanto se mejora el desempeño con los cambios individuales
-     * en los pesos. Se conoce como procedimiento de retropropagación porque,
-     * primero calcula cambios en la capa final, reutiliza gran parte de los
-     * mismos cálculos para calcular los cambios de los pesos de la penúltima
-     * capa y, finalmente, regresa a la capa inicial.
+    /** setSigma
      *
      * Al comparar la señal de salida con una respuesta deseada o salida objetivo,
      * d(t), se produce una señal de error, e(t), energía de error. Señal de error
      * en la neurona de salida j en la iteración t
      *         e(t)=d(t) - y(t)
-     * donde t denota el tiempo discreto.
+     * donde t denota el tiempo discreto, y(t) representa la salida de la capa previa.
      */
+    
     public double setSigma(double input, double output)   // usado en regla de aprendizaje
     {
         double error = output - input;
