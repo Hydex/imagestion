@@ -127,9 +127,9 @@ public class Perceptron
      * donde t denota el tiempo discreto, y(t) representa la salida de la capa previa.
      */
 
-    public double setSigma(double input, double output)   // usado en regla de aprendizaje
+    public double setSigma(double error)   // usado en regla de aprendizaje
     {
-        double error = output - input;
+        // error = objetivo - salida;
         this.sigma = this.fnTransf.train(salida) * error;
         return this.sigma;
     }
@@ -138,9 +138,9 @@ public class Perceptron
         return sigma;
     }
 
-    public void setSigma(double sigma) {
-        this.sigma = sigma;
-    }
+    //public void setSigma(double sigma) {
+    //    this.sigma = sigma;
+    //}
 
     public Double getBias() {
         return bias;
