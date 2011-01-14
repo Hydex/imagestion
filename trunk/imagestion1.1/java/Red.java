@@ -134,9 +134,12 @@ public class Red {
                 error[iteracion][j] = outputs[iteracion][j] - salidas[iteracion][j];
 
             // paso 5: Ajustar los pesos de la red para minimizar este error
-            for(int i=0; i<nCapas; i++)
+            for(int i=nCapas-1; i>=0; i--)
                 for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
-                    capas[i][j].backPropagation(error[iteracion][j]);
+                {
+                    double sigma = capas[i][j].setSigma(error[iteracion][j]);
+                    capas[i][j].backPropagation(sigma);
+                }
 
             // paso 6: Repetir de 1 al 4 para cada vector del conjunto de entrenamiento
             //         hasta que el error del conjunto entero sea aceptablemente bajo
