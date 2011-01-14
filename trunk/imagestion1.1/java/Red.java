@@ -84,8 +84,10 @@ public class Red {
                 sinapsis[i][j] = null;
     }
 
-    public Double simular(Double[] inputs)
+    public Double[] simular(Double[] inputs)
     {
+        Double outputs[] = new Double[salidas];
+
         for(int n=0; n<inputs.length && n<sinapsis[0].length; n++)
             sinapsis[0][n] = inputs[n];
 
@@ -97,20 +99,30 @@ public class Red {
                     capas[i][j].entradas[n] = sinapsis[i][n];
                 
                 sinapsis[i+1][j] = capas[i][j].calcular();
+
+                if(i == nCapas-1)
+                    outputs[j] = capas[i][j].salida;
             }
         }
-        
-        return null;
+
+        return outputs;
     }
 
-    public Double entrenar(Double[] entradas, Double[] salidas)
+    public Double entrenar(Double[][] inputs, Double[] outputs)
     {
-        // paso 1: se inicializan los pesos de todas las neuronas con valores aleatorios rango [0..1]
+        // paso 1: Se inicializan los pesos de todas las neuronas con valores
+        //         aleatorios rango [0..1]
         for(int i=0; i<nCapas; i++)
             for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
                 capas[i][j].inicializarPesos();
 
-        // paso 2
+        // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de 
+        //         entrenamiento, aplicando el vector de entrada a la entrada de la red
+        for(int iteracion=0; iteracion < inputs.length; iteracion++)
+        {
+            // paso 3: Calcular salida de la red
+            Double salidas[] = this.simular(inputs[iteracion]);
+        }
 
         return null;
     }
