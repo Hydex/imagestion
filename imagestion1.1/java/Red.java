@@ -103,6 +103,18 @@ public class Red {
         return null;
     }
 
+    public Double entrenar(Double[] entradas, Double[] salidas)
+    {
+        // paso 1: se inicializan los pesos de todas las neuronas con valores aleatorios rango [0..1]
+        for(int i=0; i<nCapas; i++)
+            for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+                capas[i][j].inicializarPesos();
+
+        // paso 2
+
+        return null;
+    }
+
     //
     // Accessor methods
     //

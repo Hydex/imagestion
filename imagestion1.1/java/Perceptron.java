@@ -66,7 +66,7 @@ public class Perceptron
         wBias    = 0d;
         salida   = 0d;
         sigma    = 0d;
-        rata     = 1d;   // valor inicial con tolerancia 100%    rango [0..1]
+        rata     = 0.01;   // rata de aprendisaje inicial minimo    rango [0..1]
         fnTransf = new Activacion(funcion);
 
         for(int i=0; i<inputs; i++)
@@ -108,8 +108,8 @@ public class Perceptron
         for(int i = 0; i<this.pesos.length && this.pesos[i] != null; i++)
         {
             double peso = pesos[i];
-            double delta = rata * Sigma * salida;
-            pesos[i] = peso * delta;
+            double delta = 2*rata * Sigma * salida;
+            pesos[i] = peso - delta;
         }
 
         return null;  // evaluar si debe retornar valor
@@ -117,6 +117,31 @@ public class Perceptron
     //
     // Accessor methods
     //
+
+    /** setSigma
+     *
+     * Al comparar la señal de salida con una respuesta deseada o salida objetivo,
+     * d(t), se produce una señal de error, e(t), energía de error. Señal de error
+     * en la neurona de salida j en la iteración t
+     *         e(t)=d(t) - y(t)
+     * donde t denota el tiempo discreto, y(t) representa la salida de la capa previa.
+     */
+
+    public double setSigma(double input, double output)   // usado en regla de aprendizaje
+    {
+        double error = output - input;
+        this.sigma = this.fnTransf.train(salida) * error;
+        return this.sigma;
+    }
+
+    public double getSigma() {
+        return sigma;
+    }
+
+    public void setSigma(double sigma) {
+        this.sigma = sigma;
+    }
+
     public Double getBias() {
         return bias;
     }
@@ -159,33 +184,15 @@ public class Perceptron
         this.rata = rata;
     }
 
-    public double getSigma() {
-        return sigma;
-    }
-
-    public void setSigma(double sigma) {
-        this.sigma = sigma;
-    }
-
-    /** setSigma
-     *
-     * Al comparar la señal de salida con una respuesta deseada o salida objetivo,
-     * d(t), se produce una señal de error, e(t), energía de error. Señal de error
-     * en la neurona de salida j en la iteración t
-     *         e(t)=d(t) - y(t)
-     * donde t denota el tiempo discreto, y(t) representa la salida de la capa previa.
-     */
-    
-    public double setSigma(double input, double output)   // usado en regla de aprendizaje
-    {
-        double error = output - input;
-        this.sigma = this.fnTransf.train(salida) * error;
-        return this.sigma;
-    }
-
     //
     // Other methods
     //
+
+    public void inicializarPesos()
+    {
+        for(int i=0; i<pesos.length && pesos[i] != null; i++)
+            pesos[i] = Math.random();
+    }
 
     public String getConfiguracion()
     {
