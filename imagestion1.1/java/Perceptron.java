@@ -125,6 +125,12 @@ public class Perceptron
      * en la neurona de salida j en la iteración t
      *         e(t)=d(t) - y(t)
      * donde t denota el tiempo discreto, y(t) representa la salida de la capa previa.
+     *
+     * Regla Delta Generalizada Es una extensión de la regla delta propuesta por Widrow (1960).
+     * Se usa en redes con capas intermedias con conexiones hacia delante y cuyas células
+     * tienen funciones de activación continuas. Estas funciones continuas son no decrecientes
+     * y derivables (la función sigmoidal pertenece a este tipo de funciones).
+     *
      */
 
     public double setSigma(double error)   // usado en regla de aprendizaje

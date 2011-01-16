@@ -108,6 +108,14 @@ public class Red {
         return outputs;
     }
 
+    /**
+     * Estructura y aprendizaje Capa de entrada con n neuronas.
+     * Capa de salida con m neuronas. Al menos una capa oculta de neuronas.
+     * Cada neurona de una capa recibe entradas de todas las neuronas de la
+     * capa anterior y envía su salida a todas las neuronas de la capa posterior.
+     * No hay conexiones hacia atrás ni laterales entre neuronas de la misma capa.
+     *
+     **/
     public Double entrenar(Double[][] inputs, Double[][] outputs)
     {
         Double[][] salidas = new Double[outputs.length][outputs[0].length], 
@@ -122,7 +130,15 @@ public class Red {
         for(int iteracion=0; iteracion < inputs.length; iteracion++)
         {
             // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de 
-            //         entrenamiento, aplicando el vector de entrada a la entrada de la red
+            //         entrenamiento, aplicando el vector de entrada a la entrada de la red. 
+            //         Estructura y aprendizaje:
+            //         - Capa de entrada con n neuronas.
+            //         - Capa de salida con m neuronas.
+            //         - Al menos una capa oculta de neuronas.
+            //         - Cada neurona de una capa recibe entradas de todas las
+            //           neuronas de la capa anterior y envía su salida a todas
+            //           las neuronas de la capa posterior. No hay conexiones
+            //           hacia atrás ni laterales entre neuronas de la misma capa.
             Double[] entradas = inputs[iteracion];
 
             // paso 3: Calcular salida de la red
