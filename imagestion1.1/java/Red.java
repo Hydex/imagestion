@@ -115,6 +115,8 @@ public class Red {
      * capa anterior y envía su salida a todas las neuronas de la capa posterior.
      * No hay conexiones hacia atrás ni laterales entre neuronas de la misma capa.
      *
+     * Mas detalle en profundidad visitar:
+     * http://galaxy.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html
      **/
     public Double entrenar(Double[][] inputs, Double[][] outputs)
     {
