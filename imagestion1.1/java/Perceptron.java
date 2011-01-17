@@ -52,10 +52,6 @@ public class Perceptron
     public  double     rata;
     private Activacion fnTransf;
 
-
-//    private enum FuncionesTransferencia {HARDLIM, HARDLIMS, POSLIN, PURELIN, SATLIN, SATLINS, LOGSIG, TANSIG, UNDEFINED};
-//    private FuncionesTransferencia funcion = FuncionesTransferencia.UNDEFINED;
-
     //
     // Constructors
     //
@@ -104,12 +100,11 @@ public class Perceptron
 
     public Double backPropagation(double Sigma)  // valor Sigma debe provenir del controlador del ciclo principal
     {
-        // ver la forma de ir registrando los valoes de los pesos y salidas de cada iteracion
+        // ver la forma de ir registrando los valores de los pesos y salidas de cada iteracion
         for(int i = 0; i<this.pesos.length && this.pesos[i] != null; i++)
         {
-            double peso = pesos[i];
-            double delta = 2*rata * Sigma * salida;
-            pesos[i] = peso - delta;
+            double delta = rata * Sigma * entradas[i]; // averiguar:  calcular por salida o entrada?
+            pesos[i] += delta;
         }
 
         return null;  // evaluar si debe retornar valor
