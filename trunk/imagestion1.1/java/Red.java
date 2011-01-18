@@ -41,11 +41,13 @@ public class Red {
     //
     // Fields
     //
-    private int entradas = 0;
-    private int salidas  = 0;
+    private int entradas  = 0;
+    private int salidas   = 0;
     private int nCapas;
     private Perceptron[][] capas;
     private Double[][] sinapsis;
+    private double rata   = 0.01;
+    public  double minimo = 0.001;
 
     //
     // Constructors
@@ -120,8 +122,17 @@ public class Red {
      **/
     public Double entrenar(Double[][] inputs, Double[][] outputs)
     {
+        // Estructura y aprendizaje:
+        // - Capa de entrada con n neuronas.
+        // - Capa de salida con m neuronas.
+        // - Al menos una capa oculta de neuronas.
+        // - Cada neurona de una capa recibe entradas de todas las
+        //   neuronas de la capa anterior y envía su salida a todas
+        //   las neuronas de la capa posterior. No hay conexiones
+        //   hacia atrás ni laterales entre neuronas de la misma capa.
+
         Double[][] salidas = new Double[outputs.length][outputs[0].length], 
-                   error   = new Double[outputs.length][outputs[0].length];
+                   sigma   = new Double[outputs.length][outputs[0].length];
         
         // paso 1: Se inicializan los pesos de todas las neuronas con valores
         //         aleatorios rango [0..1]
@@ -129,38 +140,42 @@ public class Red {
             for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
                 capas[i][j].inicializarPesos();
 
-        for(int iteracion=0; iteracion < inputs.length; iteracion++)
+        for(int datos=0; datos < inputs.length; datos++)
         {
-            // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de 
-            //         entrenamiento, aplicando el vector de entrada a la entrada de la red. 
-            //         Estructura y aprendizaje:
-            //         - Capa de entrada con n neuronas.
-            //         - Capa de salida con m neuronas.
-            //         - Al menos una capa oculta de neuronas.
-            //         - Cada neurona de una capa recibe entradas de todas las
-            //           neuronas de la capa anterior y envía su salida a todas
-            //           las neuronas de la capa posterior. No hay conexiones
-            //           hacia atrás ni laterales entre neuronas de la misma capa.
-            Double[] entradas = inputs[iteracion];
+            int intentos = 10;
+            do
+            {
 
-            // paso 3: Calcular salida de la red
-            salidas[iteracion] = this.simular(entradas);
+                // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
+                //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
+                Double[] entradas = inputs[datos];
 
-            // paso 4: Calcular el error entre la salida de la red y la salida deseada
-            //         (vector objetivo de par de entrenamiento)
-            for(int j=0; j<salidas[iteracion].length; j++)
-                error[iteracion][j] = outputs[iteracion][j] - salidas[iteracion][j];
+                // paso 3: Calcular salida de la red
+                salidas[datos] = simular(entradas);
+                double error = 0.0;
+                for(int i=0; i<outputs[datos].length; i++)
+                    error += outputs[datos][i] - salidas[datos][i];
 
-            // paso 5: Ajustar los pesos de la red para minimizar este error
-            for(int i=nCapas-1; i>=0; i--)
-                for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
-                {
-                    double sigma = capas[i][j].setSigma(error[iteracion][j]);
-                    capas[i][j].backPropagation(sigma);
-                }
+                if(error < minimo) break;
 
-            // paso 6: Repetir de 1 al 4 para cada vector del conjunto de entrenamiento
-            //         hasta que el error del conjunto entero sea aceptablemente bajo
+                // paso 4: Calcular el error entre la salida de la red y la salida deseada
+                //         (vector objetivo de par de entrenamiento)
+                for(int i=nCapas-1; i>=0; i--)
+                    for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+                    {
+                        double delta = i == nCapas-1 ?outputs[i][j] - salidas[i][j]: getError(i+1,j);
+                        capas[i][j].setSigma(delta);
+                    }
+
+                // paso 5: Ajustar los pesos de la red para minimizar este error
+                for(int i=0; i<nCapas; i++)
+                    for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+                        capas[i][j].backPropagation(capas[i][j].getError(rata));
+
+                // paso 6: Repetir de 1 al 4 para cada vector del conjunto de entrenamiento
+                //         hasta que el error del conjunto entero sea aceptablemente bajo
+            }
+            while(--intentos > 0);
         }
 
         return null;
@@ -169,6 +184,16 @@ public class Red {
     //
     // Accessor methods
     //
+
+    public double getError(int capa, int peso)
+    {
+        double error = 0.0;
+
+        for(int i=0; i<capas[capa].length && capas[capa][i] != null; i++)
+            error += capas[capa][i].getSigma() * capas[capa][i].getPeso(peso);
+
+        return error;
+    }
 
     public int getEntradas() {
         return entradas;

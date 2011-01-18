@@ -49,7 +49,6 @@ public class Perceptron
     private Double     wBias;
     public  Double     salida;
     public  double     sigma;
-    public  double     rata;
     private Activacion fnTransf;
 
     //
@@ -62,7 +61,6 @@ public class Perceptron
         wBias    = 0d;
         salida   = 0d;
         sigma    = 0d;
-        rata     = 0.01;   // rata de aprendisaje inicial minimo    rango [0..1]
         fnTransf = new Activacion(funcion);
 
         for(int i=0; i<inputs; i++)
@@ -77,12 +75,12 @@ public class Perceptron
     {
         Double suma = 0.0;
 
-        for(int i=0; i<this.entradas.length; i++)
-            suma += this.entradas[i] * this.pesos[i];
+        for(int i=0; i < entradas.length; i++)
+            suma += entradas[i] * pesos[i];
 
-        this.salida = suma + this.bias;
+        salida = suma + bias;
 
-        return this.fnTransf.exec(this.salida);
+        return fnTransf.exec(salida);
     }
 
     /** backPropagation
@@ -105,7 +103,7 @@ public class Perceptron
 
         for(int i = 0; i<pesos.length && pesos[i] != null; i++)
         {
-            double delta = rata * Sigma * entradas[i]; // averiguar:  calcular por salida o entrada?
+            double delta = Sigma * entradas[i]; // averiguar:  calcular por salida o entrada?
             pesos[i] += delta;
             avgDelta += delta;
         }
@@ -131,20 +129,19 @@ public class Perceptron
      *
      */
 
-    public double setSigma(double error)   // usado en regla de aprendizaje
-    {
-        // error = objetivo - salida;
-        this.sigma = this.fnTransf.train(salida) * error;
-        return this.sigma;
+    public void setSigma(double sigma) {
+        this.sigma = sigma;
     }
 
     public double getSigma() {
         return sigma;
     }
 
-    //public void setSigma(double sigma) {
-    //    this.sigma = sigma;
-    //}
+    public double getError(double rata)   // usado en regla de aprendizaje
+    {
+        // error = objetivo - salida;
+        return sigma * fnTransf.train(salida) * rata;
+    }
 
     public Double getBias() {
         return bias;
@@ -178,14 +175,6 @@ public class Perceptron
     public Double getPeso(int idx)
     {
         return this.pesos[idx];
-    }
-
-    public double getRata() {
-        return rata;
-    }
-
-    public void setRata(double rata) {
-        this.rata = rata;
     }
 
     //
