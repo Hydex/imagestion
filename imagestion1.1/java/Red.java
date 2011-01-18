@@ -141,7 +141,6 @@ public class Red {
             int intentos = ciclos;
             do
             {
-
                 // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                 //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
                 Double[] entradas = inputs[datos];
