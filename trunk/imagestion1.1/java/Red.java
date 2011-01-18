@@ -111,27 +111,22 @@ public class Red {
         return outputs;
     }
 
-    /**
-     * Estructura y aprendizaje Capa de entrada con n neuronas.
-     * Capa de salida con m neuronas. Al menos una capa oculta de neuronas.
-     * Cada neurona de una capa recibe entradas de todas las neuronas de la
-     * capa anterior y envía su salida a todas las neuronas de la capa posterior.
-     * No hay conexiones hacia atrás ni laterales entre neuronas de la misma capa.
+    /** entrenar
+     *
+     * Estructura y aprendizaje:
+     * - Capa de entrada con n neuronas.
+     * - Capa de salida con m neuronas.
+     * - Al menos una capa oculta de neuronas.
+     * - Cada neurona de una capa recibe entradas de todas las
+     *   neuronas de la capa anterior y envía su salida a todas
+     *   las neuronas de la capa posterior. No hay conexiones
+     *   hacia atrás ni laterales entre neuronas de la misma capa.
      *
      * Mas detalle en profundidad visitar:
      * http://galaxy.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html
      **/
     public Double entrenar(Double[][] inputs, Double[][] outputs)
     {
-        // Estructura y aprendizaje:
-        // - Capa de entrada con n neuronas.
-        // - Capa de salida con m neuronas.
-        // - Al menos una capa oculta de neuronas.
-        // - Cada neurona de una capa recibe entradas de todas las
-        //   neuronas de la capa anterior y envía su salida a todas
-        //   las neuronas de la capa posterior. No hay conexiones
-        //   hacia atrás ni laterales entre neuronas de la misma capa.
-
         Double[][] salidas = new Double[outputs.length][outputs[0].length], 
                    sigma   = new Double[outputs.length][outputs[0].length];
         
