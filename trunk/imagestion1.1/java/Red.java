@@ -41,13 +41,14 @@ public class Red {
     //
     // Fields
     //
-    private int entradas  = 0;
-    private int salidas   = 0;
-    private int nCapas;
+    private int   entradas = 0;
+    private int   salidas  = 0;
+    private int   nCapas;
     private Perceptron[][] capas;
-    private Double[][] sinapsis;
-    private double rata   = 0.01;
-    public  double minimo = 0.001;
+    private Double[][]     sinapsis;
+    public  double rata    = 0.01;
+    public  double minimo  = 0.001;
+    public  int    ciclos  = 10;
 
     //
     // Constructors
@@ -142,7 +143,7 @@ public class Red {
 
         for(int datos=0; datos < inputs.length; datos++)
         {
-            int intentos = 10;
+            int intentos = ciclos;
             do
             {
 
