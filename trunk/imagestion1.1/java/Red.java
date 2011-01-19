@@ -33,6 +33,10 @@
  | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 \*-----------------------------------------------------------------------*/
 
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+
 /**
  * Class Red
  */
@@ -59,6 +63,7 @@ public class Red {
         entradas = inputs[0];
         salidas  = outputs;
         int max  = 0;
+        byte[] ascii = (new String("A")).getBytes();
 
         for(int i=0; i<nCapas; i++)
             max = inputs[i]>max ?inputs[i] :max;
@@ -69,7 +74,11 @@ public class Red {
 
         for(int i=0; i<nCapas; i++)
             for(int j=0; j<max; j++)
+            {
                 capas[i][j] = j<inputs[i] ?new Perceptron(inputs[i], funciones[i]) :null;
+                if(capas[i][j] != null)
+                    capas[i][j].setId(((char)(ascii[0]+i))+i+""+j);
+            }
     }
     
     public Red(String xml)
@@ -217,5 +226,22 @@ public class Red {
     //
     // Other methods
     //
+
+    public Hashtable getConfiguracion()
+    {
+        Hashtable conf = new Hashtable();
+        byte[] ascii = (new String("A")).getBytes();
+
+        for(int i=0; i<nCapas; i++)
+        {
+            String capa = ""+((char)(ascii[0]+i));
+            conf.put(capa, new ArrayList());
+
+            for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+                ((ArrayList)conf.get(capa)).add(capas[i][j].getConfiguracion());
+        }
+
+        return conf;
+    }
 
 }
