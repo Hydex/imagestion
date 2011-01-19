@@ -34,6 +34,10 @@
 \*-----------------------------------------------------------------------*/
 
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+
+
 /**
  * Class Perceptron
  */
@@ -50,6 +54,7 @@ public class Perceptron
     public  Double     salida;
     public  double     sigma;
     private Activacion fnTransf;
+    private String     id;
 
     //
     // Constructors
@@ -177,6 +182,16 @@ public class Perceptron
         return this.pesos[idx];
     }
 
+    public void setId(String valor)
+    {
+        this.id = valor;
+    }
+
+    public String getId()
+    {
+        return this.id;
+    }
+
     //
     // Other methods
     //
@@ -187,9 +202,15 @@ public class Perceptron
             pesos[i] = Math.random();
     }
 
-    public String getConfiguracion()
+    public Hashtable getConfiguracion()
     {
-        return null;
+        Hashtable conf = new Hashtable();
+        conf.put(id, new ArrayList());
+
+        for(int i=0; i<pesos.length; i++)
+            ((ArrayList) conf.get(id)).add(pesos[i]);
+
+        return conf;
     }
 
     public void setConfiguracion()
