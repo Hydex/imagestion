@@ -33,6 +33,9 @@
  | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 \*-----------------------------------------------------------------------*/
 
+import java.util.ArrayList;
+
+
 /**
  *
  * @author miguel
@@ -97,7 +100,7 @@ public class Imagestion {
         Red net;
         try
         {
-            int[] layers = {3,2,1};
+            int[] layers = {1,3,8};
             String[] functions = {"logsig","tansig","purelin"};
             net = new Red(layers, 1, functions);
 
@@ -107,5 +110,11 @@ public class Imagestion {
         {
             System.err.println("Exception: "+e.getMessage());
         }       
+    }
+
+    public static ArrayList getContent(String file)
+    {
+        // escribir un tokenizer para archivos de texto, y realizar conversion de palabras a numeros reales para generar arreglo
+        return null;
     }
 }
