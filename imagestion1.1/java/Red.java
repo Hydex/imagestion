@@ -77,7 +77,7 @@ public class Red {
             {
                 capas[i][j] = j<inputs[i] ?new Perceptron(inputs[i], funciones[i]) :null;
                 if(capas[i][j] != null)
-                    capas[i][j].setId(((char)(ascii[0]+i))+i+""+j);
+                    capas[i][j].setId(""+((char)(ascii[0]+i))+i+""+j);
             }
     }
     

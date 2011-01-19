@@ -41,35 +41,71 @@ public class Imagestion {
     public static void main(String args[])
     {
         String file  = new String();
-        String file2 = new String();
+        String arg   = new String();
+        byte[] opt;
 
-        if(args.length != 1)
+        if(args.length != 2)
         {
-            System.out.println("Digite: java -jar Imagestion 'archivo.jpg'");
+            System.out.println("Digite: java -jar Imagestion -[i|t] 'archivo'");
             System.exit(1);
         }
         else
         {
-            file = args[0];
-            file2 = file+".borde.jpg";
-
-            try
+            arg  = args[0].replaceAll("\\W", "");
+            file = args[1];
+            opt  = arg.toLowerCase().getBytes();
+            
+            switch((char)opt[0])
             {
-                Integer[][] se = {{0,1,1,0},{1,1,1,1},{1,1,1,1},{0,1,1,0}};
-                
-                Imagen img = new Imagen(file);
-
-                img.setBorder(1);
-                img.setElementoEstructurante(4, 4, se);
-                img.dilate();
-                img.guardar(file2);
-
-                System.out.println(file2+"\nOK\n");
-            }
-            catch(Exception e)
-            {
-                System.err.println("Exception: "+e.getMessage());
+                case 'i':
+                    testImage(file);
+                    break;
+                case 't':
+                    testPerceptron(file);
+                    break;
+                default:
+                    break;
             }
         }
+    }
+
+    private static void testImage(String file)
+    {
+        String file2 = file+".borde.jpg";
+
+        try
+        {
+            Integer[][] se = {{0,1,1,0},{1,1,1,1},{1,1,1,1},{0,1,1,0}};
+
+            Imagen img = new Imagen(file);
+
+            img.setBorder(1);
+            img.setElementoEstructurante(4, 4, se);
+            img.dilate();
+            img.guardar(file2);
+
+            System.out.println(file2+"\nOK\n");
+        }
+        catch(Exception e)
+        {
+            System.err.println("Exception: "+e.getMessage());
+        }
+    }
+    
+    private static void testPerceptron(String file)
+    {
+        Red net;
+        try
+        {
+            int[] layers = {3,2,1};
+            String[] functions = {"logsig","tansig","purelin"};
+            net = new Red(layers, 1, functions);
+
+            System.out.println("configuracion:\n"+net.getConfiguracion().toString()+"\n");
+        }
+        catch(Exception e)
+        {
+            System.err.println("Exception: "+e.getMessage());
+        }       
     }
 }
