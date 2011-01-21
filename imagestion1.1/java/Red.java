@@ -57,28 +57,33 @@ public class Red {
     //
     // Constructors
     //
-    public Red (int[] inputs, int outputs, String[] funciones) 
+    public Red (int entradas, int salidas, int[] layers, String[] funciones)
     { 
-        nCapas   = inputs.length;
-        entradas = inputs[0];
-        salidas  = outputs;
+        nCapas   = layers.length;
+        this.entradas = entradas;
+        this.salidas  = salidas;
         int max  = 0;
         byte[] ascii = (new String("A")).getBytes();
 
         for(int i=0; i<nCapas; i++)
-            max = inputs[i]>max ?inputs[i] :max;
+            max = layers[i]>max ?layers[i] :max;
 
         capas    = new Perceptron[nCapas][max];
         sinapsis = new Double[nCapas+1][max];
         limpiarSinapsis();
 
+        int inputs = entradas;
+
         for(int i=0; i<nCapas; i++)
+        {
             for(int j=0; j<max; j++)
             {
-                capas[i][j] = j<inputs[i] ?new Perceptron(inputs[i], funciones[i]) :null;
+                capas[i][j] = j<layers[i] ?new Perceptron(inputs, funciones[i]) :null;
                 if(capas[i][j] != null)
                     capas[i][j].setId(""+((char)(ascii[0]+i))+i+""+j);
             }
+            inputs = layers[i];
+        }
     }
     
     public Red(String xml)
@@ -136,8 +141,9 @@ public class Red {
      **/
     public Double entrenar(Double[][] inputs, Double[][] outputs)
     {
-        Double[][] salidas = new Double[outputs.length][outputs[0].length], 
-                   sigma   = new Double[outputs.length][outputs[0].length];
+        Double[][] salidas   = new Double[outputs.length][outputs[0].length],
+                   sigma     = new Double[outputs.length][outputs[0].length];
+        ArrayList resultados = new ArrayList();
         
         // paso 1: Se inicializan los pesos de todas las neuronas con valores
         //         aleatorios rango [0..1]
@@ -178,6 +184,9 @@ public class Red {
 
                 // paso 6: Repetir de 1 al 4 para cada vector del conjunto de entrenamiento
                 //         hasta que el error del conjunto entero sea aceptablemente bajo
+                String resultado = this.getConfiguracion();
+                resultados.add(resultado);
+                System.out.println("iteracion "+intentos+":\n"+resultado+"\n");
             }
             while(--intentos > 0);
         }
@@ -227,21 +236,24 @@ public class Red {
     // Other methods
     //
 
-    public Hashtable getConfiguracion()
+    public String getConfiguracion()
     {
-        Hashtable conf = new Hashtable();
+        StringBuffer net  = new StringBuffer();
         byte[] ascii = (new String("A")).getBytes();
 
         for(int i=0; i<nCapas; i++)
         {
+            Hashtable conf = new Hashtable();
             String capa = ""+((char)(ascii[0]+i));
             conf.put(capa, new ArrayList());
 
             for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
                 ((ArrayList)conf.get(capa)).add(capas[i][j].getConfiguracion());
+
+            net.append(conf.toString()+"\n");
         }
 
-        return conf;
+        return net.toString();
     }
 
 }
