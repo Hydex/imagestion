@@ -112,7 +112,7 @@ public class Red {
         {
             for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
             {
-                for(int n=0; n<sinapsis[i].length && sinapsis[i][n] != null; n++)
+                for(int n=0; n<capas[i][j].entradas.length && sinapsis[i][n] != null; n++)
                     capas[i][j].entradas[n] = sinapsis[i][n];
                 
                 sinapsis[i+1][j] = capas[i][j].calcular();
@@ -151,14 +151,16 @@ public class Red {
             for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
                 capas[i][j].inicializarPesos();
 
-        for(int datos=0; datos < inputs.length; datos++)
+        for(int datos=0; datos < inputs[0].length; datos++)
         {
             int intentos = ciclos;
             do
             {
                 // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                 //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                Double[] entradas = inputs[datos];
+                Double[] entradas = new Double[this.entradas];
+                for(int i=0; i<this.entradas; i++) 
+                    entradas[i] = inputs[i][datos];
 
                 // paso 3: Calcular salida de la red
                 salidas[datos] = simular(entradas);
