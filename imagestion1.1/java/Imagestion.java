@@ -103,10 +103,12 @@ public class Imagestion {
     {
         Red net;
         ArrayList datos   = getContent(file,categoria);
-        ArrayList inputs  = (ArrayList)datos.get(0);
-        ArrayList outputs = (ArrayList)datos.get(1);
-        Double[][] entradas = (Double[][])inputs.toArray();
-        Double[][] salidas  = (Double[][])outputs.toArray();
+        Double[] inputs   = (Double[])datos.get(0);
+        Double[] outputs  = (Double[])datos.get(1);
+        Double[][] entradas = new Double[1][inputs.length];
+        Double[][] salidas  = new Double[1][outputs.length];
+        entradas[0] = inputs;
+        salidas[0]  = outputs;
 
         try
         {
@@ -127,7 +129,8 @@ public class Imagestion {
     {
         // escribir un tokenizer para archivos de texto, y realizar conversion de palabras a numeros reales para generar arreglo
         ArrayList lista = new ArrayList();
-        ArrayList outs  = new ArrayList();
+        ArrayList outputs  = new ArrayList();
+        ArrayList inputs   = new ArrayList();
         int ix = 0;
 
         try {
@@ -141,6 +144,7 @@ public class Imagestion {
             String str;
             while ((str = in.readLine()) != null)
             {
+                str = str.toLowerCase();
                 str = str.replaceAll("\\d+", " ");
                 str = str.replaceAll("\\W+", " ");
                 String[] words = str.split(" ");
@@ -154,11 +158,8 @@ public class Imagestion {
 
                     if(word>0)
                     {
-                        Double grupo[] = new Double[1];
-                        grupo[0] = (double)(1/word);
-                        lista.add(grupo);
-                        grupo[0] = patron;
-                        outs.add(grupo);
+                        inputs.add((double)(1/word));
+                        outputs.add(patron);
                     }
                 }
             }
@@ -166,6 +167,11 @@ public class Imagestion {
         } catch (IOException e) {
         }
 
+        Object[] lst1 = inputs.toArray();
+        Object[] lst2 = inputs.toArray();
+        lista.add((Double[])lst1);
+        lista.add((Double[])lst2);
+        
         return lista;
     }
 }
