@@ -33,6 +33,9 @@
  | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 \*-----------------------------------------------------------------------*/
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -47,7 +50,7 @@ public class Imagestion {
         String arg   = new String();
         byte[] opt;
 
-        if(args.length != 2)
+        if(args.length < 2)
         {
             System.out.println("Digite: java -jar Imagestion -[i|t] 'archivo'");
             System.exit(1);
@@ -64,7 +67,8 @@ public class Imagestion {
                     testImage(file);
                     break;
                 case 't':
-                    testPerceptron(file);
+                    String categoria = args[2];
+                    testPerceptron(file,categoria);
                     break;
                 default:
                     break;
@@ -95,16 +99,23 @@ public class Imagestion {
         }
     }
     
-    private static void testPerceptron(String file)
+    private static void testPerceptron(String file, String categoria)
     {
         Red net;
+        ArrayList datos   = getContent(file,categoria);
+        ArrayList inputs  = (ArrayList)datos.get(0);
+        ArrayList outputs = (ArrayList)datos.get(1);
+        Double[][] entradas = (Double[][])inputs.toArray();
+        Double[][] salidas  = (Double[][])outputs.toArray();
+
         try
         {
-            int[] layers = {1,3,8};
+            int[] layers = {2,4,8};
             String[] functions = {"logsig","tansig","purelin"};
-            net = new Red(layers, 1, functions);
+            net = new Red(1, 8, layers, functions);
 
             System.out.println("configuracion:\n"+net.getConfiguracion().toString()+"\n");
+            net.entrenar(entradas, salidas);
         }
         catch(Exception e)
         {
@@ -112,9 +123,49 @@ public class Imagestion {
         }       
     }
 
-    public static ArrayList getContent(String file)
+    public static ArrayList getContent(String file, String categoria)
     {
         // escribir un tokenizer para archivos de texto, y realizar conversion de palabras a numeros reales para generar arreglo
-        return null;
+        ArrayList lista = new ArrayList();
+        ArrayList outs  = new ArrayList();
+        int ix = 0;
+
+        try {
+            byte[] letras = categoria.getBytes();
+            long palabra = 0;
+            for(int j=0; j<letras.length; j++)
+                palabra |= letras[j]<<j;
+            double patron = (double)(1/palabra);
+
+            BufferedReader in = new BufferedReader(new FileReader("infilename"));
+            String str;
+            while ((str = in.readLine()) != null)
+            {
+                str = str.replaceAll("\\d+", " ");
+                str = str.replaceAll("\\W+", " ");
+                String[] words = str.split(" ");
+
+                for(int i=0; i<words.length; i++)
+                {
+                    byte[] chars = words[i].getBytes();
+                    long word = 0;
+                    for(int j=0; j<chars.length; j++)
+                        word |= chars[j]<<j;
+
+                    if(word>0)
+                    {
+                        Double grupo[] = new Double[1];
+                        grupo[0] = (double)(1/word);
+                        lista.add(grupo);
+                        grupo[0] = patron;
+                        outs.add(grupo);
+                    }
+                }
+            }
+            in.close();
+        } catch (IOException e) {
+        }
+
+        return lista;
     }
 }
