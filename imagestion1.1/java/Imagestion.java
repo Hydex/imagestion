@@ -112,12 +112,13 @@ public class Imagestion {
 
         try
         {
-            int[] layers = {2,4,8};
+            int[] layers = {2,3,4};
             String[] functions = {"logsig","tansig","purelin"};
-            net = new Red(1, 8, layers, functions);
+            net = new Red(1, 4, layers, functions);
 
             System.out.println("configuracion:\n"+net.getConfiguracion().toString()+"\n");
             net.entrenar(entradas, salidas);
+            System.out.println("resultado:\n"+net.getConfiguracion().toString()+"\n");
         }
         catch(Exception e)
         {
@@ -167,10 +168,17 @@ public class Imagestion {
         } catch (IOException e) {
         }
 
-        Object[] lst1 = inputs.toArray();
-        Object[] lst2 = inputs.toArray();
-        lista.add((Double[])lst1);
-        lista.add((Double[])lst2);
+        Double[] in  = new Double[inputs.size()];
+        Double[] out = new Double[outputs.size()];
+
+        for(int i=0; i<in.length; i++)
+        {
+            in[i]  = (Double) inputs.get(i);
+            out[i] = (Double) outputs.get(i);
+        }
+
+        lista.add(in);
+        lista.add(out);
         
         return lista;
     }

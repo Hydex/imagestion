@@ -188,7 +188,7 @@ public class Red {
                 //         hasta que el error del conjunto entero sea aceptablemente bajo
                 String resultado = this.getConfiguracion();
                 resultados.add(resultado);
-                System.out.println("iteracion "+intentos+":\n"+resultado+"\n");
+                System.out.println("iteracion "+intentos+":"+resultado+"\n"+this.getConfiguracion().toString()+"\n");
             }
             while(--intentos > 0);
         }
