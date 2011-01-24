@@ -103,12 +103,22 @@ public class Imagestion {
     {
         Red net;
         ArrayList datos   = getContent(file,categoria);
-        Double[] inputs   = (Double[])datos.get(0);
-        Double[] outputs  = (Double[])datos.get(1);
-        Double[][] entradas = new Double[1][inputs.length];
-        Double[][] salidas  = new Double[1][outputs.length];
-        entradas[0] = inputs;
-        salidas[0]  = outputs;
+        ArrayList inputs   = (ArrayList)datos.get(0);
+        ArrayList outputs  = (ArrayList)datos.get(1);
+        Double[][] entradas = new Double[1][inputs.size()];
+        Double[][] salidas  = new Double[1][outputs.size()];
+
+        Double[] in  = new Double[inputs.size()];
+        Double[] out = new Double[outputs.size()];
+
+        for(int i=0; i<in.length; i++)
+        {
+            in[i]  = (Double) inputs.get(i);
+            out[i] = (Double) outputs.get(i);
+        }
+
+//        entradas[0] = inputs;
+//        salidas[0]  = outputs;
 
         try
         {
@@ -117,6 +127,7 @@ public class Imagestion {
             net = new Red(1, 4, layers, functions);
 
             System.out.println("configuracion:\n"+net.getConfiguracion().toString()+"\n");
+            System.out.println("entradas:"+entradas[0].length+" salidas:"+salidas[0].length);
             net.entrenar(entradas, salidas);
             System.out.println("resultado:\n"+net.getConfiguracion().toString()+"\n");
         }
@@ -139,9 +150,9 @@ public class Imagestion {
             long palabra = 0;
             for(int j=0; j<letras.length; j++)
                 palabra |= letras[j]<<j;
-            double patron = (double)(1/palabra);
+            Double patron = (double)(1.0/((double)palabra));
 
-            BufferedReader in = new BufferedReader(new FileReader("infilename"));
+            BufferedReader in = new BufferedReader(new FileReader(file));
             String str;
             while ((str = in.readLine()) != null)
             {
@@ -151,15 +162,20 @@ public class Imagestion {
                 String[] words = str.split(" ");
 
                 for(int i=0; i<words.length; i++)
-                {
+                {                    
                     byte[] chars = words[i].getBytes();
                     long word = 0;
                     for(int j=0; j<chars.length; j++)
+                    {
                         word |= chars[j]<<j;
+                        System.out.print(""+((char)chars[j])+" ");
+                    }
 
                     if(word>0)
                     {
-                        inputs.add((double)(1/word));
+                        Double real = (double)(1.0/((double)word));
+                        System.out.println(word+"->"+real);
+                        inputs.add(real);
                         outputs.add(patron);
                     }
                 }
@@ -168,18 +184,11 @@ public class Imagestion {
         } catch (IOException e) {
         }
 
-        Double[] in  = new Double[inputs.size()];
-        Double[] out = new Double[outputs.size()];
+        lista.add(inputs);
+        lista.add(outputs);
 
-        for(int i=0; i<in.length; i++)
-        {
-            in[i]  = (Double) inputs.get(i);
-            out[i] = (Double) outputs.get(i);
-        }
+        System.out.println("lista:\n"+lista.toString()+"\n");
 
-        lista.add(in);
-        lista.add(out);
-        
         return lista;
     }
 }

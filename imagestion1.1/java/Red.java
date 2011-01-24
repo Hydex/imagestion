@@ -144,7 +144,8 @@ public class Red {
         Double[][] salidas   = new Double[outputs.length][outputs[0].length],
                    sigma     = new Double[outputs.length][outputs[0].length];
         ArrayList resultados = new ArrayList();
-        
+
+        System.out.println("paso 1");
         // paso 1: Se inicializan los pesos de todas las neuronas con valores
         //         aleatorios rango [0..1]
         for(int i=0; i<nCapas; i++)
@@ -156,12 +157,14 @@ public class Red {
             int intentos = ciclos;
             do
             {
+                System.out.println("paso 2");
                 // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                 //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
                 Double[] entradas = new Double[this.entradas];
                 for(int i=0; i<this.entradas; i++) 
                     entradas[i] = inputs[i][datos];
 
+                System.out.println("paso 3");
                 // paso 3: Calcular salida de la red
                 salidas[datos] = simular(entradas);
                 double error = 0.0;
@@ -170,6 +173,7 @@ public class Red {
 
                 if(error < minimo) break;
 
+                System.out.println("paso 4");
                 // paso 4: Calcular el error entre la salida de la red y la salida deseada
                 //         (vector objetivo de par de entrenamiento)
                 for(int i=nCapas-1; i>=0; i--)
@@ -179,11 +183,13 @@ public class Red {
                         capas[i][j].setSigma(delta);
                     }
 
+                System.out.println("paso 5");
                 // paso 5: Ajustar los pesos de la red para minimizar este error
                 for(int i=0; i<nCapas; i++)
                     for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
                         capas[i][j].backPropagation(capas[i][j].getError(rata)); // * sinapsis[i][j]);
 
+                System.out.println("paso 6");
                 // paso 6: Repetir de 1 al 4 para cada vector del conjunto de entrenamiento
                 //         hasta que el error del conjunto entero sea aceptablemente bajo
                 String resultado = this.getConfiguracion();
