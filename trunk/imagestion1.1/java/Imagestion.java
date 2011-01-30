@@ -102,23 +102,21 @@ public class Imagestion {
     private static void testPerceptron(String file, String categoria)
     {
         Red net;
-        ArrayList datos   = getContent(file,categoria);
-        ArrayList inputs   = (ArrayList)datos.get(0);
-        ArrayList outputs  = (ArrayList)datos.get(1);
+        int orden[]         = {1,0,0,0};
+        ArrayList datos     = getContent(file,categoria, orden);
+        ArrayList inputs    = (ArrayList)datos.get(0);
         Double[][] entradas = new Double[1][inputs.size()];
-        Double[][] salidas  = new Double[1][outputs.size()];
+        Double[][] salidas  = new Double[4][inputs.size()];
 
-        Double[] in  = new Double[inputs.size()];
-        Double[] out = new Double[outputs.size()];
-
-        for(int i=0; i<in.length; i++)
+        for(int i=0; i<inputs.size(); i++)
         {
-            in[i]  = (Double) inputs.get(i);
-            out[i] = (Double) outputs.get(i);
+            entradas[0][i]  = (Double) inputs.get(i);
+            for(int j=0; j<orden.length; j++)
+            {
+                ArrayList outputs = (ArrayList)datos.get(i+1);
+                salidas[j][i]     = (Double) outputs.get(i);
+            }
         }
-
-//        entradas[0] = inputs;
-//        salidas[0]  = outputs;
 
         try
         {
@@ -137,12 +135,12 @@ public class Imagestion {
         }       
     }
 
-    public static ArrayList getContent(String file, String categoria)
+    public static ArrayList getContent(String file, String categoria, int[] salida)
     {
         // escribir un tokenizer para archivos de texto, y realizar conversion de palabras a numeros reales para generar arreglo
-        ArrayList lista = new ArrayList();
-        ArrayList outputs  = new ArrayList();
-        ArrayList inputs   = new ArrayList();
+        ArrayList lista     = new ArrayList();
+        ArrayList outputs[] = new ArrayList[salida.length];
+        ArrayList inputs    = new ArrayList();
         int ix = 0;
 
         try {
@@ -176,7 +174,8 @@ public class Imagestion {
                         Double real = (double)(1.0/((double)word));
                         System.out.println(word+"->"+real);
                         inputs.add(real);
-                        outputs.add(patron);
+                        for(int j=0; j<salida.length; j++)
+                            outputs[j].add(patron*salida[j]);
                     }
                 }
             }
@@ -185,7 +184,8 @@ public class Imagestion {
         }
 
         lista.add(inputs);
-        lista.add(outputs);
+        for(int j=0; j<salida.length; j++)
+            lista.add(outputs[j]);
 
         System.out.println("lista:\n"+lista.toString()+"\n");
 

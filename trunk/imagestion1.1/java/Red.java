@@ -53,6 +53,7 @@ public class Red {
     public  double rata    = 0.01;
     public  double minimo  = 0.001;
     public  int    ciclos  = 10;
+    public  int    entrenamientos;
 
     //
     // Constructors
@@ -62,6 +63,7 @@ public class Red {
         nCapas   = layers.length;
         this.entradas = entradas;
         this.salidas  = salidas;
+        this.entrenamientos = 0;
         int max  = 0;
         byte[] ascii = (new String("A")).getBytes();
 
@@ -148,9 +150,11 @@ public class Red {
         System.out.println("paso 1");
         // paso 1: Se inicializan los pesos de todas las neuronas con valores
         //         aleatorios rango [0..1]
-        for(int i=0; i<nCapas; i++)
+        for(int i=0; i<nCapas && this.entrenamientos == 0; i++)
             for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
                 capas[i][j].inicializarPesos();
+
+        this.entrenamientos++;
 
         for(int datos=0; datos < inputs[0].length; datos++)
         {
