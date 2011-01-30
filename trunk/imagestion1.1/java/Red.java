@@ -54,6 +54,7 @@ public class Red {
     public  double minimo  = 0.001;
     public  int    ciclos  = 10;
     public  int    entrenamientos;
+    private ArrayList log;
 
     //
     // Constructors
@@ -64,6 +65,7 @@ public class Red {
         this.entradas = entradas;
         this.salidas  = salidas;
         this.entrenamientos = 0;
+        this.log = new ArrayList();
         int max  = 0;
         byte[] ascii = (new String("A")).getBytes();
 
@@ -147,60 +149,70 @@ public class Red {
                    sigma     = new Double[outputs.length][outputs[0].length];
         ArrayList resultados = new ArrayList();
 
-        System.out.println("paso 1");
-        // paso 1: Se inicializan los pesos de todas las neuronas con valores
-        //         aleatorios rango [0..1]
-        for(int i=0; i<nCapas && this.entrenamientos == 0; i++)
-            for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
-                capas[i][j].inicializarPesos();
+        log.add("Info\tEntrada: "+inputs.toString()+"\n\tSalida: "+outputs.toString()+"\n");
 
-        this.entrenamientos++;
-
-        for(int datos=0; datos < inputs[0].length; datos++)
+        try
         {
-            int intentos = ciclos;
-            do
+           log.add("\npaso 1:\n");
+            // paso 1: Se inicializan los pesos de todas las neuronas con valores
+            //         aleatorios rango [0..1]
+            for(int i=0; i<nCapas && this.entrenamientos == 0; i++)
+                for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+                    capas[i][j].inicializarPesos();
+
+            this.entrenamientos++;
+            log.add("\npesos iniciales: \n"+this.getConfiguracion().toString()+"\n");
+
+            for(int datos=0; datos < inputs[0].length; datos++)
             {
-                System.out.println("paso 2");
-                // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
-                //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                Double[] entradas = new Double[this.entradas];
-                for(int i=0; i<this.entradas; i++) 
-                    entradas[i] = inputs[i][datos];
+                int intentos = ciclos;
+                do
+                {
+                    log.add("\npaso 2:\n");
+                    // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
+                    //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
+                    Double[] entradas = new Double[this.entradas];
+                    for(int i=0; i<this.entradas; i++)
+                        entradas[i] = inputs[i][datos];
 
-                System.out.println("paso 3");
-                // paso 3: Calcular salida de la red
-                salidas[datos] = simular(entradas);
-                double error = 0.0;
-                for(int i=0; i<outputs[datos].length; i++)
-                    error += outputs[datos][i] - salidas[datos][i];
+                    log.add("\npaso 3:\n");
+                    // paso 3: Calcular salida de la red
+                    salidas[datos] = simular(entradas);
+                    double error = 0.0;
+                    for(int i=0; i<outputs[datos].length; i++)
+                        error += outputs[datos][i] - salidas[datos][i];
 
-                if(error < minimo) break;
+                    if(error < minimo) break;
 
-                System.out.println("paso 4");
-                // paso 4: Calcular el error entre la salida de la red y la salida deseada
-                //         (vector objetivo de par de entrenamiento)
-                for(int i=nCapas-1; i>=0; i--)
-                    for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
-                    {
-                        double delta = i == nCapas-1 ?outputs[i][j] - salidas[i][j]: getError(i+1,j);
-                        capas[i][j].setSigma(delta);
-                    }
+                    log.add("\npaso 4:\n");
+                    // paso 4: Calcular el error entre la salida de la red y la salida deseada
+                    //         (vector objetivo de par de entrenamiento)
+                    for(int i=nCapas-1; i>=0; i--)
+                        for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+                        {
+                            double delta = i == nCapas-1 ?outputs[i][j] - salidas[i][j]: getError(i+1,j);
+                            capas[i][j].setSigma(delta);
+                        }
 
-                System.out.println("paso 5");
-                // paso 5: Ajustar los pesos de la red para minimizar este error
-                for(int i=0; i<nCapas; i++)
-                    for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
-                        capas[i][j].backPropagation(capas[i][j].getError(rata)); // * sinapsis[i][j]);
+                    log.add("\npaso 5:\n");
+                    // paso 5: Ajustar los pesos de la red para minimizar este error
+                    for(int i=0; i<nCapas; i++)
+                        for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+                            capas[i][j].backPropagation(capas[i][j].getError(rata)); // * sinapsis[i][j]);
 
-                System.out.println("paso 6");
-                // paso 6: Repetir de 1 al 4 para cada vector del conjunto de entrenamiento
-                //         hasta que el error del conjunto entero sea aceptablemente bajo
-                String resultado = this.getConfiguracion();
-                resultados.add(resultado);
-                System.out.println("iteracion "+intentos+":"+resultado+"\n"+this.getConfiguracion().toString()+"\n");
+                    log.add("\npaso 6:\n");
+                    // paso 6: Repetir de 1 al 4 para cada vector del conjunto de entrenamiento
+                    //         hasta que el error del conjunto entero sea aceptablemente bajo
+                    String resultado = this.getConfiguracion();
+                    resultados.add(resultado);
+                    log.add("\niteracion "+intentos+":"+resultado+"\n"+this.getConfiguracion().toString()+"\n");
+                }
+                while(--intentos > 0);
             }
-            while(--intentos > 0);
+        }
+        catch(Exception e)
+        {
+            System.out.println(log.toString()+"\n"+e.getMessage());
         }
 
         return null;

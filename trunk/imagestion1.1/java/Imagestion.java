@@ -108,18 +108,18 @@ public class Imagestion {
         Double[][] entradas = new Double[1][inputs.size()];
         Double[][] salidas  = new Double[4][inputs.size()];
 
-        for(int i=0; i<inputs.size(); i++)
-        {
-            entradas[0][i]  = (Double) inputs.get(i);
-            for(int j=0; j<orden.length; j++)
-            {
-                ArrayList outputs = (ArrayList)datos.get(i+1);
-                salidas[j][i]     = (Double) outputs.get(i);
-            }
-        }
-
         try
         {
+            for(int i=0; i<inputs.size(); i++)
+            {
+                entradas[0][i]  = (Double) inputs.get(i);
+                for(int j=0; j<orden.length; j++)
+                {
+                    ArrayList outputs = (ArrayList)datos.get(j+1);
+                    salidas[j][i]     = (Double) outputs.get(i);
+                }
+            }
+
             int[] layers = {2,3,4};
             String[] functions = {"logsig","tansig","purelin"};
             net = new Red(1, 4, layers, functions);
@@ -142,6 +142,9 @@ public class Imagestion {
         ArrayList outputs[] = new ArrayList[salida.length];
         ArrayList inputs    = new ArrayList();
         int ix = 0;
+
+        for(int j=0; j<salida.length; j++)
+            outputs[j] = new ArrayList();
 
         try {
             byte[] letras = categoria.getBytes();
@@ -172,7 +175,7 @@ public class Imagestion {
                     if(word>0)
                     {
                         Double real = (double)(1.0/((double)word));
-                        System.out.println(word+"->"+real);
+                        System.out.println(word+" - >"+real);
                         inputs.add(real);
                         for(int j=0; j<salida.length; j++)
                             outputs[j].add(patron*salida[j]);
@@ -180,7 +183,8 @@ public class Imagestion {
                 }
             }
             in.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.out.println("lista:\n"+lista.toString()+"\n"+e.getMessage());
         }
 
         lista.add(inputs);
