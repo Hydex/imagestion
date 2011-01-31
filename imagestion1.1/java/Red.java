@@ -108,22 +108,59 @@ public class Red {
     public Double[] simular(Double[] inputs)
     {
         Double outputs[] = new Double[salidas];
+        int i=0, j=0, n=0;
 
-        for(int n=0; n<inputs.length && n<sinapsis[0].length; n++)
+        for(n=0; n<inputs.length && n<sinapsis[0].length; n++)
             sinapsis[0][n] = inputs[n];
 
-        for(int i=0; i<nCapas; i++)
+        try
         {
-            for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+            for(i=0; i<nCapas; i++)
             {
-                for(int n=0; n<capas[i][j].entradas.length && sinapsis[i][n] != null; n++)
-                    capas[i][j].entradas[n] = sinapsis[i][n];
-                
-                sinapsis[i+1][j] = capas[i][j].calcular();
+                for(j=0; j<capas[i].length && capas[i][j] != null; j++)
+                {
+                    for(n=0; n<capas[i][j].entradas.length && sinapsis[i][n] != null; n++)
+                        capas[i][j].entradas[n] = sinapsis[i][n];
 
-                if(i == nCapas-1)
-                    outputs[j] = capas[i][j].salida;
+                    sinapsis[i+1][j] = capas[i][j].calcular();
+
+                    if(i == nCapas-1)
+                        outputs[j] = capas[i][j].salida;
+                }
             }
+        }
+        catch(Exception e)
+        {
+            ArrayList cap = new ArrayList();
+            ArrayList sin = new ArrayList();
+            ArrayList pes = new ArrayList();
+
+            System.out.println("Punto de ruptura:\ni="+i+" j="+j+" n="+n);
+
+            for(i=0; i<capas.length; i++)
+            {
+                ArrayList out = new ArrayList();
+                for(j=0; j<capas[i].length && capas[i][j]!=null; j++)
+                    out.add(capas[i][j].getEntradas());
+                cap.add("Capa Entrada "+(i+1)+out.toString()+"\n");
+            }
+            for(i=0; i<capas.length; i++)
+            {
+                ArrayList out = new ArrayList();
+                for(j=0; j<capas[i].length && capas[i][j]!=null; j++)
+                    out.add(capas[i][j].getConfiguracion());
+                pes.add("Capa pesos "+(i+1)+out.toString()+"\n");
+            }
+            for(i=0; i<sinapsis.length; i++)
+            {
+                ArrayList out = new ArrayList();
+                for(j=0; j<sinapsis[i].length; j++)
+                    out.add(sinapsis[i][j]);
+                sin.add("Capa sinapsis "+(i+1)+out.toString()+"\n");
+            }
+            System.out.println("Estado capas:\n"+cap.toString());
+            System.out.println("Estado pesos:\n"+pes.toString());
+            System.out.println("Estado sinapsis:\n"+sin.toString()+"\nERROR: "+e.getMessage());
         }
 
         return outputs;
