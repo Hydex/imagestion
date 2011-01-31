@@ -213,6 +213,17 @@ public class Perceptron
         return conf;
     }
 
+    public Hashtable getEntradas()
+    {
+        Hashtable conf = new Hashtable();
+        conf.put(id, new ArrayList());
+
+        for(int i=0; i<entradas.length; i++)
+            ((ArrayList) conf.get(id)).add(entradas[i]);
+
+        return conf;
+    }
+
     public void setConfiguracion()
     {
 
