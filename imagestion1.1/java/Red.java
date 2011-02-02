@@ -102,7 +102,7 @@ public class Red {
     {
         for(int i=0; i<sinapsis.length; i++)
             for(int j=0; j<sinapsis[i].length; j++)
-                sinapsis[i][j] = null;
+                this.sinapsis[i][j] = null;
     }
 
     public Double[] simular(Double[] inputs)
@@ -117,9 +117,9 @@ public class Red {
         {
             for(i=0; i<nCapas; i++)
             {
-                for(j=0; j<capas[i].length && capas[i][j] != null; j++)
+                for(j=0; capas[i][j]!=null && j<capas[i].length; j++)
                 {
-                    for(n=0; n<capas[i][j].entradas.length && sinapsis[i][n] != null; n++)
+                    for(n=0; capas[i][j]!=null && sinapsis[i][n]!=null && n<capas[i][j].entradas.length; n++)
                         capas[i][j].entradas[n] = sinapsis[i][n];
 
                     sinapsis[i+1][j] = capas[i][j].calcular();
@@ -186,7 +186,8 @@ public class Red {
                    sigma     = new Double[outputs.length][outputs[0].length];
         ArrayList resultados = new ArrayList();
 
-        log.add("Info\tEntrada: "+inputs.toString()+"\n\tSalida: "+outputs.toString()+"\n");
+        log.add("\ndatos entrada:\n"+this.array2list(inputs).toString());
+        log.add("\ndatos salida:\n"+this.array2list(outputs).toString());
 
         try
         {
@@ -317,4 +318,15 @@ public class Red {
         return net.toString();
     }
 
+    private ArrayList array2list(Double[][] data)
+    {
+        ArrayList datos = new ArrayList();
+        for(int i=0; i<data.length; i++)
+        {
+            datos.add(new ArrayList());
+            for(int j=0; j<data[i].length; j++)
+                ((ArrayList)datos.get(i)).add(data[i][j]);
+        }
+        return datos;
+    }
 }

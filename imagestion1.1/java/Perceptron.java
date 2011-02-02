@@ -63,6 +63,7 @@ public class Perceptron
     {
         entradas = new Double[inputs];
         pesos    = new Double[inputs];
+        bias     = 0d;
         wBias    = 0d;
         salida   = 0d;
         sigma    = 0d;
@@ -82,8 +83,8 @@ public class Perceptron
 
         for(int i=0; i < entradas.length; i++)
             suma += entradas[i] * pesos[i];
-
-        salida = suma + bias;
+        
+        salida = suma + bias*wBias;
 
         return fnTransf.exec(salida);
     }
