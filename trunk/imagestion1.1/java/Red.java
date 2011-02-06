@@ -113,15 +113,18 @@ public class Red {
         for(n=0; n<inputs.length && n<sinapsis[0].length; n++)
             sinapsis[0][n] = inputs[n];
 
+        //log.add("\nRed.simular(inputs.lenght:"+inputs.length+")\n");
+
         try
         {
             for(i=0; i<nCapas; i++)
             {
                 for(j=0; capas[i][j]!=null && j<capas[i].length; j++)
                 {
-                    for(n=0; capas[i][j]!=null && sinapsis[i][n]!=null && n<capas[i][j].entradas.length; n++)
+                    for(n=0; n<sinapsis[i].length && n<capas[i][j].entradas.length && sinapsis[i][n]!=null; n++)
                         capas[i][j].entradas[n] = sinapsis[i][n];
 
+                    log.add("sinapsis["+(i+1)+"]["+j+"] = capas["+i+"]["+j+"].calcular()\n");
                     sinapsis[i+1][j] = capas[i][j].calcular();
 
                     if(i == nCapas-1)
@@ -135,32 +138,35 @@ public class Red {
             ArrayList sin = new ArrayList();
             ArrayList pes = new ArrayList();
 
-            System.out.println("Punto de ruptura:\ni="+i+" j="+j+" n="+n);
+            log.add("Red.simular(inputs.lenght:"+inputs.length+") Exepcion!\n"+
+                    "i=[0.."+(capas.length-1)+"], j=[0.."+(capas[0].length-1)+"]\n" +
+                    "Punto de ruptura: i="+i+" j="+j+" n="+n);
 
             for(i=0; i<capas.length; i++)
             {
                 ArrayList out = new ArrayList();
                 for(j=0; j<capas[i].length && capas[i][j]!=null; j++)
                     out.add(capas[i][j].getEntradas());
-                cap.add("Capa Entrada "+(i+1)+out.toString()+"\n");
+                cap.add("Capa Entrada "+i+out.toString()+"\n");
             }
             for(i=0; i<capas.length; i++)
             {
                 ArrayList out = new ArrayList();
                 for(j=0; j<capas[i].length && capas[i][j]!=null; j++)
                     out.add(capas[i][j].getConfiguracion());
-                pes.add("Capa pesos "+(i+1)+out.toString()+"\n");
+                pes.add("Capa pesos "+i+out.toString()+"\n");
             }
             for(i=0; i<sinapsis.length; i++)
             {
                 ArrayList out = new ArrayList();
                 for(j=0; j<sinapsis[i].length; j++)
                     out.add(sinapsis[i][j]);
-                sin.add("Capa sinapsis "+(i+1)+out.toString()+"\n");
+                sin.add("Capa sinapsis "+i+out.toString()+"\n");
             }
-            System.out.println("Estado capas:\n"+cap.toString());
-            System.out.println("Estado pesos:\n"+pes.toString());
-            System.out.println("Estado sinapsis:\n"+sin.toString()+"\nERROR: "+e.getMessage());
+            log.add("Estado capas:\n"+cap.toString()+"\n"+
+                    "Estado pesos:\n"+pes.toString()+"\n"+
+                    "Estado sinapsis:\n"+sin.toString()+"\n" +
+                    "ERROR: '"+e.toString()+"'\n");
         }
 
         return outputs;
@@ -186,8 +192,7 @@ public class Red {
                    sigma     = new Double[outputs.length][outputs[0].length];
         ArrayList resultados = new ArrayList();
 
-        log.add("\ndatos entrada:\n"+this.array2list(inputs).toString());
-        log.add("\ndatos salida:\n"+this.array2list(outputs).toString());
+        log.add("\nRed.entrenar(entrada:"+this.array2list(inputs).toString()+"\nsalida:"+this.array2list(outputs).toString()+");\n");
 
         try
         {
@@ -206,6 +211,7 @@ public class Red {
                 int intentos = ciclos;
                 do
                 {
+                    log.add("\nITERACION:"+(ciclos+1-intentos)+"\n");
                     log.add("\npaso 2:\n");
                     // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
@@ -250,7 +256,7 @@ public class Red {
         }
         catch(Exception e)
         {
-            System.out.println(log.toString()+"\n"+e.getMessage());
+            System.out.println("EXCEPCION! '"+e.toString()+"'\nDETALLES LOG:\n"+log.toString());
         }
 
         return null;
