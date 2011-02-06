@@ -80,11 +80,19 @@ public class Perceptron
     public Double calcular()
     {
         Double suma = 0.0;
+        int i=0;
 
-        for(int i=0; i < entradas.length; i++)
-            suma += entradas[i] * pesos[i];
-        
-        salida = suma + bias*wBias;
+        try
+        {
+            for(i=0; i < entradas.length; i++)
+                suma += entradas[i] * pesos[i];
+
+            salida = suma + bias*wBias;
+        }
+        catch(Exception e)
+        {
+            System.out.println("Perceptron.calcular()\nExepcion!: iteracion i:"+i+" de "+entradas.length+"\n"+e.toString()+"\n");
+        }
 
         return fnTransf.exec(salida);
     }

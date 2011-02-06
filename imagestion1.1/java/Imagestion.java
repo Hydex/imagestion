@@ -124,6 +124,7 @@ public class Imagestion {
             String[] functions = {"logsig","tansig","purelin"};
             net = new Red(1, 4, layers, functions);
 
+            System.err.println("testPerceptron("+file+","+categoria+"):");
             System.out.println("configuracion:\n"+net.getConfiguracion().toString()+"\n");
             System.out.println("entradas:"+entradas[0].length+" salidas:"+salidas[0].length);
             net.entrenar(entradas, salidas);
@@ -131,7 +132,7 @@ public class Imagestion {
         }
         catch(Exception e)
         {
-            System.err.println("Exception: "+e.getMessage());
+            System.err.println("testPerceptron():\n"+e.toString());
         }       
     }
 
@@ -184,7 +185,7 @@ public class Imagestion {
             }
             in.close();
         } catch (Exception e) {
-            System.out.println("lista:\n"+lista.toString()+"\n"+e.getMessage());
+            System.out.println("lista:\n"+lista.toString()+"\n"+e.toString());
         }
 
         lista.add(inputs);
