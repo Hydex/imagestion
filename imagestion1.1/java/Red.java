@@ -118,19 +118,17 @@ public class Red {
         try
         {
             for(i=0; i<nCapas; i++)
-            {
-                for(j=0; capas[i][j]!=null && j<capas[i].length; j++)
-                {
-                    for(n=0; n<sinapsis[i].length && n<capas[i][j].entradas.length && sinapsis[i][n]!=null; n++)
-                        capas[i][j].entradas[n] = sinapsis[i][n];
+                for(j=0; j<capas[i].length && j<salidas; j++)
+                    if(capas[i][j] != null)
+                    {
+                        for(n=0; n<sinapsis[i].length && n<capas[i][j].entradas.length && sinapsis[i][n]!=null; n++)
+                            capas[i][j].entradas[n] = sinapsis[i][n];
 
-                    log.add("sinapsis["+(i+1)+"]["+j+"] = capas["+i+"]["+j+"].calcular()\n");
-                    sinapsis[i+1][j] = capas[i][j].calcular();
+                        sinapsis[i+1][j] = capas[i][j].calcular();
 
-                    if(i == nCapas-1)
-                        outputs[j] = capas[i][j].salida;
-                }
-            }
+                        if(i == nCapas-1)
+                            outputs[j] = capas[i][j].salida;
+                    }
         }
         catch(Exception e)
         {
@@ -192,7 +190,12 @@ public class Red {
                    sigma     = new Double[outputs.length][outputs[0].length];
         ArrayList resultados = new ArrayList();
 
-        log.add("\nRed.entrenar(entrada:"+this.array2list(inputs).toString()+"\nsalida:"+this.array2list(outputs).toString()+");\n");
+        log.add("\nRed.entrenar(inputs:"+inputs.length+"x"+inputs[0].length+"\n"+
+                this.array2list(inputs).toString()+
+                "\noutputs:"+outputs.length+"x"+outputs[0].length+"\n"+
+                this.array2list(outputs).toString()+");\n");
+        log.add("salidas:"+salidas.length+"x"+salidas[0].length+"\n"+
+                "sigma:"+sigma.length+"x"+sigma[0].length+"\n");
 
         try
         {
@@ -204,27 +207,41 @@ public class Red {
                     capas[i][j].inicializarPesos();
 
             this.entrenamientos++;
+
             log.add("\npesos iniciales: \n"+this.getConfiguracion().toString()+"\n");
+            log.add("datos=[0.."+inputs[0].length+"]\n");
 
             for(int datos=0; datos < inputs[0].length; datos++)
             {
                 int intentos = ciclos;
+
                 do
                 {
-                    log.add("\nITERACION:"+(ciclos+1-intentos)+"\n");
-                    log.add("\npaso 2:\n");
                     // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
+                    log.add("\niteracion:"+(ciclos+1-intentos)+", datos["+datos+"]\n");
+                    log.add("\npaso 2:\n");
                     Double[] entradas = new Double[this.entradas];
+
                     for(int i=0; i<this.entradas; i++)
                         entradas[i] = inputs[i][datos];
 
-                    log.add("\npaso 3:\n");
                     // paso 3: Calcular salida de la red
-                    salidas[datos] = simular(entradas);
+                    log.add("\npaso 3:\n");
+                    Double resultado[] = simular(entradas);
+
+                    for(int i=0; i<resultado.length; i++)
+                        salidas[i][datos] = resultado[i];
+ 
+                    log.add("salidas["+datos+"]: i=[0.."+salidas[datos].length+"]\n");
+                    log.add("outputs["+datos+"]: i=[0.."+outputs[datos].length+"]\n");
                     double error = 0.0;
-                    for(int i=0; i<outputs[datos].length; i++)
-                        error += outputs[datos][i] - salidas[datos][i];
+
+                    for(int i=0; i<outputs.length; i++)
+                    {
+                        log.add(error+" = outputs["+i+"]["+datos+"]:"+outputs[i][datos]+" - salidas["+i+"]["+datos+"]:"+salidas[i][datos]+"\n");
+                        error += outputs[i][datos] - salidas[i][datos];
+                    }
 
                     if(error < minimo) break;
 
@@ -247,9 +264,9 @@ public class Red {
                     log.add("\npaso 6:\n");
                     // paso 6: Repetir de 1 al 4 para cada vector del conjunto de entrenamiento
                     //         hasta que el error del conjunto entero sea aceptablemente bajo
-                    String resultado = this.getConfiguracion();
-                    resultados.add(resultado);
-                    log.add("\niteracion "+intentos+":"+resultado+"\n"+this.getConfiguracion().toString()+"\n");
+                    String conf = this.getConfiguracion();
+                    resultados.add(conf);
+                    log.add("\nRESULTADOS:"+conf+"\n");
                 }
                 while(--intentos > 0);
             }

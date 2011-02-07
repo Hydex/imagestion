@@ -114,12 +114,20 @@ public class Perceptron
     {
         // ver la forma de ir registrando los valores de los pesos y salidas de cada iteracion
         double avgDelta = 0.0;
+        int i = 0;
 
-        for(int i = 0; i<pesos.length && pesos[i] != null; i++)
+        try
         {
-            double delta = Sigma * entradas[i]; // averiguar:  calcular por salida o entrada?
-            pesos[i] += delta;
-            avgDelta += delta;
+            for(i = 0; i<pesos.length && pesos[i] != null; i++)
+            {
+                double delta = Sigma * entradas[i]; // averiguar:  calcular por salida o entrada?
+                pesos[i] += delta;
+                avgDelta += delta;
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("Perceptron.backPropagation()\nExepcion!: iteracion i:"+i+" de "+pesos.length+"\n"+e.toString()+"\n");
         }
 
         return avgDelta/pesos.length;  // evaluar si debe retornar valor
