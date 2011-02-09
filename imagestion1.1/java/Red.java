@@ -36,6 +36,8 @@
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class Red
@@ -274,6 +276,7 @@ public class Red {
         catch(Exception e)
         {
             System.out.println("EXCEPCION! '"+e.toString()+"'\nDETALLES LOG:\n"+log.toString());
+            Logger.getLogger(Red.class.getName()).log(Level.SEVERE, null, e);
         }
 
         return null;
