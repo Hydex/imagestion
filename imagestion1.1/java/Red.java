@@ -221,7 +221,7 @@ public class Red {
                 {
                     // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                    log.add("\niteracion:"+(ciclos+1-intentos)+", datos["+datos+"]\n");
+                    log.add("\niteracion:"+(intentos--)+", datos["+datos+"]\n");
                     log.add("\npaso 2:\n");
                     Double[] entradas = new Double[this.entradas];
 
@@ -235,8 +235,6 @@ public class Red {
                     for(int i=0; i<resultado.length; i++)
                         salidas[i][datos] = resultado[i];
  
-                    log.add("salidas["+datos+"]: i=[0.."+salidas[datos].length+"]\n");
-                    log.add("outputs["+datos+"]: i=[0.."+outputs[datos].length+"]\n");
                     double error = 0.0;
 
                     for(int i=0; i<outputs.length; i++)
@@ -245,6 +243,7 @@ public class Red {
                         error += outputs[i][datos] - salidas[i][datos];
                     }
 
+                    log.add("error:"+error+" < "+minimo+"\n");
                     if(error < minimo) break;
 
                     log.add("\npaso 4:\n");
@@ -270,13 +269,17 @@ public class Red {
                     resultados.add(conf);
                     log.add("\nRESULTADOS:"+conf+"\n");
                 }
-                while(--intentos > 0);
+                while(intentos > 0);
             }
         }
         catch(Exception e)
         {
             System.out.println("EXCEPCION! '"+e.toString()+"'\nDETALLES LOG:\n"+log.toString());
             Logger.getLogger(Red.class.getName()).log(Level.SEVERE, null, e);
+        }
+        finally
+        {
+            System.out.println("EXITO!\nDETALLES LOG:\n"+log.toString());
         }
 
         return null;
