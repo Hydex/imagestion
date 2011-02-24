@@ -176,7 +176,7 @@ public class Imagestion {
                     if(word>0)
                     {
                         Double real = (double)(1.0/((double)word));
-                        System.out.println(word+" - >"+real);
+                        System.out.println(word+" -> "+real);
                         inputs.add(real);
                         for(int j=0; j<salida.length; j++)
                             outputs[j].add(patron*salida[j]);
