@@ -237,19 +237,17 @@ public class Red {
                     for(int i=0; i<resultado.length; i++)
                         salidas[i][datos] = resultado[i];
  
-                    double error = 0.0;
+                    double error[]   = new double[outputs.length];
+                    boolean underMin = true;
 
                     for(int i=0; i<outputs.length; i++)
                     {
-                        log.add(error+" = outputs["+i+"]["+datos+"]:"+outputs[i][datos]+" - salidas["+i+"]["+datos+"]:"+salidas[i][datos]+"\n");
-                        error += outputs[i][datos] - salidas[i][datos];
+                        error[i] = Math.abs(outputs[i][datos] - salidas[i][datos]);
+                        underMin = error[i] > minimo && underMin ?true :underMin;
+                        log.add("error["+i+"]:"+error[i]+" = outputs["+i+"]["+datos+"]:"+outputs[i][datos]+" - salidas["+i+"]["+datos+"]:"+salidas[i][datos]+"; "+error[i]+" < "+minimo+" => "+underMin+"\n");
                     }
 
-                    if(outputs.length > 0)
-                        error = Math.abs(error/outputs.length);
-
-                    log.add("error:"+error+" < "+minimo+"\n");
-                    if(error < minimo) break;
+                    if(underMin) break;
 
                     log.add("\npaso 4:\n");
                     // paso 4: Calcular el error entre la salida de la red y la salida deseada
