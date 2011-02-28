@@ -57,6 +57,7 @@ public class Red {
     public  int    ciclos  = 10;
     public  int    entrenamientos;
     private ArrayList log;
+    private String[] transferencias;
 
     //
     // Constructors
@@ -66,6 +67,7 @@ public class Red {
         nCapas   = layers.length;
         this.entradas = entradas;
         this.salidas  = salidas;
+        this.transferencias = funciones;
         this.entrenamientos = 0;
         this.log = new ArrayList();
         int max  = 0;
@@ -243,14 +245,17 @@ public class Red {
                         error += outputs[i][datos] - salidas[i][datos];
                     }
 
+                    if(outputs.length > 0)
+                        error = Math.abs(error/outputs.length);
+
                     log.add("error:"+error+" < "+minimo+"\n");
                     if(error < minimo) break;
 
                     log.add("\npaso 4:\n");
                     // paso 4: Calcular el error entre la salida de la red y la salida deseada
                     //         (vector objetivo de par de entrenamiento)
-                    for(int i=nCapas-1; i>=0; i--)
-                        for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
+                    for(int i=nCapas-1; i>=0 && capas[i] != null; i--)
+                        for(int j=0; j<capas[i].length && capas[i][j] != null && outputs[i][j] != null && salidas[i][j] != null; j++)
                         {
                             double delta = i == nCapas-1 ?outputs[i][j] - salidas[i][j]: getError(i+1,j);
                             capas[i][j].setSigma(delta);
@@ -258,7 +263,7 @@ public class Red {
 
                     log.add("\npaso 5:\n");
                     // paso 5: Ajustar los pesos de la red para minimizar este error
-                    for(int i=0; i<nCapas; i++)
+                    for(int i=0; i<nCapas && capas[i] != null; i++)
                         for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
                             capas[i][j].backPropagation(capas[i][j].getError(rata)); // * sinapsis[i][j]);
 
@@ -337,10 +342,11 @@ public class Red {
             Hashtable conf = new Hashtable();
             String capa = ""+((char)(ascii[0]+i));
             conf.put(capa, new ArrayList());
+            conf.put("func."+capa, this.transferencias[i]);
 
             for(int j=0; j<capas[i].length && capas[i][j] != null; j++)
                 ((ArrayList)conf.get(capa)).add(capas[i][j].getConfiguracion());
-
+            
             net.append(conf.toString()+"\n");
         }
 

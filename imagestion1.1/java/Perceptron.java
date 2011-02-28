@@ -51,7 +51,7 @@ public class Perceptron
     private Double[]   pesos;
     public  Double     bias;
     private Double     wBias;
-    public  Double     salida;
+    public  double     salida;
     public  double     sigma;
     private Activacion fnTransf;
     private String     id;
