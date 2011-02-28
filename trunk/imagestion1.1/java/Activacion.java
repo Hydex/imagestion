@@ -35,7 +35,7 @@
 
 enum FuncionesTransferencia {HARDLIM, HARDLIMS, POSLIN, PURELIN, SATLIN, SATLINS,
                              LOGSIG, TANSIG, RADBAS, D_LOGSIG, D_TANSIG, D_RADBAS,
-                             UNDEFINED};
+                             D_PURELIN, D_POSLIN, UNDEFINED};
 /**
  *
  * @author miguel
@@ -57,9 +57,11 @@ public class Activacion
                        tipo.equalsIgnoreCase("TANSIG")   ?FuncionesTransferencia.TANSIG   :
                        tipo.equalsIgnoreCase("RADBAS")   ?FuncionesTransferencia.RADBAS   :FuncionesTransferencia.UNDEFINED;
         
-        this.training = tipo.equalsIgnoreCase("LOGSIG")  ?FuncionesTransferencia.D_LOGSIG :
-                        tipo.equalsIgnoreCase("TANSIG")  ?FuncionesTransferencia.D_TANSIG :
-                        tipo.equalsIgnoreCase("RADBAS")  ?FuncionesTransferencia.D_RADBAS :FuncionesTransferencia.UNDEFINED;
+        this.training = tipo.equalsIgnoreCase("LOGSIG")  ?FuncionesTransferencia.D_LOGSIG  :
+                        tipo.equalsIgnoreCase("TANSIG")  ?FuncionesTransferencia.D_TANSIG  :
+                        tipo.equalsIgnoreCase("PURELIN") ?FuncionesTransferencia.D_PURELIN :
+                        tipo.equalsIgnoreCase("POSLIN") ?FuncionesTransferencia.D_POSLIN   :
+                        tipo.equalsIgnoreCase("RADBAS")  ?FuncionesTransferencia.D_RADBAS  :FuncionesTransferencia.UNDEFINED;
     }
     
     public Double exec(Double val)
@@ -95,6 +97,9 @@ public class Activacion
     {
         switch(this.training)
         {
+            case D_POSLIN:
+            case D_PURELIN:
+                return 1.0;
             case D_LOGSIG:
                 return this.logsig_derivada(val);
             case D_TANSIG:
