@@ -214,16 +214,15 @@ public class Red {
 
             log.add("\npesos iniciales: \n"+this.getConfiguracion().toString()+"\n");
             log.add("datos=[0.."+inputs[0].length+"]\n");
+            int epochs = ciclos;
 
-            for(int datos=0; datos < inputs[0].length; datos++)
+            do
             {
-                int intentos = ciclos;
-
-                do
+                for(int datos=0; datos < inputs[0].length; datos++)
                 {
-                    // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
+                        // paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     //         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                    log.add("\niteracion:"+(intentos--)+", datos["+datos+"]\n");
+                    log.add("\niteracion:"+(epochs--)+", datos["+datos+"]\n");
                     log.add("\npaso 2:\n");
                     Double[] entradas = new Double[this.entradas];
 
@@ -272,8 +271,8 @@ public class Red {
                     resultados.add(conf);
                     log.add("\nRESULTADOS:"+conf+"\n");
                 }
-                while(intentos > 0);
             }
+            while(epochs > 0);
         }
         catch(Exception e)
         {
