@@ -194,6 +194,8 @@ public class Red {
                    sigma     = new Double[outputs.length][outputs[0].length];
         ArrayList resultados = new ArrayList();
 
+        ciclos = inputs[0].length;
+        
         log.add("\nRed.entrenar(inputs:"+inputs.length+"x"+inputs[0].length+"\n"+
                 this.array2list(inputs).toString()+
                 "\noutputs:"+outputs.length+"x"+outputs[0].length+"\n"+
@@ -239,10 +241,11 @@ public class Red {
                     double error[]   = new double[outputs.length];
                     boolean underMin = true;
 
+                    // calcula el delta de error de la red buscando un minimo
                     for(int i=0; i<outputs.length; i++)
                     {
                         error[i] = Math.abs(outputs[i][datos] - salidas[i][datos]);
-                        underMin = error[i] > minimo && underMin ?true :underMin;
+                        underMin = error[i] > minimo && underMin ?false :underMin;
                         log.add("error["+i+"]:"+error[i]+" = outputs["+i+"]["+datos+"]:"+outputs[i][datos]+" - salidas["+i+"]["+datos+"]:"+salidas[i][datos]+"; "+error[i]+" < "+minimo+" => "+underMin+"\n");
                     }
 
