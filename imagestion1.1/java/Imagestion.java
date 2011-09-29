@@ -52,7 +52,7 @@ public class Imagestion {
 
         if(args.length < 2)
         {
-            System.out.println("Digite: java -jar Imagestion -[i|t] 'archivo'");
+            System.out.println("Digite: java -jar imagestion1.1.jar -[i|t] 'archivo'");
             System.exit(1);
         }
         else
@@ -121,7 +121,7 @@ public class Imagestion {
             }
 
             int[] layers = {2,3,4};
-            String[] functions = {"logsig","tansig","purelin"};
+            String[] functions = {"logsig","logsig","logsig"};
             net = new Red(1, 4, layers, functions);
 
             System.err.println("testPerceptron("+file+","+categoria+"):");
