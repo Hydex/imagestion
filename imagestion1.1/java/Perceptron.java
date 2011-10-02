@@ -225,7 +225,7 @@ public class Perceptron
         conf.put(id, new ArrayList());
 
         for(int i=0; i<pesos.length; i++)
-            ((ArrayList) conf.get(id)).add(pesos[i]);
+            ((ArrayList) conf.get(id)).add(String.format("%08f", pesos[i]));
 
         return conf;
     }

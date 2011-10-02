@@ -244,9 +244,9 @@ public class Red {
                     // calcula el delta de error de la red buscando un minimo
                     for(int i=0; i<outputs.length; i++)
                     {
-                        error[i] = Math.abs(outputs[i][datos] - salidas[i][datos]);
-                        underMin = error[i] > minimo && underMin ?false :underMin;
-                        log.add("error["+i+"]:"+error[i]+" = outputs["+i+"]["+datos+"]:"+outputs[i][datos]+" - salidas["+i+"]["+datos+"]:"+salidas[i][datos]+"; "+error[i]+" < "+minimo+" => "+underMin+"\n");
+                        error[i] = outputs[i][datos] - salidas[i][datos];
+                        underMin = Math.abs(error[i]) > minimo && underMin ?false :underMin;
+                        log.add("error["+i+"]:"+String.format("%08f",error[i])+" = outputs["+i+"]["+datos+"]:"+String.format("%08f",outputs[i][datos])+" - salidas["+i+"]["+datos+"]:"+String.format("%08f",salidas[i][datos])+"; "+String.format("%08f",error[i])+" < "+minimo+" => "+underMin+"\n");
                     }
 
                     if(underMin) break;
@@ -360,7 +360,7 @@ public class Red {
         {
             datos.add(new ArrayList());
             for(int j=0; j<data[i].length; j++)
-                ((ArrayList)datos.get(i)).add(data[i][j]);
+                ((ArrayList)datos.get(i)).add(String.format("%08f", data[i][j]));
         }
         return datos;
     }
