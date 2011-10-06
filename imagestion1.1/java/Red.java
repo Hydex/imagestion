@@ -109,6 +109,18 @@ public class Red {
                 this.sinapsis[i][j] = null;
     }
 
+    /**
+     * simular
+     * 
+     * @param inputs
+     * @return Double[]
+     * 
+     * Propagacion hacia adelante del la red neuronal, devolviendo una salida
+     * en funcion de los argumentos de entrada.
+     * 
+     * Mas detalle en profundidad visitar:
+     * http://galaxy.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html
+     **/
     public Double[] simular(Double[] inputs)
     {
         Double outputs[] = new Double[salidas];
@@ -174,7 +186,8 @@ public class Red {
         return outputs;
     }
 
-    /** entrenar
+    /** 
+     * entrenar
      *
      * Estructura y aprendizaje:
      * - Capa de entrada con n neuronas.
