@@ -1,7 +1,7 @@
 # +-----------------------------------------------------------------------+
 # | IMAGESTION                                                            |
 # |                                                                       |
-# | Copyright (C) 2010-Today, GNUCHILE.CL	- Santiago de Chile       |
+# | Copyright (C) 2010-Today, GNUCHILE.CL	- Santiago de Chile           |
 # | Licensed under the GNU GPL                                            |
 # |                                                                       |
 # | Redistribution and use in source and binary forms, with or without    |
