@@ -56,7 +56,7 @@ from datetime import datetime
 # 1504        return tuple(ims)
 
 
-img = Imagen('../../../webcam/img01.jpg')
+img = Imagen('/home/miguel/Pictures/factura.jpg')
 print 'ancho:', img.getAncho() ,' alto:', img.getAlto()
 
 #r = img.getR()
