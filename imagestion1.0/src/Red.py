@@ -101,7 +101,9 @@ class Red(object):
                         if i == self.nCapas-1:
                             outputs[j] = self.capas[i][j].salida 
                     pass
-        except:
+        except (NameError, ValueError):
+            print "ERROR en Red.simular()\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n)
+            print NameError+":"+ValueError
             pass
         
         return outputs
