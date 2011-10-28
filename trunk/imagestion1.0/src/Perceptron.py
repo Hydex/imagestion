@@ -65,16 +65,17 @@ class Perceptron(object):
         i = 0
         
         try:
-            for i in self.entradas:
+            for i in range(len(self.entradas)):
                 suma += self.entradas[i] * self.pesos[i]
                 
             self.salida = suma + self.bias*self.wBias
             pass
-        except:
-            print "ERROR en Perceptron.calcular()\n"
+        except (NameError, ValueError):
+            print NameError+":"+ValueError
+            print "ERROR en Perceptron.calcular()\nIteracion i="+str(i)
             pass
         
-        return self.fnTransf.exe(salida)
+        return self.fnTransf.exe(self.salida)
         pass
     
     """   
@@ -97,7 +98,7 @@ class Perceptron(object):
         i = 0
         
         try:
-            for i in self.pesos:
+            for i in range(len(self.pesos)):
                 if self.pesos[i] == None:
                     break
                 delta = self.sigma * self.entradas[i]
@@ -105,8 +106,9 @@ class Perceptron(object):
                 avgDelta += delta
                 pass
             pass
-        except:
-            print "ERROR Perceptron.backPropagation():\niteracion i:"+str(i)+" de "+str(len(pesos))+"\n"
+        except (NameError, ValueError):
+            print NameError+":"+ValueError
+            print "ERROR Perceptron.backPropagation():\niteracion i="+str(i)+" de "+str(len(pesos))+"\n"
             pass
         
         return avgDelta / len(self.pesos)
