@@ -33,14 +33,95 @@
 # | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 # +-----------------------------------------------------------------------+
 
+from Perceptron import *
+from random import *
+
 class Red(object):
 
-  """
-   
-
-  :version:
-  :author:
-  """
+    """
 
 
+    :version: 1.0
+    :author:  Miguelote
+    """
 
+    def __init__(self,entradas,salidas,layers,funciones):
+        self.nCapas   = len(layers)
+        max,size      = 0,0
+        self.log      = []
+        self.capas    = [None] * self.nCapas
+        self.sinapsis = [None] * (self.nCapas + 1)
+        self.entradas = entradas
+        self.salidas  = salidas
+        self.transferencias = funciones
+        
+        self.sinapsis[0] = [ random() ] * entradas
+                
+        for i in range(self.nCapas):
+            inputs = entradas if i == 0 else size
+            size   = layers[i]
+            max    = size if size > max else max
+            #print [i,size,max,inputs]
+            
+            self.sinapsis[i+1] = [ random() ] * size
+            self.capas[i] = [ Perceptron(inputs,funciones[i]) ] * size
+            
+        pass
+
+    """
+    /**
+    * simular
+    * 
+    * @param inputs
+    * @return Double[]
+    * 
+    * Propagacion hacia adelante del la red neuronal, devolviendo una salida
+    * en funcion de los argumentos de entrada.
+    * 
+    * Mas detalle en profundidad visitar:
+    * http://galaxy.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html
+    **/
+    """
+    def simular(self,inputs):
+        outputs = [None] * self.salidas
+        i,j,n = 0,0,0
+        
+        for n in range(len(inputs)):
+            self.sinapsis[0][n] = inputs[n]
+        
+        try:
+            for i in range(self.nCapas):
+                for j in range(len(self.capas[i])):
+                    if self.capas[i][j] != None:
+                        for n in range(len(self.sinapsis[i])):
+                            self.capas[i][j].entradas[n] = self.sinapsis[n]
+                        
+                        self.sinapsis[i+1][j] = self.capas[i][j].calcular();
+                        
+                        if i == self.nCapas-1:
+                            outputs[j] = self.capas[i][j].salida 
+                    pass
+        except:
+            pass
+        
+        return outputs
+        
+    """
+    /** 
+     * entrenar
+     *
+     * Estructura y aprendizaje:
+     * - Capa de entrada con n neuronas.
+     * - Capa de salida con m neuronas.
+     * - Al menos una capa oculta de neuronas.
+     * - Cada neurona de una capa recibe entradas de todas las
+     *   neuronas de la capa anterior y envia su salida a todas
+     *   las neuronas de la capa posterior. No hay conexiones
+     *   hacia atras ni laterales entre neuronas de la misma capa.
+     *
+     * Mas detalle en profundidad visitar:
+     * http://galaxy.agh.edu.pl/~vlsi/AI/backp_t_en/backprop.html
+     **/    
+    """
+    def entrenar(self,inputs,outputs):
+        pass

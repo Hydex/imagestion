@@ -33,14 +33,153 @@
 # | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 # +-----------------------------------------------------------------------+
 
+from Activacion import *
+from random import random
+
 class Perceptron(object):
 
-  """
+    """
    
 
-  :version:
-  :author:
-  """
+    :version: 1.0
+    :author:  Miguelote
+    """
 
-
+    def __init__(self,inputs,funcion):
+        self.entradas = [None] * inputs
+        self.pesos    = [None] * inputs
+        
+        for i in range(inputs):
+            self.entradas[i] = random()
+            self.pesos[i]    = random()
+            
+        self.bias = 0.0
+        self.wBias = 0.0
+        self.salida = 0.0
+        self.sigma = 0.0
+        self.fnTransf = Activacion(funcion)
+        pass
+        
+    def calcular(self):
+        suma = 0.0
+        i = 0
+        
+        try:
+            for i in self.entradas:
+                suma += self.entradas[i] * self.pesos[i]
+                
+            self.salida = suma + self.bias*self.wBias
+            pass
+        except:
+            print "ERROR en Perceptron.calcular()\n"
+            pass
+        
+        return self.fnTransf.exe(salida)
+        pass
+    
+    """   
+    #  backPropagation
+    # 
+    # Algoritmo de retropropagacion
+    # 
+    # El procedimiento de retropropagacion es una forma relativamente eficiente
+    # de calcular que tanto se mejora el desempeno con los cambios individuales
+    # en los pesos. Se conoce como procedimiento de retropropagacion porque,
+    # primero calcula cambios en la capa final, reutiliza gran parte de los
+    # mismos caSlculos para calcular los cambios de los pesos de la penultima
+    # capa y, finalmente, regresa a la capa inicial.
+    #
+    #
+    """    
+     
+    def backPropagation(self,sigma):
+        avgDelta = 0.0
+        i = 0
+        
+        try:
+            for i in self.pesos:
+                if self.pesos[i] == None:
+                    break
+                delta = self.sigma * self.entradas[i]
+                self.pesos[i] += delta
+                avgDelta += delta
+                pass
+            pass
+        except:
+            print "ERROR Perceptron.backPropagation():\niteracion i:"+str(i)+" de "+str(len(pesos))+"\n"
+            pass
+        
+        return avgDelta / len(self.pesos)
+        pass
+       
+    """
+    # setSigma
+    # 
+    #  Al comparar la senal de salida con una respuesta deseada o salida objetivo,
+    #  d(t), se produce una senal de error, e(t), energia de error. Senal de error
+    #  en la neurona de salida j en la iteracion t
+    #          e(t)=d(t) - y(t)
+    #  donde t denota el tiempo discreto, y(t) representa la salida de la capa previa.
+    # 
+    #  Regla Delta Generalizada Es una extension de la regla delta propuesta por Widrow (1960).
+    #  Se usa en redes con capas intermedias con conexiones hacia delante y cuyas celulas
+    #  tienen funciones de activacion continuas. Estas funciones continuas son no decrecientes
+    #  y derivables (la funcion sigmoidal pertenece a este tipo de funciones).
+    #
+    """ 
+    
+    def setSigma(self,sigma):
+        self.sigma = sigma
+        pass
+        
+    def getSigma(self):
+        return self.sigma
+        pass
+        
+    def setBias(self,bias):
+        self.bias = bias
+        pass
+    
+    def getBias(self):
+        return self.bias
+    
+    def setSalida(self,salida):
+        self.salida = salida
+        pass
+        
+    def getSalida(self):
+        return self.salida
+    
+    def getwBias(self):
+        return self.wBias
+    
+    def setwBias(self,bias):
+        self.wBias = bias
+        pass
+        
+    def setPeso(self,idx,peso):
+        self.pesos[idx] = peso
+        pass
+        
+    def getPeso(self,idx):
+        return self.pesos[idx]
+    
+    def setId(self,id):
+        self.id = id
+        pass
+        
+    def getId(seld):
+        return self.id
+    
+    def inicializarPesos(self):
+        pass
+        
+    def getConfiguracion(self):
+        pass
+        
+    def getEntradas(self):
+        pass
+        
+    def setConfiguracion(self):
+        pass
 

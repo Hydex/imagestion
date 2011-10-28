@@ -1,7 +1,7 @@
 # +-----------------------------------------------------------------------+
 # | IMAGESTION                                                            |
 # |                                                                       |
-# | Copyright (C) 2010-Today, GNUCHILE.CL	- Santiago de Chile           |
+# | Copyright (C) 2010-Today, GNUCHILE.CL   - Santiago de Chile           |
 # | Licensed under the GNU GPL                                            |
 # |                                                                       |
 # | Redistribution and use in source and binary forms, with or without    |
@@ -33,6 +33,8 @@
 # | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 # +-----------------------------------------------------------------------+
 
+from math import *
+
 class Activacion(object):
 
     """
@@ -46,37 +48,37 @@ class Activacion(object):
     def __init__(self,type):
         self.tipo = type
         self.funciones = {
-            "HARDLIM":"hardlim(expr)",
-            "HARDLIMS":"hardlim(expr)",
-            "POSLIN":"poslin(expr)",
-            "PURELIN":"purelin(expr)",
-            "SATLIN":"satlin(expr)",
-            "SATLINS":"satlins(expr)",
-            "LOGSIG":"logsis(expr)",
-            "TANSIG":"tansig(expr)",
-            "RADBAS":"radbas(expr)",
-            "UNDEFINED":"undefined(expr)"
+            "HARDLIM"   : "self.hardlim(expr)",
+            "HARDLIMS"  : "self.hardlims(expr)",
+            "POSLIN"    : "self.poslin(expr)",
+            "PURELIN"   : "self.purelin(expr)",
+            "SATLIN"    : "self.satlin(expr)",
+            "SATLINS"   : "self.satlins(expr)",
+            "LOGSIG"    : "self.logsig(expr)",
+            "TANSIG"    : "self.tansig(expr)",
+            "RADBAS"    : "self.radbas(expr)",
+            "UNDEFINED" : "self.undefined(expr)"
         }
         self.derivadas = {
-            "LOGSIG":"logsis_derivada(expr)",
-            "TANSIG":"tansig_derivada(expr)",
-            "PURELIN":"purelin_derivada(expr)",
-            "POSLIN":"poslin_derivada(expr)",
-            "RADBAS":"undefined(expr)",
-            "UNDEFINED":"undefined(expr)"
+            "LOGSIG"    : "self.logsig_derivada(expr)",
+            "TANSIG"    : "self.tansig_derivada(expr)",
+            "PURELIN"   : "self.purelin_derivada(expr)",
+            "POSLIN"    : "self.poslin_derivada(expr)",
+            "RADBAS"    : "self.undefined(expr)",
+            "UNDEFINED" : "self.undefined(expr)"
         }
         pass
     
     def exe(self,val):
-        valor   = null
-        funcion = self.funciones[self.tipo].replace('expr',val)
+        valor   = None
+        funcion = self.funciones[self.tipo].replace('expr',str(val))
         exec "valor = "+funcion
         return valor
         pass
         
     def train(self,val):
-        valor   = null
-        funcion = self.derivadas[self.tipo].replace('expr',val)
+        valor   = None
+        funcion = self.derivadas[self.tipo].replace('expr',str(val))
         exec "valor = "+funcion
         return valor
         pass
@@ -105,18 +107,18 @@ class Activacion(object):
         return -1.0 if val < -1.0 else 1.0 if val > 1.0 else val
         pass
         
-    def logsis(self,val):
-        return 1.0 / (1.0 + math.exp(-val))
+    def logsig(self,val):
+        return 1.0 / (1.0 + exp(-val))
         pass
         
     def tansig(self,val):
-        return (math.exp(val) - math.exp(-val)) / (math.exp(val) + math.exp(-val))
+        return (exp(val) - exp(-val)) / (exp(val) + exp(-val))
         pass
         
     def radbas(self,val):
         pass
         
-    def logsis_derivada(self,val):
+    def logsig_derivada(self,val):
         return val * (1.0 - val)
         pass
         
@@ -134,7 +136,7 @@ class Activacion(object):
         pass
         
     def undefinded(self,val):
-        return null
+        return None
         pass
         
     
