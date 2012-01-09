@@ -102,8 +102,8 @@ class Red(object):
                             outputs[j] = self.capas[i][j].salida 
                     pass
         except (NameError, ValueError):
-            print "ERROR en Red.simular()\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n)
-            print NameError+":"+ValueError
+            self.addLog("ERROR en Red.simular()\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
+            self.addLog(NameError+":"+ValueError)
             pass
         
         return outputs
@@ -126,4 +126,37 @@ class Red(object):
      **/    
     """
     def entrenar(self,inputs,outputs):
+        self.setLog("inputs:"+inputs)
+        self.setLog("outputs:"+outputs)
+        
+        # paso 1: Se inicializan los pesos de todas las neuronas con valores
+        #         aleatorios rango [0..1]
+        self.setLog("Paso 1:")
+        epochs = len(inputs[0]) # N <= {[in1,in2,...,inN] [entrada2...]}
+        self.setLog("epochs:"+epochs)
+        
+        while epochs > 0:
+            datos = []
+            for idx in range(len(inputs[0])):
+                # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
+                #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
+                for i in range(entradas):
+                    datos[i] = inputs[i][idx]
+                    
+                self.addLog("Paso 2\niteracion:"+(epochs)+", datos["+(idx)+"]:"+(datos)+"\n")
+                resultado = self.simular(entradas)
+                
+            epochs = epochs - 1
+        pass
+        
+    def addLog(self,str):
+        self.log.append(str)
+        pass
+        
+    def getLog(self):
+        return self.log
+        pass
+        
+    def printLog(self):
+        print self.log
         pass
