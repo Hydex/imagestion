@@ -48,6 +48,7 @@ class Perceptron(object):
     def __init__(self,inputs,funcion):
         self.entradas = [None] * inputs
         self.pesos    = [None] * inputs
+        self.log      = []
         
         for i in range(inputs):
             self.entradas[i] = random()
@@ -185,3 +186,15 @@ class Perceptron(object):
     def setConfiguracion(self):
         pass
 
+        
+    def addLog(self,str):
+        self.log.append(str)
+        pass
+        
+    def getLog(self):
+        return self.log
+        pass
+        
+    def printLog(self):
+        print self.log
+        pass
