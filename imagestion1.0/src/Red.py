@@ -126,8 +126,8 @@ class Red(object):
      **/    
     """
     def entrenar(self,inputs,outputs):
-        self.setLog("inputs:"+inputs)
-        self.setLog("outputs:"+outputs)
+        self.setLog("inputs:"+(inputs))
+        self.setLog("outputs:"+(outputs))
         
         # paso 1: Se inicializan los pesos de todas las neuronas con valores
         #         aleatorios rango [0..1]
@@ -137,14 +137,29 @@ class Red(object):
         
         while epochs > 0:
             datos = []
+            salidas = []
+            
             for idx in range(len(inputs[0])):
                 # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                 #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
+                self.addLog("Paso 2\niteracion:"+(epochs)+"\n")
                 for i in range(entradas):
                     datos[i] = inputs[i][idx]
-                    
-                self.addLog("Paso 2\niteracion:"+(epochs)+", datos["+(idx)+"]:"+(datos)+"\n")
+                
+                # paso 3: Calcular salida de la red    
                 resultado = self.simular(entradas)
+                self.addLog("paso 3\ndatos["+(idx)+"]="+(datos)+"\nresultados="+(resultados))
+                
+                for i in range(len(resultado)):
+                    salidas[i][idx] = resultado[i]
+                
+                # calcula el delta de error de la red buscando un minimo
+                error = zeros(len(outputs))
+                minimo = 1
+                for i in range(len(outputs)):
+                    error[i] = outputs[i][idx]
+                    if abs(error[i]) < minimo:
+                        minimo = error[i]
                 
             epochs = epochs - 1
         pass
