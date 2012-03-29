@@ -8,3 +8,5 @@ print net.sinapsis
 print net.simular([0.5,0.6])
 
 print net.sinapsis
+
+#prueba
