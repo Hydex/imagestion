@@ -1,7 +1,7 @@
 # +-----------------------------------------------------------------------+
 # | IMAGESTION                                                            |
 # |                                                                       |
-# | Copyright (C) 2010-Today, GNUCHILE.CL	- Santiago de Chile           |
+# | Copyright (C) 2010-Today, GNUCHILE.CL	-  Santiago de Chile           |
 # | Licensed under the GNU GPL                                            |
 # |                                                                       |
 # | Redistribution and use in source and binary forms, with or without    |
@@ -162,6 +162,13 @@ class Red(object):
                         minimo = error[i]
                 
             epochs = epochs - 1
+        pass
+        
+    def backPropagation(self,capa,delta):
+        
+        if capa > 0:
+            pass
+        
         pass
         
     def addLog(self,str):
