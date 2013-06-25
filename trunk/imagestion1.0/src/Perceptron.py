@@ -56,21 +56,20 @@ class Perceptron(object):
         ##            self.entradas[i] = random()
         ##            self.pesos[i]    = random()
             
+        self.rate = 1.0
         self.bias = 0.0
         self.wBias = 0.0
         self.salida = 0.0
         self.sigma = 0.0
+        self.funcion = funcion
         self.fnTransf = Activacion(funcion)
         pass
         
     def calcular(self):
-        suma = 0.0
         i = 0
         
         try:
-            for i in range(len(self.entradas)):
-                suma += self.entradas[i] * self.pesos[i]
-                
+            suma = self.getSumPesosEntradas()
             self.setSalida(suma + self.bias*self.wBias)
             pass
         except (NameError, ValueError):
@@ -85,7 +84,19 @@ class Perceptron(object):
         self.sigma += self.pesos[i] * sigma
         pass
      
-           
+    def balancearPesos(self):
+        for i in range(len(self.pesos)):
+            e = self.getSumPesosEntradas()
+            self.pesos[i] = self.pesos[i] + self.rate*self.sigma*self.fnTransf.train(e)*self.entradas[i]
+            pass
+        pass
+         
+    def getSumPesosEntradas(self):
+        suma = 0.0
+        for i in range(len(self.entradas)):
+            suma += self.entradas[i] * self.pesos[i]        
+        return suma
+        
     """
     # setSigma
     # 
@@ -152,11 +163,11 @@ class Perceptron(object):
         pass
         
     def getEntradas(self):
+        return self.entradas
         pass
         
     def setConfiguracion(self):
         pass
-
         
     def addLog(self,str):
         self.log.append(str)

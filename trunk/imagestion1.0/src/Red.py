@@ -171,9 +171,13 @@ class Red(object):
                     error = zeros(len(outputs))
                     minimo = 1
                     for i in range(len(outputs)):
-                        error[i] = outputs[i][idx]
+                        error[i] = outputs[i][idx] - salidas[i][idx]
                         if abs(error[i]) < minimo:
                             minimo = error[i]
+                    
+                    # paso 4: balancea los pesos en funcion a la variacion del delta de error
+                    self.addLog("paso 4\ndelta error: "+(error))
+                    self.backPropagation(self.nCapas,error)
                     
                 epochs = epochs - 1
             pass
@@ -197,6 +201,8 @@ class Red(object):
     #
     """         
     def backPropagation(self,capa,delta):
+        self.addLog("backPropagation -> capa:"+str(capa)+" delta:"+(delta))
+        
         try:
             prev = capa
             
@@ -208,6 +214,7 @@ class Red(object):
                 
                 prev = capa -1
                 
+                # calculo de sigma en funcion de delta resultado - error
                 for i in range(len(self.capas[prev])):
                     self.capas[prev][i].setSigma(0.0)
                     
@@ -215,10 +222,18 @@ class Red(object):
                         self.capas[prev][i].setCoeficiente(j,self.capas[capa][i].getSigma())
                     
                     sigmas[i] = self.capas[prev][i].getSigma()
-                pass
                 
-                self.backPropagation(prev, sigmas)
+                # llamada recursiva para retropropagacion en el calculo de sigma
+                if prev > 0:
+                    self.backPropagation(prev, sigmas)
+                
+                # propagacion hacia adelante en el calulo de pesos en funcion de sigma
+                for i in range(len(self.capas[prev])):
+                    self.capas[prev][i].balancearPesos()
+                
+                self.addLog("pesos: "+(self.capas))
             pass
+                    
         except (NameError, ValueError):
             print NameError+":"+ValueError
             print "ERROR Red.backPropagation():\ncapa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n"
