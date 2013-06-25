@@ -46,13 +46,15 @@ class Perceptron(object):
     """
 
     def __init__(self,inputs,funcion):
-        self.entradas = [None] * inputs
-        self.pesos    = [None] * inputs
+        self.entradas = [random() for x in xrange(inputs)] 
+        #[None] * inputs
+        self.pesos    = [random() for x in xrange(inputs)]
+        #[None] * inputs
         self.log      = []
         
-        for i in range(inputs):
-            self.entradas[i] = random()
-            self.pesos[i]    = random()
+        ##        for i in range(inputs):
+        ##            self.entradas[i] = random()
+        ##            self.pesos[i]    = random()
             
         self.bias = 0.0
         self.wBias = 0.0
@@ -69,7 +71,7 @@ class Perceptron(object):
             for i in range(len(self.entradas)):
                 suma += self.entradas[i] * self.pesos[i]
                 
-            self.salida = suma + self.bias*self.wBias
+            self.setSalida(suma + self.bias*self.wBias)
             pass
         except (NameError, ValueError):
             print NameError+":"+ValueError
@@ -77,6 +79,10 @@ class Perceptron(object):
             pass
         
         return self.fnTransf.exe(self.salida)
+        pass
+    
+    def getCoeficiente(self,i):
+        return self.pesos[i] * self.sigma
         pass
     
     """   
@@ -94,7 +100,7 @@ class Perceptron(object):
     #
     """    
      
-    def backPropagation(self,sigma):
+    def backPropagation(self):
         avgDelta = 0.0
         i = 0
         
@@ -112,7 +118,7 @@ class Perceptron(object):
             print "ERROR Perceptron.backPropagation():\niteracion i="+str(i)+" de "+str(len(pesos))+"\n"
             pass
         
-        return avgDelta / len(self.pesos)
+        return avgDelta
         pass
        
     """

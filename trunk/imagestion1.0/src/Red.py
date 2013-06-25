@@ -58,14 +58,27 @@ class Red(object):
         self.sinapsis[0] = [ random() ] * entradas
                 
         for i in range(self.nCapas):
-            inputs = entradas if i == 0 else size
+            inputs = entradas if i == 0 else layers[i-1]
             size   = layers[i]
             max    = size if size > max else max
             #print [i,size,max,inputs]
             
             self.sinapsis[i+1] = [ random() ] * size
+            #[[random() for x in xrange(inputs)] for x in xrange(size)] 
             self.capas[i] = [ Perceptron(inputs,funciones[i]) ] * size
             
+        pass
+
+    def getPeso(self,i,w,capa):
+        return self.capas[capa][w].getPeso[i]
+        pass
+        
+    def setPeso(self,i,w,capa,valor):
+        self.capas[capa][w].setPeso(i,valor)
+        pass
+        
+    def getSalida(self,w,capa):
+        return self.capas[capa][w].getSalida()
         pass
 
     """
@@ -164,9 +177,14 @@ class Red(object):
             epochs = epochs - 1
         pass
         
-    def backPropagation(self,capa,delta):
-        
+    def backPropagation(self,capa,pos,delta):
         if capa > 0:
+            if len(self.capas[capa]) >= pos:
+                self.capas[capa][pos].setSigma(delta)
+                
+                for i in range(len(self.capas[capa -1])):
+                    
+                    pass
             pass
         
         pass
