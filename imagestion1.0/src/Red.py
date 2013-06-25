@@ -148,46 +148,81 @@ class Red(object):
         epochs = len(inputs[0]) # N <= {[in1,in2,...,inN] [entrada2...]}
         self.setLog("epochs:"+epochs)
         
-        while epochs > 0:
-            datos = []
-            salidas = []
-            
-            for idx in range(len(inputs[0])):
-                # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
-                #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                self.addLog("Paso 2\niteracion:"+(epochs)+"\n")
-                for i in range(entradas):
-                    datos[i] = inputs[i][idx]
+        try:
+            while epochs > 0:
+                datos = []
+                salidas = []
                 
-                # paso 3: Calcular salida de la red    
-                resultado = self.simular(entradas)
-                self.addLog("paso 3\ndatos["+(idx)+"]="+(datos)+"\nresultados="+(resultados))
-                
-                for i in range(len(resultado)):
-                    salidas[i][idx] = resultado[i]
-                
-                # calcula el delta de error de la red buscando un minimo
-                error = zeros(len(outputs))
-                minimo = 1
-                for i in range(len(outputs)):
-                    error[i] = outputs[i][idx]
-                    if abs(error[i]) < minimo:
-                        minimo = error[i]
-                
-            epochs = epochs - 1
-        pass
-        
-    def backPropagation(self,capa,pos,delta):
-        if capa > 0:
-            if len(self.capas[capa]) >= pos:
-                self.capas[capa][pos].setSigma(delta)
-                
-                for i in range(len(self.capas[capa -1])):
+                for idx in range(len(inputs[0])):
+                    # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
+                    #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
+                    self.addLog("Paso 2\niteracion:"+(epochs)+"\n")
+                    for i in range(entradas):
+                        datos[i] = inputs[i][idx]
                     
-                    pass
+                    # paso 3: Calcular salida de la red    
+                    resultado = self.simular(entradas)
+                    self.addLog("paso 3\ndatos["+(idx)+"]="+(datos)+"\nresultados="+(resultados))
+                    
+                    for i in range(len(resultado)):
+                        salidas[i][idx] = resultado[i]
+                    
+                    # calcula el delta de error de la red buscando un minimo
+                    error = zeros(len(outputs))
+                    minimo = 1
+                    for i in range(len(outputs)):
+                        error[i] = outputs[i][idx]
+                        if abs(error[i]) < minimo:
+                            minimo = error[i]
+                    
+                epochs = epochs - 1
             pass
-        
-        pass
+        except (NameError, ValueError):
+            print NameError+":"+ValueError
+            print "ERROR Red.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs[0]))+"\n"
+            pass        
+
+    """   
+    #  backPropagation
+    # 
+    # Algoritmo de retropropagacion
+    # 
+    # El procedimiento de retropropagacion es una forma relativamente eficiente
+    # de calcular que tanto se mejora el desempeno con los cambios individuales
+    # en los pesos. Se conoce como procedimiento de retropropagacion porque,
+    # primero calcula cambios en la capa final, reutiliza gran parte de los
+    # mismos calculos para calcular los cambios de los pesos de la penultima
+    # capa y, finalmente, regresa a la capa inicial.
+    #
+    #
+    """         
+    def backPropagation(self,capa,delta):
+        try:
+            prev = capa
+            
+            if capa > 0 and len(self.capas[capa]) > 0:
+                sigmas = [0.0] * len(self.capas[capa -1])
+                
+                for i in range(len(delta)):
+                    self.capas[capa][i].setSigma(delta[i])
+                
+                prev = capa -1
+                
+                for i in range(len(self.capas[prev])):
+                    self.capas[prev][i].setSigma(0.0)
+                    
+                    for j in range(len(self.capas[capa])):
+                        self.capas[prev][i].setCoeficiente(j,self.capas[capa][i].getSigma())
+                    
+                    sigmas[i] = self.capas[prev][i].getSigma()
+                pass
+                
+                self.backPropagation(prev, sigmas)
+            pass
+        except (NameError, ValueError):
+            print NameError+":"+ValueError
+            print "ERROR Red.backPropagation():\ncapa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n"
+            pass            
         
     def addLog(self,str):
         self.log.append(str)
