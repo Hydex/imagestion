@@ -81,46 +81,11 @@ class Perceptron(object):
         return self.fnTransf.exe(self.salida)
         pass
     
-    def getCoeficiente(self,i):
-        return self.pesos[i] * self.sigma
+    def setCoeficiente(self,i,sigma):
+        self.sigma += self.pesos[i] * sigma
         pass
-    
-    """   
-    #  backPropagation
-    # 
-    # Algoritmo de retropropagacion
-    # 
-    # El procedimiento de retropropagacion es una forma relativamente eficiente
-    # de calcular que tanto se mejora el desempeno con los cambios individuales
-    # en los pesos. Se conoce como procedimiento de retropropagacion porque,
-    # primero calcula cambios en la capa final, reutiliza gran parte de los
-    # mismos caSlculos para calcular los cambios de los pesos de la penultima
-    # capa y, finalmente, regresa a la capa inicial.
-    #
-    #
-    """    
      
-    def backPropagation(self):
-        avgDelta = 0.0
-        i = 0
-        
-        try:
-            for i in range(len(self.pesos)):
-                if self.pesos[i] == None:
-                    break
-                delta = self.sigma * self.entradas[i]
-                self.pesos[i] += delta
-                avgDelta += delta
-                pass
-            pass
-        except (NameError, ValueError):
-            print NameError+":"+ValueError
-            print "ERROR Perceptron.backPropagation():\niteracion i="+str(i)+" de "+str(len(pesos))+"\n"
-            pass
-        
-        return avgDelta
-        pass
-       
+           
     """
     # setSigma
     # 
