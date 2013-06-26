@@ -34,52 +34,55 @@
 # +-----------------------------------------------------------------------+
 
 from Activacion import *
-from random import random
+from random import *
+from json import *
 
 class Perceptron(object):
 
     """
-   
-
     :version: 1.0
     :author:  Miguelote
     """
 
-    def __init__(self,inputs,funcion):
+    def __init__(self,name,inputs,funcion):
         self.entradas = [random() for x in xrange(inputs)] 
         #[None] * inputs
         self.pesos    = [random() for x in xrange(inputs)]
         #[None] * inputs
         self.log      = []
-        
-        ##        for i in range(inputs):
-        ##            self.entradas[i] = random()
-        ##            self.pesos[i]    = random()
-            
-        self.rate = 1.0
-        self.bias = 0.0
-        self.wBias = 0.0
-        self.salida = 0.0
-        self.sigma = 0.0
-        self.funcion = funcion
+        self.name     = name
+        self.rate     = 1.0
+        self.bias     = 0.0
+        self.wBias    = 0.0
+        self.salida   = 0.0
+        self.sigma    = 0.0
+        self.funcion  = funcion
         self.fnTransf = Activacion(funcion)
         pass
         
-    def calcular(self):
-        i = 0
+    def getSumPesosEntradas(self):
+        i    = 0
+        suma = 0.0
         
         try:
-            suma = self.getSumPesosEntradas()
-            self.setSalida(suma + self.bias*self.wBias)
+            for i in range(len(self.entradas)):
+                #print " = "+str(self.entradas[i])+" * "+str(self.pesos[i])
+                suma += self.entradas[i] * self.pesos[i]
             pass
+            
         except (NameError, ValueError):
             print NameError+":"+ValueError
-            print "ERROR en Perceptron.calcular()\nIteracion i="+str(i)
-            pass
+            print "ERROR en Perceptron.getSumPesosEntradas()\nIteracion i="+str(i)
+            
+        return suma
         
-        return self.fnTransf.exe(self.salida)
-        pass
-    
+    def calcular(self):
+        suma = self.getSumPesosEntradas()
+        self.setSalida(suma + self.bias*self.wBias)
+        res = self.fnTransf.exe(self.salida)
+        print self.name+":"+str(res)
+        return res
+            
     def setCoeficiente(self,i,sigma):
         self.sigma += self.pesos[i] * sigma
         pass
@@ -91,12 +94,6 @@ class Perceptron(object):
             pass
         pass
          
-    def getSumPesosEntradas(self):
-        suma = 0.0
-        for i in range(len(self.entradas)):
-            suma += self.entradas[i] * self.pesos[i]        
-        return suma
-        
     """
     # setSigma
     # 
@@ -160,6 +157,7 @@ class Perceptron(object):
         pass
         
     def getConfiguracion(self):
+        return json.dump(self)
         pass
         
     def getEntradas(self):
