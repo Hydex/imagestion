@@ -35,6 +35,7 @@
 
 from Perceptron import *
 from random import *
+from json import *
 
 class Red(object):
 
@@ -55,7 +56,7 @@ class Red(object):
         self.salidas  = salidas
         self.transferencias = funciones
         
-        self.sinapsis[0] = [ random() ] * entradas
+        self.sinapsis[0] = [random() for x in xrange(entradas)]
                 
         for i in range(self.nCapas):
             inputs = entradas if i == 0 else layers[i-1]
@@ -63,9 +64,8 @@ class Red(object):
             max    = size if size > max else max
             #print [i,size,max,inputs]
             
-            self.sinapsis[i+1] = [ random() ] * size
-            #[[random() for x in xrange(inputs)] for x in xrange(size)] 
-            self.capas[i] = [ Perceptron(inputs,funciones[i]) ] * size
+            self.sinapsis[i+1] = [random() for x in xrange(size)]
+            self.capas[i] = [Perceptron(str(i)+'x'+str(x),inputs,funciones[i]) for x in xrange(size)]
             
         pass
 
@@ -107,7 +107,7 @@ class Red(object):
                 for j in range(len(self.capas[i])):
                     if self.capas[i][j] != None:
                         for n in range(len(self.sinapsis[i])):
-                            self.capas[i][j].entradas[n] = self.sinapsis[n]
+                            self.capas[i][j].entradas[n] = self.sinapsis[i][n]
                         
                         self.sinapsis[i+1][j] = self.capas[i][j].calcular();
                         
@@ -238,6 +238,18 @@ class Red(object):
             print NameError+":"+ValueError
             print "ERROR Red.backPropagation():\ncapa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n"
             pass            
+        
+    def getConfiguracion(self):
+        data = {
+            'nCapas':self.nCapas,
+            'capas':self.capas,
+            'sinapsis':self.sinapsis,
+            'entradas':self.entradas,
+            'salidas':self.salidas,
+            'funciones':self.transferencias   
+        }     
+        return dumps(self)
+        pass
         
     def addLog(self,str):
         self.log.append(str)
