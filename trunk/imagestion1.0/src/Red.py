@@ -170,8 +170,10 @@ class Red(object):
                         salidas[i][idx] = resultado[i]
                     
                     # calcula el delta de error de la red buscando un minimo
+                    self.addLog(" 3.1")
                     error = zeros(len(outputs))
                     minimo = 1
+                    self.addLog(" 3.2")
                     for i in range(len(outputs)):
                         error[i] = outputs[i][idx] - salidas[i][idx]
                         if abs(error[i]) < minimo:
