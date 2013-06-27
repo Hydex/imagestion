@@ -153,7 +153,6 @@ class Red(object):
         try:
             while epochs > 0:
                 datos = [None] * self.entradas
-                salidas = []
                 
                 for idx in range(len(inputs[0])):
                     # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
@@ -166,12 +165,13 @@ class Red(object):
                     resultado = self.simular(datos)
                     self.addLog("paso 3 - datos["+str(idx)+"]="+str(datos)+"\n resultado="+str(resultado))
                     
+                    salidas = [[None] * len(resultado)] * len(inputs[0])
                     for i in range(len(resultado)):
                         salidas[i][idx] = resultado[i]
                     
                     # calcula el delta de error de la red buscando un minimo
                     self.addLog(" 3.1")
-                    error = zeros(len(outputs))
+                    error = [0] * len(outputs)
                     minimo = 1
                     self.addLog(" 3.2")
                     for i in range(len(outputs)):
