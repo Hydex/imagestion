@@ -268,3 +268,4 @@ class Red(object):
     def printLog(self):
         print self.log
         pass
+

@@ -23,5 +23,8 @@ net.entrenar([
 
 print "sinapsis:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
 
+print "print LOG"
 print net.printLog()
+
+
 #prueba 2
