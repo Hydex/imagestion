@@ -75,6 +75,8 @@ class Perceptron(object):
         return suma
         
     def calcular(self):
+        self.addLog("Perceptron.calcular")
+        
         suma = self.getSumPesosEntradas()
         self.setSalida(suma + self.bias*self.wBias)
         res = self.fnTransf.exe(self.salida)
