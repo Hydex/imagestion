@@ -36,6 +36,7 @@
 from Perceptron import *
 from random import *
 from json import *
+from sys import *
 
 class Red(object):
 
@@ -115,9 +116,10 @@ class Red(object):
                         if i == self.nCapas-1:
                             outputs[j] = self.capas[i][j].salida 
                     pass
-        except (NameError, ValueError):
+        except:
+            err = str(exc_info())
             self.addLog("ERROR en Red.simular()\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
-            self.addLog(NameError+":"+ValueError)
+            self.addLog(err)
             pass
         
         return outputs
@@ -141,12 +143,12 @@ class Red(object):
     """
     def entrenar(self,inputs,outputs):
         self.addLog("Red.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
+        idx = 0
         
         # paso 1: Se inicializan los pesos de todas las neuronas con valores
         #         aleatorios rango [0..1]
-        self.addLog("Paso 1:")
         epochs = len(inputs[0]) # N <= {[in1,in2,...,inN] [entrada2...]}
-        self.addLog("epochs:"+str(epochs))
+        self.addLog("Paso 1 - epochs:"+str(epochs))
         
         try:
             while epochs > 0:
@@ -156,13 +158,13 @@ class Red(object):
                 for idx in range(len(inputs[0])):
                     # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                    self.addLog("Paso 2\niteracion:"+str(epochs)+"\n")
-                    for i in range(entradas):
+                    self.addLog("paso 2 - idx:"+str(idx)+" iteracion:"+str(epochs)+"\n")
+                    for i in range(self.entradas):
                         datos[i] = inputs[i][idx]
                     
                     # paso 3: Calcular salida de la red    
-                    resultado = self.simular(entradas)
-                    self.addLog("paso 3\ndatos["+(idx)+"]="+str(datos)+"\nresultados="+str(resultados))
+                    resultado = self.simular(self.entradas)
+                    self.addLog("paso 3 - datos["+str(idx)+"]="+str(datos)+"\n resultado="+str(resultado))
                     
                     for i in range(len(resultado)):
                         salidas[i][idx] = resultado[i]
@@ -181,9 +183,10 @@ class Red(object):
                     
                 epochs = epochs - 1
             pass
-        except (NameError, ValueError):
-            print str(NameError)+":"+str(ValueError)
-            print "ERROR Red.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs[0]))+"\n"
+        except:
+            err = str(exc_info())
+            self.addLog("ERROR Red.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs[0]))+"\n")
+            self.addLog(err)
             pass        
 
     """   
@@ -234,9 +237,10 @@ class Red(object):
                 self.addLog("pesos: "+(self.capas))
             pass
                     
-        except (NameError, ValueError):
-            print NameError+":"+ValueError
-            print "ERROR Red.backPropagation():\ncapa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n"
+        except:
+            err = str(exc_info())
+            self.addLog("ERROR Red.backPropagation():\ncapa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            self.addLog(err)
             pass            
         
     def getConfiguracion(self):
@@ -259,6 +263,7 @@ class Red(object):
         
     def addLog(self,str):
         self.log.append(str)
+        print str
         pass
         
     def getLog(self):
