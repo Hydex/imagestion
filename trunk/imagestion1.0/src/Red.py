@@ -96,6 +96,7 @@ class Red(object):
     **/
     """
     def simular(self,inputs):
+        self.addLog("Red.simular -> inputs:"+str(inputs))
         outputs = [None] * self.salidas
         i,j,n = 0,0,0
         
@@ -139,8 +140,7 @@ class Red(object):
      **/    
     """
     def entrenar(self,inputs,outputs):
-        self.addLog("inputs:"+str(inputs))
-        self.addLog("outputs:"+str(outputs))
+        self.addLog("Red.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
         
         # paso 1: Se inicializan los pesos de todas las neuronas con valores
         #         aleatorios rango [0..1]
@@ -201,7 +201,7 @@ class Red(object):
     #
     """         
     def backPropagation(self,capa,delta):
-        self.addLog("backPropagation -> capa:"+str(capa)+" delta:"+(delta))
+        self.addLog("Red.backPropagation -> capa:"+str(capa)+" delta:"+str(delta))
         
         try:
             prev = capa
@@ -266,6 +266,6 @@ class Red(object):
         pass
         
     def printLog(self):
-        print self.log
+        print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         pass
 
