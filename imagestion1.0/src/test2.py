@@ -3,7 +3,7 @@ import json
 
 net = Red(2,2,[2,3,2],['LOGSIG','LOGSIG','LOGSIG'])
 
-print "sinapsis:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
+print net.getConfiguracion()
 
 for i in range(len(net.capas)):
     for j in range(len(net.capas[i])):
@@ -13,8 +13,6 @@ for i in range(len(net.capas)):
 
 print net.simular([0.5,0.6])
 
-print net.sinapsis
-
-print net.getConfiguracion()
+print "sinapsis:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
 
 #prueba 2
