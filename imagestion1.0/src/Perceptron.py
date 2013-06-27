@@ -68,9 +68,10 @@ class Perceptron(object):
                 suma += self.entradas[i] * self.pesos[i]
             pass
             
-        except (NameError, ValueError):
-            print NameError+":"+ValueError
-            print "ERROR en Perceptron.getSumPesosEntradas()\nIteracion i="+str(i)
+        except:
+            err = exc_info()[0]
+            self.addLog ("ERROR en Perceptron.getSumPesosEntradas()\nIteracion i="+str(i))
+            self.addLog (err)
             
         return suma
         
@@ -181,6 +182,7 @@ class Perceptron(object):
         
     def addLog(self,str):
         self.log.append(str)
+        print str
         pass
         
     def getLog(self):
@@ -188,5 +190,5 @@ class Perceptron(object):
         pass
         
     def printLog(self):
-        print self.log
+        print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         pass
