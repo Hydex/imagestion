@@ -1,7 +1,7 @@
 # +-----------------------------------------------------------------------+
 # | IMAGESTION                                                            |
 # |                                                                       |
-# | Copyright (C) 2010-Today, GNUCHILE.CL	- Santiago de Chile           |
+# | Copyright (C) 2010-Today, GNUCHILE.CL - Santiago de Chile             |
 # | Licensed under the GNU GPL                                            |
 # |                                                                       |
 # | Redistribution and use in source and binary forms, with or without    |
@@ -46,9 +46,7 @@ class Perceptron(object):
 
     def __init__(self,name,inputs,funcion):
         self.entradas = [random() for x in xrange(inputs)] 
-        #[None] * inputs
         self.pesos    = [random() for x in xrange(inputs)]
-        #[None] * inputs
         self.log      = []
         self.name     = name
         self.rate     = 1.0
@@ -157,7 +155,19 @@ class Perceptron(object):
         pass
         
     def getConfiguracion(self):
-        return json.dump(self)
+        data = {
+            'entradas':self.entradas,
+            'pesos':self.pesos,
+            'name':self.name,
+            'rate':self.rate,
+            'bias':self.bias,
+            'wBias':self.wBias,
+            'salida':self.salida,
+            'sigma':self.sigma,
+            'funcion':self.funcion             
+        }
+
+        return data
         pass
         
     def getEntradas(self):

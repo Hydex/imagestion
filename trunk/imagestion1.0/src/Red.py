@@ -242,13 +242,19 @@ class Red(object):
     def getConfiguracion(self):
         data = {
             'nCapas':self.nCapas,
-            'capas':self.capas,
             'sinapsis':self.sinapsis,
             'entradas':self.entradas,
             'salidas':self.salidas,
             'funciones':self.transferencias   
-        }     
-        return dumps(self)
+        }
+        data['capas'] = [
+            [
+                self.capas[y][x].getConfiguracion() 
+                for x in xrange(len(self.capas[y]))
+            ] 
+            for y in xrange(len(self.capas))
+        ]
+        return dumps(data, sort_keys=True,indent=4, separators=(',', ': '))
         pass
         
     def addLog(self,str):
