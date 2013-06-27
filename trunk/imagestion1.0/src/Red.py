@@ -139,14 +139,14 @@ class Red(object):
      **/    
     """
     def entrenar(self,inputs,outputs):
-        self.setLog("inputs:"+(inputs))
-        self.setLog("outputs:"+(outputs))
+        self.addLog("inputs:"+str(inputs))
+        self.addLog("outputs:"+str(outputs))
         
         # paso 1: Se inicializan los pesos de todas las neuronas con valores
         #         aleatorios rango [0..1]
-        self.setLog("Paso 1:")
+        self.addLog("Paso 1:")
         epochs = len(inputs[0]) # N <= {[in1,in2,...,inN] [entrada2...]}
-        self.setLog("epochs:"+epochs)
+        self.addLog("epochs:"+str(epochs))
         
         try:
             while epochs > 0:
@@ -156,13 +156,13 @@ class Red(object):
                 for idx in range(len(inputs[0])):
                     # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                    self.addLog("Paso 2\niteracion:"+(epochs)+"\n")
+                    self.addLog("Paso 2\niteracion:"+str(epochs)+"\n")
                     for i in range(entradas):
                         datos[i] = inputs[i][idx]
                     
                     # paso 3: Calcular salida de la red    
                     resultado = self.simular(entradas)
-                    self.addLog("paso 3\ndatos["+(idx)+"]="+(datos)+"\nresultados="+(resultados))
+                    self.addLog("paso 3\ndatos["+(idx)+"]="+str(datos)+"\nresultados="+str(resultados))
                     
                     for i in range(len(resultado)):
                         salidas[i][idx] = resultado[i]
@@ -176,13 +176,13 @@ class Red(object):
                             minimo = error[i]
                     
                     # paso 4: balancea los pesos en funcion a la variacion del delta de error
-                    self.addLog("paso 4\ndelta error: "+(error))
+                    self.addLog("paso 4\ndelta error: "+str(error))
                     self.backPropagation(self.nCapas,error)
                     
                 epochs = epochs - 1
             pass
         except (NameError, ValueError):
-            print NameError+":"+ValueError
+            print str(NameError)+":"+str(ValueError)
             print "ERROR Red.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs[0]))+"\n"
             pass        
 
