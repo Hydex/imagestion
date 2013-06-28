@@ -103,6 +103,7 @@ class Red(object):
         
         for n in range(len(inputs)):
             self.sinapsis[0][n] = inputs[n]
+        #print self.sinapsis
         
         try:
             for i in range(self.nCapas):
@@ -242,7 +243,7 @@ class Red(object):
                 for i in range(len(self.capas[prev])):
                     self.capas[prev][i].balancearPesos()
                 
-                self.addLog('capa:'+str(capa)+' pesos: '+(self.capas))
+                self.addLog('capa:'+str(capa)+' pesos: '+str([[self.capas[y][x].pesos for x in xrange(len(self.capas[y]))] for y in xrange(len(self.capas))]))
             pass
                     
         except:
@@ -278,6 +279,24 @@ class Red(object):
         return self.log
         pass
         
+    def getPesos(self):
+        lst = []
+        for i in range(len(self.capas)):
+            for j in range(len(self.capas[i])):
+                #print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
+                lst.append({self.capas[i][j].name : self.capas[i][j].pesos})
+                
+        return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
+    
+    def getEntradas(self):
+        lst = []
+        for i in range(len(self.capas)):
+            for j in range(len(self.capas[i])):
+                #print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
+                lst.append({self.capas[i][j].name : self.capas[i][j].entradas})
+                
+        return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
+    
     def printLog(self):
         print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         pass

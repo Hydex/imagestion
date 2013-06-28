@@ -45,7 +45,7 @@ class Perceptron(object):
     """
 
     def __init__(self,name,inputs,funcion):
-        self.entradas = [random() for x in xrange(inputs)] 
+        self.entradas = [0 for x in xrange(inputs)] 
         self.pesos    = [random() for x in xrange(inputs)]
         self.log      = []
         self.name     = name
@@ -64,24 +64,22 @@ class Perceptron(object):
         
         try:
             for i in range(len(self.entradas)):
-                #print " = "+str(self.entradas[i])+" * "+str(self.pesos[i])
                 suma += self.entradas[i] * self.pesos[i]
+                print str(suma)+" = "+str(self.entradas[i])+" * "+str(self.pesos[i])
             pass
             
         except:
             err = exc_info()[0]
-            self.addLog ("ERROR en Perceptron.getSumPesosEntradas()\nIteracion i="+str(i))
+            self.addLog ("ERROR en Perceptron.getSumPesosEntradas() - Iteracion i="+str(i))
             self.addLog (err)
             
         return suma
         
     def calcular(self):
-        self.addLog("Perceptron.calcular")
-        
+        self.addLog("Perceptron.calcular(name:"+self.name+", entradas:"+str(self.entradas)+')')
         suma = self.getSumPesosEntradas()
         self.setSalida(suma + self.bias*self.wBias)
         res = self.fnTransf.exe(self.salida)
-        print self.name+":"+str(res)
         return res
             
     def setCoeficiente(self,i,sigma):
