@@ -170,18 +170,17 @@ class Red(object):
                         salidas[i][idx] = resultado[i]
                     
                     # calcula el delta de error de la red buscando un minimo
-                    self.addLog(" 3.1")
-                    error = [0] * len(outputs)
+                    error = [None] * len(resultado)
                     minimo = 1
-                    self.addLog(" 3.2")
-                    for i in range(len(outputs)):
+                    self.addLog(" 3.1: "+str(len(resultado)))
+                    for i in range(len(resultado)):
                         error[i] = outputs[i][idx] - salidas[i][idx]
-                        if abs(error[i]) < minimo:
-                            minimo = error[i]
+                        #if abs(error[i]) < minimo:
+                        #    minimo = error[i]
                     
                     # paso 4: balancea los pesos en funcion a la variacion del delta de error
-                    self.addLog("paso 4\ndelta error: "+str(error))
-                    self.backPropagation(self.nCapas,error)
+                    self.addLog("paso 4 - delta: "+str(error))
+                    self.backPropagation(self.nCapas-1,error)
                     
                 epochs = epochs - 1
             pass
@@ -207,41 +206,48 @@ class Red(object):
     """         
     def backPropagation(self,capa,delta):
         self.addLog("Red.backPropagation -> capa:"+str(capa)+" delta:"+str(delta))
+        i,j = 0,0
         
         try:
             prev = capa
-            
+            self.addLog('4.1 neuronas:'+str(len(self.capas[capa])))
             if capa > 0 and len(self.capas[capa]) > 0:
-                sigmas = [0.0] * len(self.capas[capa -1])
+                prev = capa -1
+                sigmas = [0.0] * len(self.capas[prev])
+                self.addLog('capa:'+str(capa)+' sigmas:'+str(sigmas))
                 
+                self.addLog('4.2')
                 for i in range(len(delta)):
                     self.capas[capa][i].setSigma(delta[i])
                 
-                prev = capa -1
-                
+                self.addLog('4.3 neuronas prev:'+str(len(self.capas[prev])))
                 # calculo de sigma en funcion de delta resultado - error
-                for i in range(len(self.capas[prev])):
+                for i in range(len(self.capas[prev])-1):
                     self.capas[prev][i].setSigma(0.0)
                     
-                    for j in range(len(self.capas[capa])):
+                    for j in range(len(self.capas[capa])-1):
+                        self.addLog('4.3.1 j:'+str(j)+' to:'+str(len(self.capas[capa])))
                         self.capas[prev][i].setCoeficiente(j,self.capas[capa][i].getSigma())
                     
+                    self.addLog('4.3.2 i:'+str(i)+' to:'+str(len(self.capas[prev])))
                     sigmas[i] = self.capas[prev][i].getSigma()
                 
+                self.addLog('4.4')
                 # llamada recursiva para retropropagacion en el calculo de sigma
                 if prev > 0:
                     self.backPropagation(prev, sigmas)
                 
+                self.addLog('4.5')
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
                 for i in range(len(self.capas[prev])):
                     self.capas[prev][i].balancearPesos()
                 
-                self.addLog("pesos: "+(self.capas))
+                self.addLog('capa:'+str(capa)+' pesos: '+(self.capas))
             pass
                     
         except:
             err = str(exc_info())
-            self.addLog("ERROR Red.backPropagation():\ncapa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            self.addLog("ERROR Red.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
             self.addLog(err)
             pass            
         
