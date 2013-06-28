@@ -1,7 +1,7 @@
 from Red import *
 import json
 
-net = Red(2,1,[2,3,1],['LOGSIG','LOGSIG','LOGSIG'])
+net = Red(2,2,[2,3,2],['LOGSIG','LOGSIG','LOGSIG'])
 
 #print net.getConfiguracion()
 
@@ -20,7 +20,7 @@ print "ENTRENAR"
 net.entrenar([
         [0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]
     ],[
-        [0.0], [1.0], [1.0], [0.0]
+        [0.0,0.0], [1.0,1.0], [1.0,1.0], [0.0,0.0]
     ])
 
 print "sinapsis:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
