@@ -176,6 +176,7 @@ class Red(object):
                     self.addLog(" 3.1: "+str(len(resultado)))
                     for i in range(len(resultado)):
                         error[i] = outputs[i][idx] - salidas[i][idx]
+                        self.addLog('error['+str(i)+']:'+str(error[i])+'='+str(outputs[i][idx])+' - '+str(salidas[i][idx]))
                         #if abs(error[i]) < minimo:
                         #    minimo = error[i]
                     
@@ -215,22 +216,21 @@ class Red(object):
             if capa > 0 and len(self.capas[capa]) > 0:
                 prev = capa -1
                 sigmas = [0.0] * len(self.capas[prev])
-                self.addLog('capa:'+str(capa)+' sigmas:'+str(sigmas))
+                self.addLog('capa:'+str(capa))
                 
-                self.addLog('4.2')
                 for i in range(len(delta)):
                     self.capas[capa][i].setSigma(delta[i])
                 
-                self.addLog('4.3 neuronas prev:'+str(len(self.capas[prev])))
+                self.addLog('4.2 neuronas prev:'+str(len(self.capas[prev])))
                 # calculo de sigma en funcion de delta resultado - error
                 for i in range(len(self.capas[prev])-1):
                     self.capas[prev][i].setSigma(0.0)
                     
                     for j in range(len(self.capas[capa])-1):
-                        self.addLog('4.3.1 j:'+str(j)+' to:'+str(len(self.capas[capa])))
+                        self.addLog('4.3 j:'+str(j)+' to:'+str(len(self.capas[capa])))
                         self.capas[prev][i].setCoeficiente(j,self.capas[capa][i].getSigma())
                     
-                    self.addLog('4.3.2 i:'+str(i)+' to:'+str(len(self.capas[prev])))
+                    self.addLog('4.3.1 i:'+str(i)+' to:'+str(len(self.capas[prev])))
                     sigmas[i] = self.capas[prev][i].getSigma()
                 
                 self.addLog('4.4')
