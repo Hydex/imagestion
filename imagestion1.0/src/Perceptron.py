@@ -65,7 +65,7 @@ class Perceptron(object):
         try:
             for i in range(len(self.entradas)):
                 suma += self.entradas[i] * self.pesos[i]
-                print str(suma)+" = "+str(self.entradas[i])+" * "+str(self.pesos[i])
+                self.addLog(str(suma)+" = "+str(self.entradas[i])+" * "+str(self.pesos[i]))
             pass
             
         except:
@@ -89,9 +89,10 @@ class Perceptron(object):
     def balancearPesos(self):
         for i in range(len(self.pesos)):
             e = self.getSumPesosEntradas()
+            peso = self.pesos[i]
             fn = self.rate*self.sigma*self.fnTransf.train(e)*self.entradas[i]
-            self.pesos[i] += fn
-            self.addLog(self.name+'.'+self.funcion+'('+str(e)+')*'+str(fn)+' = '+str(self.pesos[i]))
+            self.pesos[i] = peso + fn
+            self.addLog(self.name+'.'+self.funcion+'('+str(e)+')*'+str(fn)+'+'+str(peso)+' = '+str(self.pesos[i]))
             pass
         pass
          
@@ -181,8 +182,8 @@ class Perceptron(object):
         pass
         
     def addLog(self,str):
-        self.log.append(str)
-        print str
+        #self.log.append(str)
+        #print str
         pass
         
     def getLog(self):
@@ -190,5 +191,5 @@ class Perceptron(object):
         pass
         
     def printLog(self):
-        print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
+        #print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         pass
