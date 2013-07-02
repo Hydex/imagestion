@@ -56,6 +56,7 @@ class Red(object):
         self.entradas = entradas
         self.salidas  = salidas
         self.transferencias = funciones
+        self.epochs   = None
         
         self.sinapsis[0] = [random() for x in xrange(entradas)]
                 
@@ -70,6 +71,14 @@ class Red(object):
             
         pass
 
+    def getEpochs(self):
+        return self.epochs
+        pass
+        
+    def setEpochs(self,valor):
+        self.epochs = valor
+        pass
+        
     def getPeso(self,i,w,capa):
         return self.capas[capa][w].getPeso[i]
         pass
@@ -148,7 +157,7 @@ class Red(object):
         
         # paso 1: Se inicializan los pesos de todas las neuronas con valores
         #         aleatorios rango [0..1]
-        epochs = len(inputs) # N <= {[in1,in2,...,inN] [entrada2...]}
+        epochs = self.epochs if self.epochs != None else len(inputs) # N <= {[in1,in2,...,inN] [entrada2...]}
         self.addLog("Paso 1 - epochs:"+str(epochs))
         
         try:
@@ -240,10 +249,12 @@ class Red(object):
                 
                 self.addLog('4.5')
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
+                self.addLog('ANTES capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
+
                 for i in range(len(self.capas[prev])):
                     self.capas[prev][i].balancearPesos()
                 
-                self.addLog('capa:'+str(capa)+' pesos: '+str([[self.capas[y][x].pesos for x in xrange(len(self.capas[y]))] for y in xrange(len(self.capas))]))
+                self.addLog('DESPUES capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
             pass
                     
         except:
@@ -271,8 +282,8 @@ class Red(object):
         pass
         
     def addLog(self,str):
-        self.log.append(str)
-        print str
+        #self.log.append(str)
+        #print str
         pass
         
     def getLog(self):
@@ -292,12 +303,12 @@ class Red(object):
         lst = []
         for i in range(len(self.capas)):
             for j in range(len(self.capas[i])):
-                #print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
-                lst.append({self.capas[i][j].name : self.capas[i][j].entradas})
+                print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
+                #lst.append({self.capas[i][j].name : self.capas[i][j].entradas})
                 
         return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
     
     def printLog(self):
-        print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
+        #print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         pass
 
