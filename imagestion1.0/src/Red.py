@@ -71,26 +71,6 @@ class Red(object):
             
         pass
 
-    def getEpochs(self):
-        return self.epochs
-        pass
-        
-    def setEpochs(self,valor):
-        self.epochs = valor
-        pass
-        
-    def getPeso(self,i,w,capa):
-        return self.capas[capa][w].getPeso[i]
-        pass
-        
-    def setPeso(self,i,w,capa,valor):
-        self.capas[capa][w].setPeso(i,valor)
-        pass
-        
-    def getSalida(self,w,capa):
-        return self.capas[capa][w].getSalida()
-        pass
-
     """
     /**
     * simular
@@ -199,6 +179,7 @@ class Red(object):
             err = str(exc_info())
             self.addLog("ERROR Red.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
             self.addLog(err)
+            #print self.log
             pass        
 
     """   
@@ -231,28 +212,30 @@ class Red(object):
                     self.capas[capa][i].setSigma(delta[i])
                 
                 self.addLog('4.2 neuronas prev:'+str(len(self.capas[prev])))
-                # calculo de sigma en funcion de delta resultado - error
+                # calculo de sigma en funcion de delta (resultado - error)
                 for i in range(len(self.capas[prev])-1):
                     self.capas[prev][i].setSigma(0.0)
                     
+                    # calcula la sumatoria de los pesos con el coeficiente de error sigma
                     for j in range(len(self.capas[capa])-1):
                         self.addLog('4.3 j:'+str(j)+' to:'+str(len(self.capas[capa])))
                         self.capas[prev][i].setCoeficiente(j,self.capas[capa][i].getSigma())
                     
-                    self.addLog('4.3.1 i:'+str(i)+' to:'+str(len(self.capas[prev])))
+                    self.addLog('4.3 i:'+str(i)+' to:'+str(len(self.capas[prev])))
                     sigmas[i] = self.capas[prev][i].getSigma()
                 
                 self.addLog('4.4')
                 # llamada recursiva para retropropagacion en el calculo de sigma
-                if prev > 0:
-                    self.backPropagation(prev, sigmas)
+                #if prev > 0:
+                self.backPropagation(prev, sigmas)
                 
                 self.addLog('4.5')
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
-                self.addLog('ANTES capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
+                self.addLog('ANTES   capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
 
                 for i in range(len(self.capas[prev])):
                     self.capas[prev][i].balancearPesos()
+                    self.addLog('capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
                 
                 self.addLog('DESPUES capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
             pass
@@ -280,9 +263,29 @@ class Red(object):
         ]
         return dumps(data, sort_keys=True,indent=4, separators=(',', ': '))
         pass
+
+    def getEpochs(self):
+        return self.epochs
+        pass
+        
+    def setEpochs(self,valor):
+        self.epochs = valor
+        pass
+        
+    def getPeso(self,i,w,capa):
+        return self.capas[capa][w].getPeso[i]
+        pass
+        
+    def setPeso(self,i,w,capa,valor):
+        self.capas[capa][w].setPeso(i,valor)
+        pass
+        
+    def getSalida(self,w,capa):
+        return self.capas[capa][w].getSalida()
+        pass
         
     def addLog(self,str):
-        #self.log.append(str)
+        self.log.append(str)
         #print str
         pass
         
@@ -309,6 +312,6 @@ class Red(object):
         return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
     
     def printLog(self):
-        #print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
+        print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         pass
 
