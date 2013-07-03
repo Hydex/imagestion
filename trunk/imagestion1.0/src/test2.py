@@ -1,7 +1,7 @@
 from Red import *
 import json
 
-net = Red(2,1,[2,1],['LOGSIG','LOGSIG','LOGSIG'])
+net = Red(2,1,[2,2,1],['LOGSIG','LOGSIG','LOGSIG'])
 
 #print net.getConfiguracion()
 
@@ -19,7 +19,7 @@ for x in range(1):
     print str(x)+" ENTRENAR"
     #net.setEpochs(10)
     net.entrenar([
-            [0.0,0.0], [0.0,1.0], [1,0.0], [1.0,1.0]
+            [0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]
         ],[
             [0.0], [1.0], [1.0], [0.0]
         ])
