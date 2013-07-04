@@ -147,28 +147,29 @@ class Red(object):
         #         aleatorios rango [0..1]
         epochs = self.epochs if self.epochs != None else len(inputs) # N <= {[in1,in2,...,inN] [entrada2...]}
         self.addLog("PASO 1: Se inicializan los pesos de todas las neuronas con valores aleatorios rango [0..1]")
-        self.addLog(">> epochs:"+str(epochs))
+        self.addLog(">> epochs:"+str(epochs)+' idx=len(inputs[0]):'+str(len(inputs[0])))
         
         try:
-            while epochs > 0:
-                datos = [None] * self.entradas
+            for ciclo in range(epochs):
+                #datos = [None] * self.entradas
                 
                 ## [[0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]]
-                self.addLog('>> len(inputs):'+str(len(inputs))+' idx=len(inputs[0]):'+str(len(inputs[0])))
-                for idx in range(len(inputs[0])):
+                self.addLog('>> ciclo:'+str(ciclo)+' =========================================================================================')
+                for idx in range(len(inputs)):
                     # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                    self.addLog(">> idx:"+str(idx)+" entradas:"+str(inputs[idx])+" ------------------------------------------------")
+                    self.addLog(">> idx:"+str(idx)+" -----------------------------------------------------------------------------------------")
                     self.addLog("PASO 2: Seleccionar el siguiente par de entrenamiento del conjunto de entrenamiento, aplicando el vector de entrada a la entrada de la red.")
-                    for i in range(self.entradas):
+                    datos = [None] * len(inputs[idx])
+                    for i in range(len(inputs[idx])):
                         datos[i] = inputs[idx][i]
                     
                     # paso 3: Calcular salida de la red    
                     resultado = self.simular(datos)
                     self.addLog("PASO 3: Calcular salida de la red")
-                    self.addLog(">> datos["+str(idx)+"]="+str(datos)+"\n resultado="+str(resultado))
+                    self.addLog(">> datos:"+str(datos)+" resultado:"+str(resultado))
                     
-                    salidas = [[None] * len(resultado)] * len(inputs[0])
+                    salidas = [[None] * len(resultado)] * len(inputs[idx])
                     for i in range(len(resultado)):
                         self.addLog('>> salidas['+str(idx)+']['+str(i)+']='+str(resultado[i]))
                         salidas[idx][i] = resultado[i]
@@ -176,10 +177,10 @@ class Red(object):
                     # calcula el delta de error de la red buscando un minimo
                     error = [None] * len(resultado)
                     minimo = 1
-                    self.addLog(">> calcula el delta de error de la red buscando un minimo")
+                    self.addLog("calcula el delta de error de la red buscando un minimo")
                     self.addLog(">> nro de resultados: "+str(len(resultado)))
                     for i in range(len(resultado)):
-                        error[i] = outputs[idx][i] - salidas[i][idx]
+                        error[i] = outputs[idx][i] - salidas[idx][i]
                         self.addLog('>> error['+str(i)+']:'+str(error[i])+'='+str(outputs[idx][i])+' - '+str(salidas[idx][i]))
                         #if abs(error[i]) < minimo:
                         #    minimo = error[i]
