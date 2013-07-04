@@ -152,6 +152,7 @@ class Red(object):
         try:
             for ciclo in range(epochs):
                 #datos = [None] * self.entradas
+                salidas = [[None] * len(outputs[0])] * len(outputs)
                 
                 ## [[0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]]
                 self.addLog('>> ciclo:'+str(ciclo)+' =========================================================================================')
@@ -167,10 +168,9 @@ class Red(object):
                     # paso 3: Calcular salida de la red    
                     resultado = self.simular(datos)
                     self.addLog("PASO 3: Calcular salida de la red")
-                    self.addLog(">> datos:"+str(datos)+" resultado:"+str(resultado))
+                    self.addLog(">> datos:"+str(datos)+" resultado:"+str(resultado)+' salidas:'+str(salidas))
                     
-                    salidas = [[None] * len(resultado)] * len(inputs[idx])
-                    for i in range(len(resultado)):
+                    for i in range(len(salidas[idx])):
                         self.addLog('>> salidas['+str(idx)+']['+str(i)+']='+str(resultado[i]))
                         salidas[idx][i] = resultado[i]
                     
