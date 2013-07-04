@@ -162,6 +162,7 @@ class Red(object):
                     self.addLog(">> idx:"+str(idx)+" -----------------------------------------------------------------------------------------")
                     self.addLog("PASO 2: Seleccionar el siguiente par de entrenamiento del conjunto de entrenamiento, aplicando el vector de entrada a la entrada de la red.")
                     datos = [None] * len(inputs[idx])
+                    
                     for i in range(len(inputs[idx])):
                         datos[i] = inputs[idx][i]
                     
