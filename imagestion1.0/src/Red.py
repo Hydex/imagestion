@@ -248,13 +248,16 @@ class Red(object):
                 
                 self.addLog('propagacion hacia adelante en el calulo de pesos en funcion de sigma')
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
-                self.addLog('>> ANTES   capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
+                #self.addLog('>> ANTES   capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
+                #self.addLog('>> ANTES   capa:'+str(prev)+' pesos: '+self.getPesos())
 
                 for i in range(len(self.capas[prev])):
+                    self.addLog('>> ANTES   capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
                     self.capas[prev][i].balancearPesos()
-                    self.addLog('>> capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
+                    self.addLog('>> DESPUES capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
                 
-                self.addLog('>> DESPUES capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
+                #self.addLog('>> DESPUES capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
+                #self.addLog('>> ANTES   capa:'+str(prev)+' pesos: '+self.getPesos())
             pass
                     
         except:
@@ -314,17 +317,18 @@ class Red(object):
         lst = []
         for i in range(len(self.capas)):
             for j in range(len(self.capas[i])):
-                #print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
-                lst.append({self.capas[i][j].name : self.capas[i][j].pesos})
+                #lst.append("capas["+str(i)+"]["+str(j)+"].pesos:"+str(self.capas[i][j].pesos))
+                lst.append({self.capas[i][j].name:self.capas[i][j].pesos})
                 
-        return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
+        #return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
+        return str(lst)
     
     def getEntradas(self):
         lst = []
         for i in range(len(self.capas)):
             for j in range(len(self.capas[i])):
-                print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
-                #lst.append({self.capas[i][j].name : self.capas[i][j].entradas})
+                #print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
+                lst.append({self.capas[i][j].name : self.capas[i][j].entradas})
                 
         return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
     
