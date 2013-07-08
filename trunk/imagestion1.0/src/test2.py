@@ -1,7 +1,7 @@
 from Red import *
 import json
 
-net = Red(2,1,[3,2,1],['LOGSIG','LOGSIG','LOGSIG'])
+net = Red(2,1,[2,1],['LOGSIG','LOGSIG'])
 
 #print net.getConfiguracion()
 
