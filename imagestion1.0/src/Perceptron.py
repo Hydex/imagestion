@@ -49,7 +49,7 @@ class Perceptron(object):
         self.pesos    = [random() for x in xrange(inputs)]
         self.log      = []
         self.name     = name
-        self.rate     = 1.0
+        self.rate     = 0.5
         self.bias     = 0.0
         self.wBias    = 0.0
         self.salida   = 0.0
@@ -147,6 +147,9 @@ class Perceptron(object):
         
     def getPeso(self,idx):
         return self.pesos[idx]
+    
+    def getPesos(self):
+        return self.pesos
     
     def setId(self,id):
         self.id = id

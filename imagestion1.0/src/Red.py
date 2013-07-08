@@ -228,18 +228,18 @@ class Red(object):
                 for i in range(len(delta)):
                     self.capas[capa][i].setSigma(delta[i])
                 
-                self.addLog('>> neuronas prev:'+str(len(self.capas[prev])))
+                self.addLog('>> neuronas prev:'+str(len(self.capas[prev]))+' sigma:'+str([self.capas[prev][x].getSigma() for x in xrange(len(self.capas[prev]))]))
                 # calculo de sigma en funcion de delta (resultado - error)
                 for i in range(len(self.capas[prev])-1):
-                    self.capas[prev][i].setSigma(0.0)
+                    #self.capas[prev][i].setSigma(0.0)
                     
                     # calcula la sumatoria de los pesos con el coeficiente de error sigma
-                    for j in range(len(self.capas[capa])-1):
+                    for j in xrange(len(self.capas[capa])):
                         self.addLog('>> j:'+str(j)+' to:'+str(len(self.capas[capa])))
                         self.capas[prev][i].setCoeficiente(j,self.capas[capa][i].getSigma())
                     
-                    self.addLog('>> i:'+str(i)+' to:'+str(len(self.capas[prev])))
                     sigmas[i] = self.capas[prev][i].getSigma()
+                    self.addLog('>> i:'+str(i)+' to:'+str(len(self.capas[prev]))+'; sigma['+str(i)+']='+str(sigmas[i]))
                 
                 self.addLog('llamada recursiva para retropropagacion en el calculo de sigma')
                 # llamada recursiva para retropropagacion en el calculo de sigma
