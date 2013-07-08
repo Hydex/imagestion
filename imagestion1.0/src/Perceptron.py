@@ -90,7 +90,7 @@ class Perceptron(object):
         for i in range(len(self.pesos)):
             e = self.getSumPesosEntradas()
             peso = self.pesos[i]
-            fn = self.rate*self.sigma*self.fnTransf.train(e)*self.entradas[i]
+            fn = self.rate*self.sigma*self.fnTransf.train(e)*self.salida
             self.pesos[i] = peso + fn
             self.addLog(self.name+'.'+self.funcion+'('+str(e)+')*'+str(self.rate)+'*'+str(self.sigma)+'*'+str(self.entradas[i])+' = '+str(self.pesos[i]))
             pass
