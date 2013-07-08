@@ -15,11 +15,12 @@ print net.getPesos()
 ##print net.simular([0.0,1.0])
 ##print "sinapsis:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
 
-for x in range(1):
+for x in range(10):
     print str(x)+" ENTRENAR"
-    #net.setEpochs(10)
+    net.setEpochs(10)
     net.entrenar([
-            [0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
+            #[0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
+            [0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]
         ],[
             [0.0], [1.0], [1.0], [0.0]
         ])
@@ -34,7 +35,7 @@ print net.getPesos()
 print "sinapsis:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
 
 print "print LOG"
-print net.printLog()
+#print net.printLog()
 
 
 #prueba 2
