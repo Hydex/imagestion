@@ -223,21 +223,21 @@ class Red(object):
             if capa > 0 and len(self.capas[capa]) > 0:
                 prev = capa -1
                 sigmas = [0.0] * len(self.capas[prev])
-                self.addLog('>> capa:'+str(capa))
+                self.addLog('propagacion hacia atras en el calulo para ajuste de sigma [capa:'+str(capa)+']')
                 
                 for i in range(len(delta)):
                     self.capas[capa][i].setSigma(delta[i])
                 
                 self.addLog('>> neuronas prev:'+str(len(self.capas[prev]))+' sigma:'+str([self.capas[prev][x].getSigma() for x in xrange(len(self.capas[prev]))]))
                 # calculo de sigma en funcion de delta (resultado - error)
-                for i in range(len(self.capas[prev])-1):
-                    #self.capas[prev][i].setSigma(0.0)
-                    
+                for i in xrange(len(self.capas[prev])-1):
                     # calcula la sumatoria de los pesos con el coeficiente de error sigma
                     for j in xrange(len(self.capas[capa])):
-                        self.addLog('>> j:'+str(j)+' to:'+str(len(self.capas[capa])))
-                        self.capas[prev][i].setCoeficiente(j,self.capas[capa][i].getSigma())
+                        sigma = self.capas[capa][i].getSigma()
+                        self.addLog('>> capa[i:'+str(i)+'][j:'+str(j)+'].setCoeficiente('+str(sigma)+') to:'+str(len(self.capas[capa])))
+                        self.capas[prev][i].setCoeficiente(j,sigma)
                     
+                    self.addLog('<< i:'+str(i)+' to:'+str(len(self.capas[prev]))+'; sigma['+str(i)+']='+str(sigmas[i]))
                     sigmas[i] = self.capas[prev][i].getSigma()
                     self.addLog('>> i:'+str(i)+' to:'+str(len(self.capas[prev]))+'; sigma['+str(i)+']='+str(sigmas[i]))
                 
@@ -248,16 +248,11 @@ class Red(object):
                 
                 self.addLog('propagacion hacia adelante en el calulo de pesos en funcion de sigma')
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
-                #self.addLog('>> ANTES   capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
-                #self.addLog('>> ANTES   capa:'+str(prev)+' pesos: '+self.getPesos())
 
                 for i in range(len(self.capas[prev])):
-                    self.addLog('>> ANTES   capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
+                    self.addLog('<< capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
                     self.capas[prev][i].balancearPesos()
-                    self.addLog('>> DESPUES capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
-                
-                #self.addLog('>> DESPUES capa:'+str(prev)+' pesos: '+str([self.capas[prev][x].pesos for x in xrange(len(self.capas[prev]))]))
-                #self.addLog('>> ANTES   capa:'+str(prev)+' pesos: '+self.getPesos())
+                    self.addLog('>> capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
             pass
                     
         except:
@@ -322,12 +317,19 @@ class Red(object):
                 
         #return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
         return str(lst)
-    
+
+    def getSigmas(self):
+        lst = []
+        for i in range(len(self.capas)):
+            for j in range(len(self.capas[i])):
+                lst.append({self.capas[i][j].name:self.capas[i][j].sigma})
+                
+        return str(lst)
+            
     def getEntradas(self):
         lst = []
         for i in range(len(self.capas)):
             for j in range(len(self.capas[i])):
-                #print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
                 lst.append({self.capas[i][j].name : self.capas[i][j].entradas})
                 
         return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
