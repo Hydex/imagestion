@@ -65,7 +65,7 @@ class Perceptron(object):
         try:
             for i in range(len(self.entradas)):
                 suma += self.entradas[i] * self.pesos[i]
-                self.addLog(str(suma)+" = "+str(self.entradas[i])+" * "+str(self.pesos[i]))
+                #self.addLog(str(suma)+" = "+str(self.entradas[i])+" * "+str(self.pesos[i]))
             pass
             
         except:
@@ -89,9 +89,11 @@ class Perceptron(object):
      
     def balancearPesos(self):
         for i in range(len(self.pesos)):
-            e = self.getSumPesosEntradas()
+            output = self.salida
+            e = self.calcular() #self.getSumPesosEntradas() + self.bias*self.wBias
+            self.salida = output
             peso = self.pesos[i]
-            fn = self.rate*self.sigma*self.fnTransf.train(e)*self.salida
+            fn = self.rate*self.sigma*self.fnTransf.train(e)*output
             self.pesos[i] = peso + fn
             self.addLog(self.name+'.'+self.funcion+'('+str(e)+')*'+str(self.rate)+'*'+str(self.sigma)+'*'+str(self.entradas[i])+' = '+str(self.pesos[i]))
             pass
