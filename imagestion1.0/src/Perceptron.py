@@ -73,27 +73,28 @@ class Perceptron(object):
             self.addLog ("ERROR en Perceptron.getSumPesosEntradas() - Iteracion i="+str(i))
             self.addLog (err)
             
-        return suma
+        return suma + self.bias*self.wBias
         
     def calcular(self):
         self.addLog("Perceptron.calcular(name:"+self.name+", entradas:"+str(self.entradas)+')')
         suma = self.getSumPesosEntradas()
-        self.setSalida(suma + self.bias*self.wBias)
+        self.setSalida(suma)
         res = self.fnTransf.exe(self.salida)
         return res
             
     def setCoeficiente(self,i,sigma):
-        if i<=len(self.pesos):
-            self.sigma += self.pesos[i] * sigma
+        #if i<=len(self.pesos):
+        self.setSigma(self.sigma + self.pesos[i] * sigma)
         pass
      
     def balancearPesos(self):
         for i in range(len(self.pesos)):
-            output = self.salida
-            e = self.calcular() #self.getSumPesosEntradas() + self.bias*self.wBias
-            self.salida = output
+            #output = self.salida
+            #e = self.calcular() 
+            e = self.getSumPesosEntradas()
+            #self.salida = output
             peso = self.pesos[i]
-            fn = self.rate*self.sigma*self.fnTransf.train(e)*output
+            fn = self.rate*self.sigma*self.fnTransf.train(e)*self.salida
             self.pesos[i] = peso + fn
             self.addLog(self.name+'.'+self.funcion+'('+str(e)+')*'+str(self.rate)+'*'+str(self.sigma)+'*'+str(self.entradas[i])+' = '+str(self.pesos[i]))
             pass
