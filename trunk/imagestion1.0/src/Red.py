@@ -232,14 +232,17 @@ class Red(object):
                 # calculo de sigma en funcion de delta (resultado - error)
                 for j in xrange(len(self.capas[prev])):
                     # calcula la sumatoria de los pesos con el coeficiente de error sigma
+                    sigma = 0
                     for i in xrange(len(self.capas[capa])):
                         sigma = self.capas[capa][i].getSigma()
-                        self.addLog('>> capa[i:'+str(i)+'][j:'+str(j)+'].setCoeficiente('+str(sigma)+') to:'+str(len(self.capas[capa])))
+                        self.addLog('<<       capa[prev:'+str(prev)+'][i:'+str(i)+'].setCoeficiente(j:'+str(j)+','+str(sigma)+') sigma:'+str(self.capas[prev][i].getSigma())+' += '+str(self.capas[prev][i].pesos[j])+' + '+str(sigma))
                         self.capas[prev][i].setCoeficiente(j,sigma)
+                        sigma = self.capas[capa][i].getSigma()
+                        self.addLog('>>       capa[prev:'+str(prev)+'][i:'+str(i)+'].sigma:'+str(sigma))
                     
-                    self.addLog('<< i:'+str(i)+' to:'+str(len(self.capas[prev]))+'; sigma['+str(i)+']='+str(sigmas[i]))
-                    sigmas[i] = self.capas[prev][i].getSigma()
-                    self.addLog('>> i:'+str(i)+' to:'+str(len(self.capas[prev]))+'; sigma['+str(i)+']='+str(sigmas[i]))
+                    self.addLog('<< (j:'+str(j)+') sigmas['+str(j)+'] = self.capas['+str(prev)+']['+str(i)+'] : '+str(sigmas[j]))
+                    sigmas[j] = sigma
+                    self.addLog('>> (j:'+str(j)+') sigmas['+str(j)+'] = self.capas['+str(prev)+']['+str(i)+'] : '+str(sigmas[j]))
                 
                 self.addLog('llamada recursiva para retropropagacion en el calculo de sigma')
                 # llamada recursiva para retropropagacion en el calculo de sigma
