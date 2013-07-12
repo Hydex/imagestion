@@ -222,7 +222,7 @@ class Red(object):
             self.addLog('>> neuronas:'+str(len(self.capas[capa])))
             if capa > 0 and len(self.capas[capa]) > 0:
                 prev = capa -1
-                sigmas = [0.0] * len(self.capas[prev])
+                sigmas = [0] * len(self.capas[prev])
                 self.addLog('propagacion hacia atras en el calulo para ajuste de sigma [capa:'+str(capa)+']')
                 
                 for i in xrange(len(delta)):
