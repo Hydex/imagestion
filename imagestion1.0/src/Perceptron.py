@@ -53,7 +53,7 @@ class Perceptron(object):
         self.bias     = 0.0
         self.wBias    = 0.0
         self.salida   = 0.0
-        self.sigma    = 0.0
+        self.sigma    = 0.0 #random() #0.0
         self.funcion  = funcion
         self.fnTransf = Activacion(funcion)
         pass
@@ -88,11 +88,12 @@ class Perceptron(object):
         pass
      
     def balancearPesos(self):
+        e = self.getSumPesosEntradas()
+        #output = self.salida
+        #e = self.calcular() 
+        #self.salida = output           
+         
         for i in range(len(self.pesos)):
-            #output = self.salida
-            #e = self.calcular() 
-            e = self.getSumPesosEntradas()
-            #self.salida = output
             peso = self.pesos[i]
             fn = self.rate*self.sigma*self.fnTransf.train(e)*self.salida
             self.pesos[i] = peso + fn
