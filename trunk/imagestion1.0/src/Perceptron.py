@@ -88,10 +88,10 @@ class Perceptron(object):
         pass
      
     def balancearPesos(self):
-        e = self.getSumPesosEntradas()
-        #output = self.salida
-        #e = self.calcular() 
-        #self.salida = output           
+        #e = self.getSumPesosEntradas()
+        output = self.salida
+        e = self.calcular() 
+        self.salida = output           
          
         for i in range(len(self.pesos)):
             peso = self.pesos[i]
