@@ -223,17 +223,17 @@ class Red(object):
             if capa > 0 and len(self.capas[capa]) > 0:
                 prev = capa -1
                 sigmas = [0] * len(self.capas[prev])
-                self.addLog('propagacion hacia atras en el calulo para ajuste de sigma [capa:'+str(capa)+']')
+                self.addLog('propagacion hacia atras en el calulo para ajuste de sigma [capa:'+str(capa)+'][prev:'+str(prev)+']')
                 
                 for i in xrange(len(delta)):
                     self.capas[capa][i].setSigma(delta[i])
                 
-                self.addLog('>> neuronas prev:'+str(len(self.capas[prev]))+' sigma:'+str([self.capas[prev][x].getSigma() for x in xrange(len(self.capas[prev]))])+' sigmas[]:'+str(self.getSigmas()))
+                self.addLog('>> neuronas capa inferior:'+str(len(self.capas[prev]))+' sigma:'+str([self.capas[prev][x].getSigma() for x in xrange(len(self.capas[prev]))])+' sigmas[]:'+str(self.getSigmas()))
                 # calculo de sigma en funcion de delta (resultado - error)
-                for j in xrange(len(self.capas[prev])):
+                for j in xrange(len(self.capas[capa])):
                     # calcula la sumatoria de los pesos con el coeficiente de error sigma
                     sigma = 0
-                    for i in xrange(len(self.capas[capa])):
+                    for i in xrange(len(self.capas[prev])):
                         sigma = self.capas[capa][i].getSigma()
                         self.addLog('<<       capa[prev:'+str(prev)+'][i:'+str(i)+'].setCoeficiente(j:'+str(j)+','+str(sigma)+')  red.sigma:'+str(self.capas[prev][i].getSigma())+' += '+str(self.capas[prev][i].pesos[j])+' + '+str(sigma))
                         self.capas[prev][i].setCoeficiente(j,sigma)
