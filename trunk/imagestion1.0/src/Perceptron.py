@@ -87,6 +87,10 @@ class Perceptron(object):
         self.sigma += self.pesos[i] * sigma
         pass
      
+    def getCoeficiente(self,i):
+        #if i<=len(self.pesos):
+        return self.pesos[i] * self.sigma
+     
     def balancearPesos(self):
         e = self.getSumPesosEntradas()
 ##        output = self.salida

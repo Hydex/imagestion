@@ -222,29 +222,28 @@ class Red(object):
             self.addLog('>> neuronas:'+str(len(self.capas[capa])))
             if capa > 0 and len(self.capas[capa]) > 0:
                 prev = capa -1
-                sigmas = [0] * len(self.capas[prev])
                 self.addLog('propagacion hacia atras en el calulo para ajuste de sigma [capa:'+str(capa)+'][prev:'+str(prev)+']')
                 
                 for i in xrange(len(delta)):
                     self.capas[capa][i].setSigma(delta[i])
                 
-                self.addLog('>> neuronas capa inferior:'+str(len(self.capas[prev]))+' sigma:'+str([self.capas[prev][x].getSigma() for x in xrange(len(self.capas[prev]))])+' sigmas[]:'+str(self.getSigmas()))
                 # calculo de sigma en funcion de delta (resultado - error)
-                for j in xrange(len(self.capas[capa])):
-                    # calcula la sumatoria de los pesos con el coeficiente de error sigma
-                    sigma = 0
-                    for i in xrange(len(self.capas[prev])):
-                        sigma = self.capas[capa][i].getSigma()
-                        self.addLog('<<       capa[prev:'+str(prev)+'][i:'+str(i)+'].setCoeficiente(j:'+str(j)+','+str(sigma)+')  red.sigma:'+str(self.capas[prev][i].getSigma())+' += '+str(self.capas[prev][i].pesos[j])+' + '+str(sigma))
-                        self.capas[prev][i].setCoeficiente(j,sigma)
-                        sigma = self.capas[capa][i].getSigma()
-                        self.addLog('>>       capa[prev:'+str(prev)+'][i:'+str(i)+'].sigma:'+str(sigma))
-                    
-                    self.addLog('<< (j:'+str(j)+') sigmas['+str(j)+'] = self.capas['+str(prev)+']['+str(i)+'] :'+str(sigmas[j]))
-                    sigmas[j] = sigma
-                    self.addLog('>> (j:'+str(j)+') sigmas['+str(j)+'] = self.capas['+str(prev)+']['+str(i)+'] :'+str(sigmas[j]))
+                self.addLog('>> neuronas capa inferior:'+str(len(self.capas[prev]))+' red.sigmas[]:'+str(self.getSigmas()))
+                sigmas = [0] * len(self.capas[prev])
 
-                self.addLog('>> sigma:'+str([self.capas[prev][x].getSigma() for x in xrange(len(self.capas[prev]))])+'  red.sigmas[]:'+str(self.getSigmas()))
+                for i in xrange(len(self.capas[prev])):
+                    # calcula la sumatoria de los pesos con el coeficiente de error sigma
+                    for j in xrange(len(self.capas[capa])):
+                        sigma = self.capas[prev][i].getSigma()
+                        
+                        self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].sigma:'+str(sigma)+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getSigma()))
+                        
+                        self.capas[prev][i].setSigma(sigma + self.capas[capa][j].getCoeficiente(i))
+                        sigmas[j] = self.capas[prev][i].getSigma()
+                        
+                        self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].sigma:'+str(sigmas[j])+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getSigma()))
+
+                self.addLog('>> red.sigmas[]:'+str(self.getSigmas()))
                 
                 self.addLog('llamada recursiva para retropropagacion en el calculo de sigma')
                 # llamada recursiva para retropropagacion en el calculo de sigma
