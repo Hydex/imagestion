@@ -76,7 +76,7 @@ class Perceptron(object):
         return suma + self.bias*self.wBias
         
     def calcular(self):
-        self.addLog("Perceptron.calcular(name:"+self.name+", entradas:"+str(self.entradas)+')')
+        #self.addLog("Perceptron.calcular(name:"+self.name+", entradas:"+str(self.entradas)+')')
         suma = self.getSumPesosEntradas()
         self.setSalida(suma)
         res = self.fnTransf.exe(self.salida)
@@ -100,8 +100,8 @@ class Perceptron(object):
         for i in range(len(self.pesos)):
             peso = self.pesos[i]
             fn = self.rate*self.sigma*self.fnTransf.train(e)*self.salida
+            self.addLog(self.name+'.'+self.funcion+'('+str(e)+')*'+str(self.rate)+'*'+str(self.sigma)+'*'+str(self.entradas[i])+' = '+str(peso + fn))
             self.pesos[i] = peso + fn
-            self.addLog(self.name+'.'+self.funcion+'('+str(e)+')*'+str(self.rate)+'*'+str(self.sigma)+'*'+str(self.entradas[i])+' = '+str(self.pesos[i]))
             pass
         pass
          
@@ -194,12 +194,14 @@ class Perceptron(object):
         pass
         
     def addLog(self,str):
-        #self.log.append(str)
+        self.log.append(str)
         #print str
         pass
         
     def getLog(self):
-        return self.log
+        log = self.log
+        self.log = []
+        return log
         pass
         
     def printLog(self):

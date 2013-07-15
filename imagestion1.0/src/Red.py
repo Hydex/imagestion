@@ -57,6 +57,7 @@ class Red(object):
         self.salidas  = salidas
         self.transferencias = funciones
         self.epochs   = None
+        self.panic    = False
         
         self.sinapsis[0] = [random() for x in xrange(entradas)]
                 
@@ -108,8 +109,11 @@ class Red(object):
                     pass
         except:
             err = str(exc_info())
-            self.addLog("ERROR en Red.simular()\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
+            self.addLog("ERROR en Red.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
+            print("ERROR en Red.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
             self.addLog(err)
+            self.addLog(self.capas[i][j].getLog())
+            self.panic = True
             pass
         
         return outputs
@@ -142,6 +146,7 @@ class Red(object):
     def entrenar(self,inputs,outputs):
         self.addLog("Red.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
         idx = 0
+        minimo = 1
         
         # paso 1: Se inicializan los pesos de todas las neuronas con valores
         #         aleatorios rango [0..1]
@@ -177,14 +182,15 @@ class Red(object):
                     
                     # calcula el delta de error de la red buscando un minimo
                     error = [None] * len(resultado)
-                    minimo = 1
                     self.addLog("calcula el delta de error de la red buscando un minimo")
                     self.addLog(">> nro de resultados: "+str(len(resultado)))
                     for i in range(len(resultado)):
                         error[i] = outputs[idx][i] - salidas[idx][i]
-                        self.addLog('>> error['+str(i)+']:'+str(error[i])+'='+str(outputs[idx][i])+' - '+str(salidas[idx][i]))
-                        #if abs(error[i]) < minimo:
-                        #    minimo = error[i]
+                        self.addLog('>> error['+str(i)+']:'+str(error[i])+' = '+str(outputs[idx][i])+' - '+str(salidas[idx][i]))
+                        if abs(error[i]) < minimo:
+                            minimo = error[i]
+                    
+                    self.addLog(">> error minimo encontrado: "+str(minimo))
                     
                     # paso 4: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
@@ -195,8 +201,9 @@ class Red(object):
         except:
             err = str(exc_info())
             self.addLog("ERROR Red.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
+            print("ERROR Red.entrenar('"+str(err)+"'):\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
             self.addLog(err)
-            #print self.log
+            self.panic = True
             pass        
 
     """   
@@ -224,8 +231,8 @@ class Red(object):
                 prev = capa -1
                 self.addLog('propagacion hacia atras en el calulo para ajuste de sigma [capa:'+str(capa)+'][prev:'+str(prev)+']')
                 
-                for i in xrange(len(delta)):
-                    self.capas[capa][i].setSigma(delta[i])
+                for j in xrange(len(delta)):
+                    self.capas[capa][j].setSigma(delta[j])
                 
                 # calculo de sigma en funcion de delta (resultado - error)
                 self.addLog('>> neuronas capa inferior:'+str(len(self.capas[prev]))+' red.sigmas[]:'+str(self.getSigmas()))
@@ -255,6 +262,7 @@ class Red(object):
 
                 for i in xrange(len(self.capas[prev])):
                     self.addLog('<< capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
+                    self.addLog(self.capas[prev][i].getLog())
                     self.capas[prev][i].balancearPesos()
                     self.addLog('>> capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
             pass
@@ -262,8 +270,11 @@ class Red(object):
         except:
             err = str(exc_info())
             self.addLog("ERROR Red.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            print("ERROR Red.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
             self.addLog(err)
-            pass            
+            self.addLog(self.capas[capa][j].getLog())
+            self.addLog(self.capas[prev][i].getLog())
+            self.panic = True           
         
     def getConfiguracion(self):
         data = {
