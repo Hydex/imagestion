@@ -108,12 +108,18 @@ class Activacion(object):
         pass
         
     def logsig(self,val):
-        return 1.0 / (1.0 + exp(-val))
-        pass
+        try:
+            return 1.0 / (1.0 + exp(-val))
+        except:
+            print 'ERROR logsig('+str(val)+'):'+str(exc_info())
+            return 0.0
         
     def tansig(self,val):
-        return (exp(val) - exp(-val)) / (exp(val) + exp(-val))
-        pass
+        try:
+            return (exp(val) - exp(-val)) / (exp(val) + exp(-val))
+        except:
+            print 'ERROR tansig('+str(val)+'):'+str(exc_info())
+            return 0.0       
         
     def radbas(self,val):
         pass
