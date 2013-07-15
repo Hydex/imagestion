@@ -240,6 +240,8 @@ class Red(object):
 
                 for i in xrange(len(self.capas[prev])):
                     # calcula la sumatoria de los pesos con el coeficiente de error sigma
+                    self.capas[prev][i].setSigma(0.0)
+                    
                     for j in xrange(len(self.capas[capa])):
                         sigma = self.capas[prev][i].getSigma()
                         
@@ -261,10 +263,11 @@ class Red(object):
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
 
                 for i in xrange(len(self.capas[prev])):
-                    self.addLog('<< capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
-                    self.addLog(self.capas[prev][i].getLog())
+                    self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.capas[prev][i].pesos]))
+                    #self.addLog('>> capa['+str(prev)+']['+str(i)+'].'+self.capas[prev][i].name+'.'+self.funcion+'('+str(self.capas[prev][i].getSumPesosEntradas())+')*'+str(self.capas[prev][i].rate)+'*'+str(self.capas[prev][i].sigma)+'*'+str(self.capas[prev][i].entradas[i]))
                     self.capas[prev][i].balancearPesos()
-                    self.addLog('>> capa['+str(prev)+']['+str(i)+'] pesos: '+str([self.capas[prev][i].pesos]))
+                    self.addLog(self.capas[prev][i].getLog())
+                    self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.capas[prev][i].pesos]))
             pass
                     
         except:
