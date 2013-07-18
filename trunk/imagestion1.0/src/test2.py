@@ -16,9 +16,9 @@ print 'SIGMAS: '+str(net.getSigmas())
 ##print net.simular([0.0,1.0])
 ##print "sinapsis:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
 
-for x in range(4):
+for x in range(2):
     print str(x)+" ENTRENAR"
-    net.setEpochs(100)
+    net.setEpochs(10)
     net.entrenar([
             #[0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
             [0,0], [0,1], [1,0], [1,1]
@@ -36,6 +36,7 @@ for x in range(4):
     print 'SIGMAS: '+str(net.getSigmas())
 
 #print "SINAPSIS:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
+#net.panic = True
 
 if net.panic:
     print "print LOG"

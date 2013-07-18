@@ -156,15 +156,18 @@ class Red(object):
         
         try:
             for ciclo in range(epochs):
+            #for idx in range(len(inputs)):
                 #datos = [None] * self.entradas
+                self.addLog(">> idx:"+str(idx)+" -----------------------------------------------------------------------------------------")
                 salidas = [[None] * len(outputs[0])] * len(outputs)
                 
                 ## [[0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]]
-                self.addLog('>> ciclo:'+str(ciclo)+' =========================================================================================')
                 for idx in range(len(inputs)):
+                #for ciclo in range(epochs):
+                    self.addLog('>> salidas:'+str(salidas))
+                    self.addLog('>> ciclo:'+str(ciclo)+' =========================================================================================')
                     # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                    self.addLog(">> idx:"+str(idx)+" -----------------------------------------------------------------------------------------")
                     self.addLog("PASO 2: Seleccionar el siguiente par de entrenamiento del conjunto de entrenamiento, aplicando el vector de entrada a la entrada de la red.")
                     datos = [None] * len(inputs[idx])
                     
@@ -264,7 +267,6 @@ class Red(object):
 
                 for i in xrange(len(self.capas[prev])):
                     self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.capas[prev][i].pesos]))
-                    #self.addLog('>> capa['+str(prev)+']['+str(i)+'].'+self.capas[prev][i].name+'.'+self.funcion+'('+str(self.capas[prev][i].getSumPesosEntradas())+')*'+str(self.capas[prev][i].rate)+'*'+str(self.capas[prev][i].sigma)+'*'+str(self.capas[prev][i].entradas[i]))
                     self.capas[prev][i].balancearPesos()
                     self.addLog(self.capas[prev][i].getLog())
                     self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.capas[prev][i].pesos]))
