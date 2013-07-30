@@ -53,6 +53,7 @@ class Perceptron(object):
         self.bias     = 0.0
         self.wBias    = 0.0
         self.salida   = 0.0
+        self.neta     = 0.0
         self.sigma    = 0.0 #random() #0.0
         self.funcion  = funcion
         self.fnTransf = Activacion(funcion)
@@ -72,8 +73,9 @@ class Perceptron(object):
             err = exc_info()[0]
             self.addLog ("ERROR en Perceptron.getSumPesosEntradas() - Iteracion i="+str(i))
             self.addLog (err)
-            
-        return suma + self.bias*self.wBias
+        
+        self.neta = suma + self.bias*self.wBias
+        return self.neta
         
     def calcular(self):
         #self.addLog("Perceptron.calcular(name:"+self.name+", entradas:"+str(self.entradas)+')')
@@ -92,10 +94,7 @@ class Perceptron(object):
         return self.pesos[i] * self.sigma
      
     def balancearPesos(self):
-        e = self.getSumPesosEntradas()
-##        output = self.salida
-##        e = self.calcular() 
-##        self.salida = output           
+        e = self.neta
          
         for i in range(len(self.pesos)):
             peso = self.pesos[i]
