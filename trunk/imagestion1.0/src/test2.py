@@ -1,7 +1,11 @@
 from Red import *
 import json
 
-net = Red(2,1,[2,1],['LOGSIG','LOGSIG'])
+O = 0 #0.000001
+I = 1 #0.999999
+
+net = Red(2,1,[2,1],['TANSIG','TANSIG'])
+#net = Red(2,1,[3,2,1],['LOGSIG','LOGSIG','LOGSIG'])
 
 #print net.getConfiguracion()
 
@@ -18,19 +22,19 @@ print 'SIGMAS: '+str(net.getSigmas())
 
 for x in range(2):
     print str(x)+" ENTRENAR"
-    #net.setEpochs(10)
+    net.setEpochs(1000)
     net.entrenar([
             #[0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
-            [0,0], [0,1], [1,0], [1,1]
+            [O,O], [O,I], [I,O], [I,I]
         ],[
             [0], [1], [1], [0]
         ])
 
     print str(x)+" SIMULAR"
-    print net.simular([0,0])
-    print net.simular([0,1])
-    print net.simular([1,0])
-    print net.simular([1,1])
+    print str([0,0]) + ' => ' + str(net.simular([O,O]))
+    print str([0,1]) + ' => ' + str(net.simular([O,I]))
+    print str([1,0]) + ' => ' + str(net.simular([I,O]))
+    print str([1,1]) + ' => ' + str(net.simular([I,I]))
 
     print 'PESOS: '+str(net.getPesos())
     print 'SIGMAS: '+str(net.getSigmas())
