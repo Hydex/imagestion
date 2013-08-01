@@ -115,17 +115,15 @@ class Activacion(object):
             return 0.0
         
     def tansig(self,val):
-        try:
-            return (exp(val) - exp(-val)) / (exp(val) + exp(-val))
-        except:
-            print 'ERROR tansig('+str(val)+'):'+str(exc_info())
-            return 0.0       
+        return (exp(val) - exp(-val)) / (exp(val) + exp(-val))      
         
     def radbas(self,val):
         pass
         
     def logsig_derivada(self,val):
-        return val * (1.0 - val)
+        valor = val * (1.0 - val)
+        #return valor 
+        return self.satlin(valor)    # Corregir que valores devueltos no se disparen durante entrenamiento
         pass
         
     def tansig_derivada(self,valor):

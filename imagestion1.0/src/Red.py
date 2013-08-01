@@ -236,6 +236,7 @@ class Red(object):
                 
                 for j in xrange(len(delta)):
                     self.capas[capa][j].setSigma(delta[j])
+                    self.capas[capa][j].setDelta(delta[j])
                 
                 # calculo de sigma en funcion de delta (resultado - error)
                 self.addLog('>> neuronas capa inferior:'+str(len(self.capas[prev]))+' red.sigmas[]:'+str(self.getSigmas()))

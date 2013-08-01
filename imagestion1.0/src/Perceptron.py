@@ -55,6 +55,8 @@ class Perceptron(object):
         self.salida   = 0.0
         self.neta     = 0.0
         self.sigma    = 0.0 #random() #0.0
+        self.delta    = 0.0
+        self.error    = None
         self.funcion  = funcion
         self.fnTransf = Activacion(funcion)
         pass
@@ -83,7 +85,15 @@ class Perceptron(object):
         self.setSalida(suma)
         res = self.fnTransf.exe(self.salida)
         return res
-            
+        
+    def setDelta(self,d):
+        self.delta = d
+        pass
+        
+    def getDelta(self):
+        return self.delta
+        pass
+        
     def setCoeficiente(self,i,sigma):
         #if i<=len(self.pesos):
         self.sigma += self.pesos[i] * sigma
@@ -95,14 +105,17 @@ class Perceptron(object):
      
     def balancearPesos(self):
         e = self.neta
+        fn = self.fnTransf.train(e)
          
         for i in range(len(self.pesos)):
+            Yprev = self.entradas[i]  # salida del nodo conectado referente al peso
             peso = self.pesos[i]
-            fn = self.fnTransf.train(e)
-            prod = self.rate*self.sigma*self.salida*fn
+            prod = self.rate*self.sigma*fn*Yprev 
             self.addLog(str(peso + prod)+' = '+self.name+'.'+self.funcion+'('+str(e)+'):'+str(fn)+' * '+str(self.rate)+' * '+str(self.sigma)+' * '+str(self.entradas[i])+' + '+str(peso))
             self.pesos[i] = peso + prod
-            pass
+        
+        self.error = self.salida - self.delta
+        pass
          
     """
     # setSigma
