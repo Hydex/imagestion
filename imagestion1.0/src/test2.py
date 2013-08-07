@@ -4,8 +4,8 @@ import json
 O = 0 #0.000001
 I = 1 #0.999999
 
-net = Red(2,1,[2,1],['TANSIG','TANSIG'])
-#net = Red(2,1,[3,2,1],['LOGSIG','LOGSIG','LOGSIG'])
+#net = Red(2,1,[2,1],['TANSIG','TANSIG'])
+net = Red(2,1,[2,1],['LOGSIG','LOGSIG'])
 
 #print net.getConfiguracion()
 

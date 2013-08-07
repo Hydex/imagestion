@@ -187,17 +187,20 @@ class Red(object):
                     error = [None] * len(resultado)
                     self.addLog("calcula el delta de error de la red buscando un minimo")
                     self.addLog(">> nro de resultados: "+str(len(resultado)))
-                    for i in range(len(resultado)):
-                        error[i] = outputs[idx][i] - salidas[idx][i]
-                        self.addLog('>> error['+str(i)+']:'+str(error[i])+' = '+str(outputs[idx][i])+' - '+str(salidas[idx][i]))
-                        if abs(error[i]) < minimo:
-                            minimo = error[i]
+                    expect = outputs[idx]
                     
-                    self.addLog(">> error minimo encontrado: "+str(minimo))
+##                    for i in range(len(resultado)):
+##                        error[i] = outputs[idx][i] - salidas[idx][i]
+##                        self.addLog('>> error['+str(i)+']:'+str(error[i])+' = '+str(outputs[idx][i])+' - '+str(salidas[idx][i]))
+##                        if abs(error[i]) < minimo:
+##                            minimo = error[i]
+##                    
+##                    self.addLog(">> error minimo encontrado: "+str(minimo))
                     
                     # paso 4: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
-                    self.backPropagation(self.nCapas-1,error)
+                    #self.backPropagation(self.nCapas-1,error)
+                    self.backPropagation(self.nCapas-1,resultado,expect)
                     
                 epochs = epochs - 1
             pass
@@ -223,12 +226,18 @@ class Red(object):
     #
     #
     """         
-    def backPropagation(self,capa,delta):
-        self.addLog("Red.backPropagation -> capa:"+str(capa)+" delta:"+str(delta))
+    #def backPropagation(self,capa,delta):
+    def backPropagation(self,capa,result,expect):
+        self.addLog("Red.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
         i,j = 0,0
+        delta = [0] * len(result)
+        prev = capa
         
         try:
-            prev = capa
+            for i in xrange(len(result)-1):
+                delta[i] = expect[i] - result[i]
+                self.addLog('>> delta['+str(i)+']:'+str(delta[i])+' = '+str(expect[i])+' - '+str(result[i]))
+                                        
             self.addLog('>> neuronas:'+str(len(self.capas[capa])))
             if capa > 0 and len(self.capas[capa]) > 0:
                 prev = capa -1
@@ -260,8 +269,8 @@ class Red(object):
                 
                 self.addLog('llamada recursiva para retropropagacion en el calculo de sigma')
                 # llamada recursiva para retropropagacion en el calculo de sigma
-                #if prev > 0:
-                self.backPropagation(prev, sigmas)
+                #self.backPropagation(prev, sigmas)
+                self.backPropagation(prev, sigmas, expect)
                 
                 self.addLog('propagacion hacia adelante en el calulo de pesos en funcion de sigma')
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
