@@ -56,7 +56,7 @@ from datetime import datetime
 # 1504        return tuple(ims)
 
 
-img = Imagen('/home/miguel/Pictures/factura.jpg')
+img = Imagen('../imgtest/exp1.jpg')
 print 'ancho:', img.getAncho() ,' alto:', img.getAlto()
 
 #r = img.getR()
@@ -79,7 +79,7 @@ img.getRGB().show()
 
 start = datetime.now()
 
-#img.dilate()
+img.dilate()
 img.erode()
 
 stop = datetime.now()
