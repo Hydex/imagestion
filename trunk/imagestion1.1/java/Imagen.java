@@ -65,7 +65,7 @@ public class Imagen
     protected int structHg;
     private BufferedImage imagen;
     protected static int instancia = 0;
-    public boolean debug = false;
+    public boolean debug = true;
 
     //
     // Constructors
