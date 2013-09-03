@@ -22,7 +22,7 @@ print 'SIGMAS: '+str(net.getSigmas())
 
 for x in range(2):
     print str(x)+" ENTRENAR"
-    net.setEpochs(1000)
+    net.setEpochs(100)
     net.entrenar([
             #[0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
             [O,O], [O,I], [I,O], [I,I]
