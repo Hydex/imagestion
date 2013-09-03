@@ -170,7 +170,14 @@ class Perceptron(object):
         return self.pesos[idx]
     
     def getPesos(self):
-        return self.pesos
+        return self.pesos    
+        
+    def setError(self,err):
+        self.error = err
+        pass
+        
+    def getError(self):
+        return self.error
     
     def setId(self,id):
         self.id = id

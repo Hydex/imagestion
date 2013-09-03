@@ -243,7 +243,9 @@ class Red(object):
                 prev = capa -1
                 self.addLog('propagacion hacia atras en el calulo para ajuste de sigma [capa:'+str(capa)+'][prev:'+str(prev)+']')
                 
+                # calculo del error para la capa
                 for j in xrange(len(delta)):
+                    self.capas[capa][j].setError(delta[j]*self.capas[capa][j].fnTransf.train(result[j]))
                     self.capas[capa][j].setSigma(delta[j])
                     self.capas[capa][j].setDelta(delta[j])
                 
@@ -270,7 +272,7 @@ class Red(object):
                 self.addLog('llamada recursiva para retropropagacion en el calculo de sigma')
                 # llamada recursiva para retropropagacion en el calculo de sigma
                 #self.backPropagation(prev, sigmas)
-                self.backPropagation(prev, sigmas, expect)
+                self.backPropagation(prev, sigmas, result)
                 
                 self.addLog('propagacion hacia adelante en el calulo de pesos en funcion de sigma')
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
