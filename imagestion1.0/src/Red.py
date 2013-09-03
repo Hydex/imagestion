@@ -272,7 +272,7 @@ class Red(object):
                 self.addLog('llamada recursiva para retropropagacion en el calculo de sigma')
                 # llamada recursiva para retropropagacion en el calculo de sigma
                 #self.backPropagation(prev, sigmas)
-                self.backPropagation(prev, sigmas, result)
+                self.backPropagation(prev, sigmas, expect)
                 
                 self.addLog('propagacion hacia adelante en el calulo de pesos en funcion de sigma')
                 # propagacion hacia adelante en el calulo de pesos en funcion de sigma
