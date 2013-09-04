@@ -54,7 +54,6 @@ class Perceptron(object):
         self.wBias    = 0.0
         self.salida   = 0.0
         self.neta     = 0.0
-        self.sigma    = 0.0 #random() #0.0
         self.delta    = 0.0
         self.error    = None
         self.funcion  = funcion
@@ -85,40 +84,9 @@ class Perceptron(object):
         self.setSalida(suma)
         res = self.fnTransf.exe(self.salida)
         return res
-        
-    def setDelta(self,d):
-        self.delta = d
-        pass
-        
-    def getDelta(self):
-        return self.delta
-        pass
-        
-    def setCoeficiente(self,i,sigma):
-        #if i<=len(self.pesos):
-        self.sigma += self.pesos[i] * sigma
-        pass
-     
-    def getCoeficiente(self,i):
-        #if i<=len(self.pesos):
-        return self.pesos[i] * self.sigma
-     
-    def balancearPesos(self):
-        e = self.neta
-        fn = self.fnTransf.train(e)
-         
-        for i in range(len(self.pesos)):
-            Yprev = self.entradas[i]  # salida del nodo conectado referente al peso
-            peso = self.pesos[i]
-            prod = self.rate*self.sigma*fn*Yprev 
-            self.addLog(str(peso + prod)+' = '+self.name+'.'+self.funcion+'('+str(e)+'):'+str(fn)+' * '+str(self.rate)+' * '+str(self.sigma)+' * '+str(self.entradas[i])+' + '+str(peso))
-            self.pesos[i] = peso + prod
-        
-        self.error = self.salida - self.delta
-        pass
-         
+
     """
-    # setSigma
+    # setDelta
     # 
     #  Al comparar la senal de salida con una respuesta deseada o salida objetivo,
     #  d(t), se produce una senal de error, e(t), energia de error. Senal de error
@@ -131,15 +99,38 @@ class Perceptron(object):
     #  tienen funciones de activacion continuas. Estas funciones continuas son no decrecientes
     #  y derivables (la funcion sigmoidal pertenece a este tipo de funciones).
     #
-    """ 
-    
-    def setSigma(self,sigma):
-        self.sigma = sigma
+    """         
+    def setDelta(self,d):
+        self.delta = d
         pass
         
-    def getSigma(self):
-        return self.sigma
+    def getDelta(self):
+        return self.delta
         pass
+        
+    def setCoeficiente(self,i,delta):
+        #if i<=len(self.pesos):
+        self.delta += self.pesos[i] * delta
+        pass
+     
+    def getCoeficiente(self,i):
+        #if i<=len(self.pesos):
+        return self.pesos[i] * self.delta
+     
+    def balancearPesos(self):
+        e = self.neta
+        fn = self.fnTransf.train(e)
+         
+        for i in range(len(self.pesos)):
+            Yprev = self.entradas[i]  # salida del nodo conectado referente al peso
+            peso = self.pesos[i]
+            prod = self.rate*self.delta*fn*Yprev 
+            self.addLog(str(peso + prod)+' = '+self.name+'.'+self.funcion+'('+str(e)+'):'+str(fn)+' * '+str(self.rate)+' * '+str(self.delta)+' * '+str(self.entradas[i])+' + '+str(peso))
+            self.pesos[i] = peso + prod
+        
+        #self.error = self.salida - self.delta
+        pass
+         
         
     def setBias(self,bias):
         self.bias = bias
@@ -198,7 +189,8 @@ class Perceptron(object):
             'bias':self.bias,
             'wBias':self.wBias,
             'salida':self.salida,
-            'sigma':self.sigma,
+            'delta':self.delta,
+            'error':self.error,
             'funcion':self.funcion             
         }
 
