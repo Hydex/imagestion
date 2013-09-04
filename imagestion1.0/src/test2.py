@@ -14,7 +14,7 @@ net = Red(2,1,[2,1],['LOGSIG','LOGSIG'])
 #        #print "capas["+str(i)+"]["+str(j)+"]entradas:"+json.dumps(net.capas[i][j].entradas, sort_keys=True,indent=4, separators=(',', ': '))
 #        print "capas["+str(i)+"]["+str(j)+"]."+net.capas[i][j].name+".pesos   :"+json.dumps(net.capas[i][j].pesos, sort_keys=True,indent=4, separators=(',', ': '))
 print 'PESOS: '+str(net.getPesos())
-print 'SIGMAS: '+str(net.getSigmas())
+print 'DELTAS: '+str(net.getDeltas())
 
 ##print "SIMULAR"
 ##print net.simular([0.0,1.0])
@@ -22,7 +22,7 @@ print 'SIGMAS: '+str(net.getSigmas())
 
 for x in range(2):
     print str(x)+" ENTRENAR"
-    net.setEpochs(100)
+    #net.setEpochs(100)
     net.entrenar([
             #[0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
             [O,O], [O,I], [I,O], [I,I]
@@ -37,7 +37,7 @@ for x in range(2):
     print str([1,1]) + ' => ' + str(net.simular([I,I]))
 
     print 'PESOS: '+str(net.getPesos())
-    print 'SIGMAS: '+str(net.getSigmas())
+    print 'DELTAS: '+str(net.getDeltas())
 
 #print "SINAPSIS:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
 #net.panic = True
