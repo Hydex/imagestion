@@ -136,12 +136,12 @@ class Red(object):
      **/    
     """
     
-##    Ejemplo
-##    net.entrenar([
-##            [0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]
-##        ],[
-##            [0.0], [1.0], [1.0], [0.0]
-##        ])
+    ##    Ejemplo
+    ##    net.entrenar([
+    ##            [0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]
+    ##        ],[
+    ##            [0.0], [1.0], [1.0], [0.0]
+    ##        ])
 
     def entrenar(self,inputs,outputs):
         self.addLog("Red.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
@@ -189,17 +189,8 @@ class Red(object):
                     self.addLog(">> nro de resultados: "+str(len(resultado)))
                     expect = outputs[idx]
                     
-##                    for i in range(len(resultado)):
-##                        error[i] = outputs[idx][i] - salidas[idx][i]
-##                        self.addLog('>> error['+str(i)+']:'+str(error[i])+' = '+str(outputs[idx][i])+' - '+str(salidas[idx][i]))
-##                        if abs(error[i]) < minimo:
-##                            minimo = error[i]
-##                    
-##                    self.addLog(">> error minimo encontrado: "+str(minimo))
-                    
                     # paso 4: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
-                    #self.backPropagation(self.nCapas-1,error)
                     self.backPropagation(self.nCapas-1,resultado,expect)
                     
                 epochs = epochs - 1
@@ -226,7 +217,6 @@ class Red(object):
     #
     #
     """         
-    #def backPropagation(self,capa,delta):
     def backPropagation(self,capa,result,expect):
         self.addLog("Red.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
         i,j = 0,0
@@ -234,8 +224,11 @@ class Red(object):
         prev = capa
         
         try:
-            for i in xrange(len(result)-1):
+            for i in xrange(len(delta)):
+                #self.addLog('>> delta['+str(i)+'] = '+str(expect[i])+' - '+str(result[i]))
                 delta[i] = expect[i] - result[i]
+                error = delta[i] if capa > 0 and len(self.capas[capa]) > 0 else self.capas[prev][i].getError()
+                self.capas[capa][i].setError(self.capas[capa][i].getErrorCapa(error,result[i]))
                 self.addLog('>> delta['+str(i)+']:'+str(delta[i])+' = '+str(expect[i])+' - '+str(result[i]))
                                         
             self.addLog('>> neuronas:'+str(len(self.capas[capa])))
@@ -246,7 +239,8 @@ class Red(object):
                 # calculo del error para la capa
                 for j in xrange(len(delta)):
                     self.capas[capa][j].setDelta(delta[j])
-                    self.capas[capa][j].setError(delta[j]*self.capas[capa][j].fnTransf.train(result[j]))
+                    #self.capas[capa][j].setError(delta[j]*self.capas[capa][j].fnTransf.train(result[j]))
+                    self.addLog('>> capas['+str(capa)+']['+str(j)+'].delta:'+str(self.capas[capa][j].getDelta())+'; capas['+str(capa)+']['+str(j)+'].error:'+str(self.capas[capa][j].getError()))
                 
                 # calculo de delta en funcion de delta (resultado - error)
                 self.addLog('>> neuronas capa inferior:'+str(len(self.capas[prev]))+' red.deltas[]:'+str(self.getDeltas()))

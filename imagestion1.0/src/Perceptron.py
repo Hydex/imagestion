@@ -55,7 +55,7 @@ class Perceptron(object):
         self.salida   = 0.0
         self.neta     = 0.0
         self.delta    = 0.0
-        self.error    = None
+        self.error    = 0.0
         self.funcion  = funcion
         self.fnTransf = Activacion(funcion)
         pass
@@ -108,9 +108,9 @@ class Perceptron(object):
         return self.delta
         pass
         
-    def setCoeficiente(self,i,delta):
+    def getErrorCapa(self,error,output):
         #if i<=len(self.pesos):
-        self.delta += self.pesos[i] * delta
+        return self.fnTransf.train(output) * error
         pass
      
     def getCoeficiente(self,i):
@@ -119,6 +119,7 @@ class Perceptron(object):
      
     def balancearPesos(self):
         e = self.neta
+        #e = self.error
         fn = self.fnTransf.train(e)
          
         for i in range(len(self.pesos)):
