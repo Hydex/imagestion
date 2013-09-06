@@ -225,41 +225,47 @@ class Red(object):
         
         try:
             for i in xrange(len(delta)):
-                #self.addLog('>> delta['+str(i)+'] = '+str(expect[i])+' - '+str(result[i]))
                 delta[i] = expect[i] - result[i]
-                error = delta[i] if capa > 0 and len(self.capas[capa]) > 0 else self.capas[prev][i].getError()
-                self.capas[capa][i].setError(self.capas[capa][i].getErrorCapa(error,result[i]))
                 self.addLog('>> delta['+str(i)+']:'+str(delta[i])+' = '+str(expect[i])+' - '+str(result[i]))
+                #error = delta[i] if capa > 0 and len(self.capas[capa]) > 0 else self.capas[prev][i].getErrorCapa()
+                if capa == 0:
+                    self.capas[capa][i].setDelta(delta[i])
+                    self.capas[capa][i].setError(delta[i]*self.capas[capa][i].fnTransf.train(result[i]))
                                         
             self.addLog('>> neuronas:'+str(len(self.capas[capa])))
+            
             if capa > 0 and len(self.capas[capa]) > 0:
                 prev = capa -1
                 self.addLog('propagacion hacia atras en el calulo para ajuste de delta [capa:'+str(capa)+'][prev:'+str(prev)+']')
                 
                 # calculo del error para la capa
+                """
                 for j in xrange(len(delta)):
                     self.capas[capa][j].setDelta(delta[j])
+                    error = self.capas[prev][j].getError()
+                    
                     #self.capas[capa][j].setError(delta[j]*self.capas[capa][j].fnTransf.train(result[j]))
                     self.addLog('>> capas['+str(capa)+']['+str(j)+'].delta:'+str(self.capas[capa][j].getDelta())+'; capas['+str(capa)+']['+str(j)+'].error:'+str(self.capas[capa][j].getError()))
                 
                 # calculo de delta en funcion de delta (resultado - error)
                 self.addLog('>> neuronas capa inferior:'+str(len(self.capas[prev]))+' red.deltas[]:'+str(self.getDeltas()))
+                """                
                 deltas = [0] * len(self.capas[prev])
-
+                
                 for i in xrange(len(self.capas[prev])):
                     # calcula la sumatoria de los pesos con el coeficiente de error delta
                     self.capas[prev][i].setDelta(0.0)
+                    delta_ = self.capas[prev][i].getDelta()
                     
                     for j in xrange(len(self.capas[capa])):
-                        delta_ = self.capas[prev][i].getDelta()
-                        
                         self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(delta_)+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
                         
+                        error = self.capas[capa][j].getError()
                         self.capas[prev][i].setDelta(delta_ + self.capas[capa][j].getCoeficiente(i))
-                        deltas[j] = self.capas[prev][i].getDelta()
+                        deltas[j] = self.capas[prev][i].getError()
                         
                         self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(deltas[j])+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
-
+                
                 self.addLog('>> red.deltas[]:'+str(self.getDeltas()))
                 
                 self.addLog('llamada recursiva para retropropagacion en el calculo de delta')
