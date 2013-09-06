@@ -108,9 +108,12 @@ class Perceptron(object):
         return self.delta
         pass
         
-    def getErrorCapa(self,error,output):
-        #if i<=len(self.pesos):
-        return self.fnTransf.train(output) * error
+    def getErrorCapa(self):
+        error = 0.0
+        for i in range(len(self.pesos)):
+            error += self.error * self.pesos[i]
+            
+        return self.fnTransf.train(self.salida) * error
         pass
      
     def getCoeficiente(self,i):
