@@ -124,12 +124,13 @@ class Perceptron(object):
         e = self.neta
         #e = self.error
         fn = self.fnTransf.train(e)
+        prod = self.rate * self.error * self.salida 
          
         for i in range(len(self.pesos)):
-            Yprev = self.entradas[i]  # salida del nodo conectado referente al peso
+            #Yprev = self.entradas[i]  # salida del nodo conectado referente al peso
             peso = self.pesos[i]
-            prod = self.rate*self.delta*fn*Yprev 
-            self.addLog(str(peso + prod)+' = '+self.name+'.'+self.funcion+'('+str(e)+'):'+str(fn)+' * '+str(self.rate)+' * '+str(self.delta)+' * '+str(self.entradas[i])+' + '+str(peso))
+            #prod = self.rate*self.delta*fn*Yprev 
+            #self.addLog(str(peso + prod)+' = '+self.name+'.'+self.funcion+'('+str(e)+'):'+str(fn)+' * '+str(self.rate)+' * '+str(self.delta)+' * '+str(self.entradas[i])+' + '+str(peso))
             self.pesos[i] = peso + prod
         
         #self.error = self.salida - self.delta

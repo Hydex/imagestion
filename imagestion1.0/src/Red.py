@@ -255,13 +255,15 @@ class Red(object):
                 for i in xrange(len(self.capas[prev])):
                     # calcula la sumatoria de los pesos con el coeficiente de error delta
                     self.capas[prev][i].setDelta(0.0)
-                    delta_ = self.capas[prev][i].getDelta()
                     
                     for j in xrange(len(self.capas[capa])):
-                        self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(delta_)+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
+                        dlta  = self.capas[prev][i].getDelta()
+                        error = self.capas[prev][i].getError()
+
+                        self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(dlta)+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
                         
-                        error = self.capas[capa][j].getError()
-                        self.capas[prev][i].setDelta(delta_ + self.capas[capa][j].getCoeficiente(i))
+                        self.capas[prev][i].setDelta(dlta + self.capas[capa][j].getCoeficiente(i))                        
+                        self.capas[prev][i].setError(error + self.capas[capa][j].getErrorCapa())
                         deltas[j] = self.capas[prev][i].getError()
                         
                         self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(deltas[j])+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
