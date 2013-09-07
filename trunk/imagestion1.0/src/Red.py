@@ -226,11 +226,10 @@ class Red(object):
         try:
             for i in xrange(len(delta)):
                 delta[i] = expect[i] - result[i]
-                self.addLog('>> delta['+str(i)+']:'+str(delta[i])+' = '+str(expect[i])+' - '+str(result[i]))
-                #error = delta[i] if capa > 0 and len(self.capas[capa]) > 0 else self.capas[prev][i].getErrorCapa()
-                if capa == 0:
+                if capa > 0 and len(self.capas[capa]) > 0:
                     self.capas[capa][i].setDelta(delta[i])
                     self.capas[capa][i].setError(delta[i]*self.capas[capa][i].fnTransf.train(result[i]))
+                self.addLog('>> delta['+str(i)+']:'+str(delta[i])+' = '+str(expect[i])+' - '+str(result[i]))
                                         
             self.addLog('>> neuronas:'+str(len(self.capas[capa])))
             
@@ -254,19 +253,21 @@ class Red(object):
                 
                 for i in xrange(len(self.capas[prev])):
                     # calcula la sumatoria de los pesos con el coeficiente de error delta
-                    self.capas[prev][i].setDelta(0.0)
+                    #self.capas[prev][i].setDelta(0.0)
                     
                     for j in xrange(len(self.capas[capa])):
                         dlta  = self.capas[prev][i].getDelta()
                         error = self.capas[prev][i].getError()
 
-                        self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(dlta)+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
+                        #self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(dlta)+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
+                        self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'] delta:'+str(self.capas[prev][i].getDelta())+' error:'+str(self.capas[prev][i].getError()))
                         
                         self.capas[prev][i].setDelta(dlta + self.capas[capa][j].getCoeficiente(i))                        
                         self.capas[prev][i].setError(error + self.capas[capa][j].getErrorCapa())
                         deltas[j] = self.capas[prev][i].getError()
                         
-                        self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(deltas[j])+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
+                        #self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(self.capas[prev][i].getDelta())+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
+                        self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'] delta:'+str(self.capas[prev][i].getDelta())+' error:'+str(self.capas[prev][i].getError()))
                 
                 self.addLog('>> red.deltas[]:'+str(self.getDeltas()))
                 
