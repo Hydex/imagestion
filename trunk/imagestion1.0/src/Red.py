@@ -229,6 +229,9 @@ class Red(object):
                 if capa > 0 and len(self.capas[capa]) > 0:
                     self.capas[capa][i].setDelta(delta[i])
                     self.capas[capa][i].setError(delta[i]*self.capas[capa][i].fnTransf.train(result[i]))
+                else:
+                    self.capas[capa][i].setError(0)
+
                 self.addLog('>> delta['+str(i)+']:'+str(delta[i])+' = '+str(expect[i])+' - '+str(result[i]))
                                         
             self.addLog('>> neuronas:'+str(len(self.capas[capa])))
@@ -250,6 +253,7 @@ class Red(object):
                 self.addLog('>> neuronas capa inferior:'+str(len(self.capas[prev]))+' red.deltas[]:'+str(self.getDeltas()))
                 """                
                 deltas = [0] * len(self.capas[prev])
+                expect = [0] * len(self.capas[prev])
                 
                 for i in xrange(len(self.capas[prev])):
                     # calcula la sumatoria de los pesos con el coeficiente de error delta
@@ -265,6 +269,7 @@ class Red(object):
                         self.capas[prev][i].setDelta(dlta + self.capas[capa][j].getCoeficiente(i))                        
                         self.capas[prev][i].setError(error + self.capas[capa][j].getErrorCapa())
                         deltas[j] = self.capas[prev][i].getError()
+                        expect[j] = self.capas[prev][i].getSalida()
                         
                         #self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].delta:'+str(self.capas[prev][i].getDelta())+' += '+str(self.capas[capa][j].pesos[i])+' * '+str(self.capas[capa][j].getDelta()))
                         self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'] delta:'+str(self.capas[prev][i].getDelta())+' error:'+str(self.capas[prev][i].getError()))
