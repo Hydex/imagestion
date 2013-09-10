@@ -278,8 +278,10 @@ class Red(object):
 
                 for i in xrange(len(self.capas[prev])):
                     self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.capas[prev][i].pesos]))
-                    error = self.capas[prev][i]
-                    self.capas[prev][i].balancearPesos(error)
+                    #error = deltas[i] #self.capas[prev][i].getError()
+                    #valor = expect[i]
+                    #self.capas[prev][i].balancearPesos(error,valor)
+                    self.capas[prev][i].balancearPesos()
                     self.addLog(self.capas[prev][i].getLog())
                     self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.capas[prev][i].pesos]))
             pass
