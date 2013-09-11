@@ -58,6 +58,7 @@ class Perceptron(object):
         self.error    = 0.0
         self.funcion  = funcion
         self.fnTransf = Activacion(funcion)
+        self.expect   = 0
         pass
         
     def getSumPesosEntradas(self):
@@ -116,6 +117,13 @@ class Perceptron(object):
         return self.fnTransf.train(self.salida) * error
         pass
      
+    def getErrorCuadratico(self):
+        deltas = 0.0
+        for i in range(len(self.pesos)):
+            deltas += self.fnTransf.train(self.pesos[i]) * self.entradas[i] - self.fnTransf.train(self.salida)
+            
+        return (self.expect - self.fnTransf.exe(deltas))**2
+        
     def getCoeficiente(self,i):
         #if i<=len(self.pesos):
         return self.pesos[i] * self.delta
@@ -141,7 +149,6 @@ class Perceptron(object):
         #self.error = self.salida - self.delta
         pass
          
-        
     def setBias(self,bias):
         self.bias = bias
         pass
