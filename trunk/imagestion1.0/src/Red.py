@@ -58,6 +58,7 @@ class Red(object):
         self.transferencias = funciones
         self.epochs   = None
         self.panic    = False
+        self.expect   = []
         
         self.sinapsis[0] = [random() for x in xrange(entradas)]
                 
@@ -145,6 +146,7 @@ class Red(object):
 
     def entrenar(self,inputs,outputs):
         self.addLog("Red.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
+        self.expect = outputs
         idx = 0
         minimo = 1
         
