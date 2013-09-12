@@ -296,7 +296,26 @@ class Red(object):
             self.addLog(self.capas[capa][j].getLog())
             self.addLog(self.capas[prev][i].getLog())
             self.panic = True           
+       
+    """
+    # Obtiene el error cuadratico de la red
+    """ 
+    def getErrorCuadratico(self):
+        error = 0
         
+        for j in range(self.nCapas):
+            for k in range(len(self.capas[i])):
+                if self.capas[j][k] != None:
+                    error += self.capas[j][k].getErrorCuadratico()
+                pass
+                
+        return error/2
+
+        
+    """
+    # Obtiene una estructura de la instancia de la red neuronal
+    # y la exporta en formato JSON 
+    """
     def getConfiguracion(self):
         data = {
             'nCapas':self.nCapas,
