@@ -154,20 +154,21 @@ class Red(object):
         #         aleatorios rango [0..1]
         epochs = self.epochs if self.epochs != None else len(inputs) # N <= {[in1,in2,...,inN] [entrada2...]}
         self.addLog("PASO 1: Se inicializan los pesos de todas las neuronas con valores aleatorios rango [0..1]")
-        self.addLog(">> epochs:"+str(epochs)+' idx=len(inputs[0]):'+str(len(inputs[0])))
+##        self.addLog(">> epochs:"+str(epochs)+' idx=len(inputs[0]):'+str(len(inputs[0])))
         
         try:
-            for ciclo in range(epochs):
-            #for idx in range(len(inputs)):
-                #datos = [None] * self.entradas
-                self.addLog(">> idx:"+str(idx)+" -----------------------------------------------------------------------------------------")
+##            for ciclo in range(epochs):
+##            #for idx in range(len(inputs)):
+##                #datos = [None] * self.entradas
+##                self.addLog(">> idx:"+str(idx)+" -----------------------------------------------------------------------------------------")
                 salidas = [[None] * len(outputs[0])] * len(outputs)
-                
+
                 ## [[0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]]
                 for idx in range(len(inputs)):
                 #for ciclo in range(epochs):
+                    self.addLog(' =========================================================================================')
                     self.addLog('>> salidas:'+str(salidas))
-                    self.addLog('>> ciclo:'+str(ciclo)+' =========================================================================================')
+##                    self.addLog('>> ciclo:'+str(ciclo)+' =========================================================================================')
                     # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
                     self.addLog("PASO 2: Seleccionar el siguiente par de entrenamiento del conjunto de entrenamiento, aplicando el vector de entrada a la entrada de la red.")
@@ -191,12 +192,18 @@ class Red(object):
                     self.addLog(">> nro de resultados: "+str(len(resultado)))
                     expect = outputs[idx]
                     
-                    # paso 4: balancea los pesos en funcion a la variacion del delta de error
-                    self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
-                    self.backPropagation(self.nCapas-1,resultado,expect)
+                    for ciclo in range(epochs):  ##
+                        # paso 4: balancea los pesos en funcion a la variacion del delta de error
+                        self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
+                        self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
+                        self.backPropagation(self.nCapas-1,resultado,expect)
                     
-                epochs = epochs - 1
-            pass
+                    self.addLog("PASO 5: Calculo de error cuadratico de la red")
+                    errorCuadratico = self.getErrorCuadratico()
+                    self.addLog(">> errorCuadratico = "+str(errorCuadratico))
+                    
+##                epochs = epochs - 1
+##            pass
         except:
             err = str(exc_info())
             self.addLog("ERROR Red.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
@@ -304,7 +311,7 @@ class Red(object):
         error = 0
         
         for j in range(self.nCapas):
-            for k in range(len(self.capas[i])):
+            for k in range(len(self.capas[j])):
                 if self.capas[j][k] != None:
                     error += self.capas[j][k].getErrorCuadratico()
                 pass
