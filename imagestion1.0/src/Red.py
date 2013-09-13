@@ -59,6 +59,7 @@ class Red(object):
         self.epochs   = None
         self.panic    = False
         self.expect   = []
+        self.historial = []
         
         self.sinapsis[0] = [random() for x in xrange(entradas)]
                 
@@ -200,6 +201,7 @@ class Red(object):
                     
                     self.addLog("PASO 5: Calculo de error cuadratico de la red")
                     errorCuadratico = self.getErrorCuadratico()
+                    self.historial.append({errorCuadratico:self.getPesos()})
                     self.addLog(">> errorCuadratico = "+str(errorCuadratico))
                     
 ##                epochs = epochs - 1
@@ -404,6 +406,9 @@ class Red(object):
                 
         return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
     
+    def getHistorial(self):
+        return dumps(self.historial, sort_keys=True,indent=4, separators=(',', ': '))
+            
     def printLog(self):
         print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         pass

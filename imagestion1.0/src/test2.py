@@ -25,7 +25,7 @@ print str([I,I]) + ' => ' + str(net.simular([I,I]))
 
 for x in range(1):
     #print str(x+1)+" ENTRENAR"
-    net.setEpochs(10)
+    net.setEpochs(15)
     net.entrenar([
             #[0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
             [O,O], [O,I], [I,O], [I,I]
@@ -44,13 +44,15 @@ for x in range(1):
     print 'ERRORES: '+str(net.getErrores())
 
 #print "SINAPSIS:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
-net.panic = True
+#net.panic = True
 
 if net.panic:
     print "print LOG"
     print net.printLog()
     print "print CONFIGURACION"
     print net.getConfiguracion()
+    
+print net.getHistorial()
 
 
 #prueba 2
