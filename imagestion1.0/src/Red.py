@@ -201,7 +201,7 @@ class Red(object):
                     
                     self.addLog("PASO 5: Calculo de error cuadratico de la red")
                     errorCuadratico = self.getErrorCuadratico()
-                    self.historial.append({errorCuadratico:self.getPesos()})
+                    self.historial.append({errorCuadratico:self.getPesos(), 'error':self.getErrores()})
                     self.addLog(">> errorCuadratico = "+str(errorCuadratico))
                     
 ##                epochs = epochs - 1
