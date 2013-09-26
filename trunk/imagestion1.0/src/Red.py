@@ -41,8 +41,6 @@ from sys import *
 class Red(object):
 
     """
-
-
     :version: 1.0
     :author:  Miguelote
     """
@@ -53,6 +51,7 @@ class Red(object):
         self.log      = []
         self.capas    = [None] * self.nCapas
         self.sinapsis = [None] * (self.nCapas + 1)
+        self.neuronas = 0
         self.entradas = entradas
         self.salidas  = salidas
         self.transferencias = funciones
@@ -71,7 +70,7 @@ class Red(object):
             
             self.sinapsis[i+1] = [random() for x in xrange(size)]
             self.capas[i] = [Perceptron(str(i)+'x'+str(x),inputs,funciones[i]) for x in xrange(size)]
-            
+            self.neuronas += size
         pass
 
     """
@@ -228,6 +227,24 @@ class Red(object):
     #
     #
     """         
+    def backPropagation2(self,capa,result,expect):
+        self.addLog("Red.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+        
+        pass
+        
+    def getError(self,capa,result,expect):
+        self.addLog("Red.getError -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+        
+        pass
+        
+    def getErrorRed(self,capa,expect):
+        self.addLog("Red.getErrorRed -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+        error = 0.0;
+        for i in xrange(len(self.capas[capa])):
+            error += (self.capas[capa].getSalida() - expect[i])**2
+            
+        return error/self.neuronas
+        
     def backPropagation(self,capa,result,expect):
         self.addLog("Red.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
         i,j = 0,0
