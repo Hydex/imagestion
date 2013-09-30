@@ -127,7 +127,7 @@ class Activacion(object):
         pass
         
     def tansig_derivada(self,valor):
-        val = self.tansig(valor)
+        val = valor #self.tansig(valor)
         return 1 - val*val
         pass
         
