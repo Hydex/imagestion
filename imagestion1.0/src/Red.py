@@ -228,7 +228,20 @@ class Red(object):
     """         
     def backPropagation2(self,capa,result,expect):
         self.addLog("Red.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-        
+        i,j = 0,0
+        prev = capa -1
+                
+        try:
+            deltas = self.setDelta(capa,result,expect)
+            pass
+        except:
+            err = str(exc_info())
+            self.addLog("ERROR Red.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            print("ERROR Red.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            self.addLog(err)
+            self.addLog(self.capas[capa][j].getLog())
+            self.addLog(self.capas[prev][i].getLog())
+            self.panic = True 
         pass
         
     def getError(self,capa,result,expect):
@@ -243,6 +256,22 @@ class Red(object):
             error += (self.capas[capa].getSalida() - expect[i])**2
             
         return error/self.neuronas
+    
+    def setDelta(self,capa,result,expect):
+        deltas = []
+        if capa == self.nCapas -1:
+            deltas = [0] * len(result)
+            error = 0.0
+            
+            for k in xrange(self.nCapas -1):
+                error = expect[k] - result[k]
+                deltas[k] = self.capas[capa][k].fnTransf.train(result[k]) * error
+                self.capas[capa][k].setDelta(deltas[k])
+                pass
+        else:
+            pass
+        
+        return deltas
         
     def backPropagation(self,capa,result,expect):
         self.addLog("Red.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
