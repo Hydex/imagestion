@@ -259,6 +259,8 @@ class Red(object):
     
     def setDelta(self,capa,result,expect):
         deltas = []
+        post = capa + 1
+        
         if capa == self.nCapas -1:
             deltas = [0] * len(result)
             error = 0.0
@@ -269,7 +271,16 @@ class Red(object):
                 self.capas[capa][k].setDelta(deltas[k])
                 pass
         else:
-            pass
+            deltas = [0] * len(self.capas[capa])
+            
+            for j in xrange(len(self.capas[capa])):
+                error = 0.0
+                
+                for k in xrange(len(self.capas[post]) -1):
+                    error += deltas[k] * self.capas[post][k].getPeso(k)
+                
+                deltas[j] = self.capas[capa][j] * error
+                pass
         
         return deltas
         
