@@ -232,7 +232,9 @@ class Red(object):
         prev = capa -1
                 
         try:
-            deltas = self.setDelta(capa,result,expect)
+            if capa > 0 and len(self.capas[capa]) > 0:
+                deltas = self.setDelta(capa,result,expect)
+                
             pass
         except:
             err = str(exc_info())
