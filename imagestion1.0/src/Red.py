@@ -38,7 +38,7 @@ from random import *
 from json import *
 from sys import *
 
-class Red(object):
+class Net(object):
 
     """
     :version: 1.0
@@ -111,7 +111,7 @@ class Red(object):
         except:
             err = str(exc_info())
             self.addLog("ERROR en Red.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
-            print("ERROR en Red.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
+            print("ERROR en Net.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
             self.addLog(err)
             self.addLog(self.capas[i][j].getLog())
             self.panic = True
@@ -145,7 +145,7 @@ class Red(object):
     ##        ])
 
     def entrenar(self,inputs,outputs):
-        self.addLog("Red.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
+        self.addLog("Net.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
         self.expect = outputs
         idx = 0
         minimo = 1
@@ -206,8 +206,8 @@ class Red(object):
             pass
         except:
             err = str(exc_info())
-            self.addLog("ERROR Red.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
-            print("ERROR Red.entrenar('"+str(err)+"'):\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
+            self.addLog("ERROR Net.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
+            print("ERROR Net.entrenar('"+str(err)+"'):\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
             self.addLog(err)
             self.panic = True
             pass        
@@ -227,19 +227,19 @@ class Red(object):
     #
     """         
     def backPropagation2(self,capa,result,expect):
-        self.addLog("Red.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+        self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
         i,j = 0,0
         prev = capa -1
                 
         try:
             if capa > 0 and len(self.capas[capa]) > 0:
-                deltas = self.setDelta(capa,result,expect)
+                deltas = self.getDelta(capa,result,expect)
                 
             pass
         except:
             err = str(exc_info())
-            self.addLog("ERROR Red.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
-            print("ERROR Red.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
             self.addLog(err)
             self.addLog(self.capas[capa][j].getLog())
             self.addLog(self.capas[prev][i].getLog())
@@ -247,19 +247,19 @@ class Red(object):
         pass
         
     def getError(self,capa,result,expect):
-        self.addLog("Red.getError -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+        self.addLog("Net.getError -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
         
         pass
         
     def getErrorRed(self,capa,expect):
-        self.addLog("Red.getErrorRed -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+        self.addLog("Net.getErrorRed -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
         error = 0.0;
         for i in xrange(len(self.capas[capa])):
             error += (self.capas[capa].getSalida() - expect[i])**2
             
         return error/self.neuronas
     
-    def setDelta(self,capa,result,expect):
+    def getDelta(self,capa,result,expect):
         deltas = []
         post = capa + 1
         
@@ -287,7 +287,7 @@ class Red(object):
         return deltas
         
     def backPropagation(self,capa,result,expect):
-        self.addLog("Red.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+        self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
         i,j = 0,0
         delta = [0] * len(result)
         prev = capa
@@ -335,7 +335,7 @@ class Red(object):
                     #self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'] deltas:'+str(self.getDeltas()))
                     self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'] errores:'+str(self.getErrores()))
                 
-                self.addLog('>> red.deltas[]:'+str(self.getDeltas()))
+                self.addLog('>> Net.deltas[]:'+str(self.getDeltas()))
                 
                 self.addLog('llamada recursiva para retropropagacion en el calculo de delta')
                 # llamada recursiva para retropropagacion en el calculo de delta
@@ -357,8 +357,8 @@ class Red(object):
                     
         except:
             err = str(exc_info())
-            self.addLog("ERROR Red.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
-            print("ERROR Red.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
+            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(len(self.capas[prev]))+"\n")
             self.addLog(err)
             self.addLog(self.capas[capa][j].getLog())
             self.addLog(self.capas[prev][i].getLog())
