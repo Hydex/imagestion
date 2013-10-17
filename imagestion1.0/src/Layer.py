@@ -39,38 +39,38 @@ from json import *
 from sys import *
 
 class Layer(object):
-    def __init__(self,capa,neurons,inputs,function):
+    def __init__(self,capa,neurons,inputs,function,layers):
         self.error = 0.0
         self.deltas = [0.0] * neurons
         self.id = capa
         self.cant = neurons
+        self.layers = layers
         self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function) for x in xrange(neurons)]
         pass
         
-    def getDeltas(self):
-        deltas = []
-        post = capa + 1
+    def getDeltas(self,expect,result):
+        post = self.id + 1
+        self.deltas = [0.0] * self.neurons
         
         if capa == self.nCapas -1:
-            deltas = [0] * len(result)
-            error = 0.0
+            #self.deltas = [0] * len(result)
+            self.error = 0.0
             
-            for k in xrange(self.nCapas -1):
-                error = expect[k] - result[k]
-                deltas[k] = self.capas[capa][k].fnTransf.train(result[k]) * error
-                self.capas[capa][k].setDelta(deltas[k])
-                pass
-        else:
-            deltas = [0] * len(self.capas[capa])
-            
-            for j in xrange(len(self.capas[capa])):
-                error = 0.0
+            for k in xrange(self.neurons -1):
+                self.error = expect[k] - result[k]
+                self.deltas[k] = self.nodos[k].fnTransf.train(result[k]) * error
+                self.nodos[k].setDelta(self.deltas[k])
+        else:            
+            for j in xrange(self.neurons -1):
+                self.error = 0.0
                 
-                for k in xrange(len(self.capas[post]) -1):
-                    error += deltas[k] * self.capas[post][k].getPeso(k)
+                for k in xrange(self.layers[post].neurons -1):
+                    self.error += self.layers[post].deltas[k] * self.layers[post].nodos[k].getPeso(k)
                 
-                deltas[j] = self.capas[capa][j] * error
-                pass
+                self.deltas[j] = self.nodos[j] * self.error
         
-        return deltas
+        return self.deltas
+        
+    def setPesos(self,rate):
+        pass
         
