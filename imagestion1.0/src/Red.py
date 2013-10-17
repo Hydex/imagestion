@@ -34,6 +34,7 @@
 # +-----------------------------------------------------------------------+
 
 from Perceptron import *
+from Layer import *
 from random import *
 from json import *
 from sys import *
@@ -45,11 +46,17 @@ class Net(object):
     :author:  Miguelote
     """
 
+    #Ejemplo:
+    #net = Net(2,1,[2,1],['TANSIG','TANSIG'])
+    #net = Net(2,1,[2,1],['LOGSIG','LOGSIG'])
     def __init__(self,entradas,salidas,layers,funciones):
         self.nCapas   = len(layers)
         max,size      = 0,0
         self.log      = []
         self.capas    = [None] * self.nCapas
+        self.layers   = []        
+        # Layers(capa,neurons,inputs,function,layers)
+        self.layers   = [Layer(i,layers[i],(entradas if i == 0 else layers[i]),funciones[i],self.layers) for i in xrange(len(layers))]
         self.sinapsis = [None] * (self.nCapas + 1)
         self.neuronas = 0
         self.entradas = entradas
@@ -232,9 +239,9 @@ class Net(object):
         prev = capa -1
                 
         try:
-            if capa > 0 and len(self.capas[capa]) > 0:
-                deltas = self.getDelta(capa,result,expect)
-                
+            #if capa > 0 and len(self.capas[capa]) > 0:
+            #    deltas = self.getDelta(capa,result,expect)
+            
             pass
         except:
             err = str(exc_info())

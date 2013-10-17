@@ -50,21 +50,20 @@ class Layer(object):
         
     def getDeltas(self,expect,result):
         post = self.id + 1
-        self.deltas = [0.0] * self.neurons
+        self.deltas = [0.0] * self.cant
         
-        if capa == self.nCapas -1:
-            #self.deltas = [0] * len(result)
+        if self.id == len(self.layers) -1:
             self.error = 0.0
             
-            for k in xrange(self.neurons -1):
+            for k in xrange(self.cant -1):
                 self.error = expect[k] - result[k]
-                self.deltas[k] = self.nodos[k].fnTransf.train(result[k]) * error
+                self.deltas[k] = self.nodos[k].fnTransf.train(result[k]) * self.error
                 self.nodos[k].setDelta(self.deltas[k])
         else:            
-            for j in xrange(self.neurons -1):
+            for j in xrange(self.cant -1):
                 self.error = 0.0
                 
-                for k in xrange(self.layers[post].neurons -1):
+                for k in xrange(self.layers[post].cant -1):
                     self.error += self.layers[post].deltas[k] * self.layers[post].nodos[k].getPeso(k)
                 
                 self.deltas[j] = self.nodos[j] * self.error
@@ -72,5 +71,14 @@ class Layer(object):
         return self.deltas
         
     def setPesos(self,rate):
-        pass
+        post = self.id + 1
+        prev = self.id - 1
+        
+        #if self.id == len(self.layers) -1:
+        for j in xrange(self.layers[prev].cant) -1:
+            for k in xrange(self.cant) -1:
+                cambio = self.deltas[k] * self.layers[prev].nodos[j].salida
+                peso = self.nodos[k].getPeso(j)
+                self.nodos[k].setPeso(j, peso + rate*cambio)
+
         
