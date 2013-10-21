@@ -155,18 +155,18 @@ class Net(object):
     ##        ])
 
     def entrenar(self,inputs,outputs):
-        self.addLog("Net.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
-        self.expect = outputs
-        idx = 0
-        minimo = 1
+            self.addLog("Net.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
+            self.expect = outputs
+            idx = 0
+            minimo = 1
+            
+            # paso 1: Se inicializan los pesos de todas las neuronas con valores
+            #         aleatorios rango [0..1]
+            epochs = self.epochs if self.epochs != None else len(inputs) # N <= {[in1,in2,...,inN] [entrada2...]}
+            self.addLog("PASO 1: Se inicializan los pesos de todas las neuronas con valores aleatorios rango [0..1]")
+            self.addLog(">> epochs:"+str(epochs)+' idx=len(inputs[0]):'+str(len(inputs[0])))
         
-        # paso 1: Se inicializan los pesos de todas las neuronas con valores
-        #         aleatorios rango [0..1]
-        epochs = self.epochs if self.epochs != None else len(inputs) # N <= {[in1,in2,...,inN] [entrada2...]}
-        self.addLog("PASO 1: Se inicializan los pesos de todas las neuronas con valores aleatorios rango [0..1]")
-        self.addLog(">> epochs:"+str(epochs)+' idx=len(inputs[0]):'+str(len(inputs[0])))
-        
-        try:
+        ##try:
             for ciclo in range(epochs):
             #for idx in range(len(inputs)):
                 #datos = [None] * self.entradas
@@ -201,7 +201,7 @@ class Net(object):
                     self.addLog(">> nro de resultados: "+str(len(resultado)))
                     expect = outputs[idx]
                     
-##                    for ciclo in range(epochs):  ##
+    ##                    for ciclo in range(epochs):  ##
                     # paso 4: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
@@ -213,14 +213,14 @@ class Net(object):
                     self.addLog(">> errorCuadratico = "+str(errorCuadratico))
                     
                 epochs = epochs - 1
-            pass
-##        except:
-##            err = str(exc_info())
-##            self.addLog("ERROR Net.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
-##            print("ERROR Net.entrenar('"+str(err)+"'):\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
-##            self.addLog(err)
-##            self.panic = True
-##            pass        
+                pass
+    ##        except:
+    ##            err = str(exc_info())
+    ##            self.addLog("ERROR Net.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
+    ##            print("ERROR Net.entrenar('"+str(err)+"'):\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
+    ##            self.addLog(err)
+    ##            self.panic = True
+    ##            pass        
 
     """   
     #  backPropagation
@@ -256,45 +256,45 @@ class Net(object):
             self.panic = True 
         pass
         
-##    def getError(self,capa,result,expect):
-##        self.addLog("Net.getError -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-##        
-##        pass
+    ##    def getError(self,capa,result,expect):
+    ##        self.addLog("Net.getError -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+    ##        
+    ##        pass
+            
+    ##    def getErrorRed(self,capa,expect):
+    ##        self.addLog("Net.getErrorRed -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+    ##        error = 0.0;
+    ##        for i in xrange(len(self.capas[capa])):
+    ##            error += (self.capas[capa].getSalida() - expect[i])**2
+    ##            
+    ##        return error/self.neuronas
         
-##    def getErrorRed(self,capa,expect):
-##        self.addLog("Net.getErrorRed -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-##        error = 0.0;
-##        for i in xrange(len(self.capas[capa])):
-##            error += (self.capas[capa].getSalida() - expect[i])**2
-##            
-##        return error/self.neuronas
-    
-##    def getDelta(self,capa,result,expect):
-##        deltas = []
-##        post = capa + 1
-##        
-##        if capa == self.nCapas -1:
-##            deltas = [0] * len(result)
-##            error = 0.0
-##            
-##            for k in xrange(self.nCapas -1):
-##                error = expect[k] - result[k]
-##                deltas[k] = self.capas[capa][k].fnTransf.train(result[k]) * error
-##                self.capas[capa][k].setDelta(deltas[k])
-##                pass
-##        else:
-##            deltas = [0] * len(self.capas[capa])
-##            
-##            for j in xrange(len(self.capas[capa])):
-##                error = 0.0
-##                
-##                for k in xrange(len(self.capas[post]) -1):
-##                    error += deltas[k] * self.capas[post][k].getPeso(k)
-##                
-##                deltas[j] = self.capas[capa][j] * error
-##                pass
-##        
-##        return deltas
+    ##    def getDelta(self,capa,result,expect):
+    ##        deltas = []
+    ##        post = capa + 1
+    ##        
+    ##        if capa == self.nCapas -1:
+    ##            deltas = [0] * len(result)
+    ##            error = 0.0
+    ##            
+    ##            for k in xrange(self.nCapas -1):
+    ##                error = expect[k] - result[k]
+    ##                deltas[k] = self.capas[capa][k].fnTransf.train(result[k]) * error
+    ##                self.capas[capa][k].setDelta(deltas[k])
+    ##                pass
+    ##        else:
+    ##            deltas = [0] * len(self.capas[capa])
+    ##            
+    ##            for j in xrange(len(self.capas[capa])):
+    ##                error = 0.0
+    ##                
+    ##                for k in xrange(len(self.capas[post]) -1):
+    ##                    error += deltas[k] * self.capas[post][k].getPeso(k)
+    ##                
+    ##                deltas[j] = self.capas[capa][j] * error
+    ##                pass
+    ##        
+    ##        return deltas
         
     def backPropagation(self,capa,result,expect):
         self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
