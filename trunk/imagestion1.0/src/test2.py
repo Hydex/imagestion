@@ -24,8 +24,8 @@ print str([I,O]) + ' => ' + str(net.simular([I,O]))
 print str([I,I]) + ' => ' + str(net.simular([I,I]))
 
 for x in range(1):
-    #print str(x+1)+" ENTRENAR"
-    net.setEpochs(15)
+    print str(x+1)+" ENTRENAR"
+    #net.setEpochs(15)
     net.entrenar([
             #[0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
             [O,O], [O,I], [I,O], [I,I]

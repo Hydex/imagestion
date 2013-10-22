@@ -60,10 +60,10 @@ class Layer(object):
                 self.deltas[k] = self.nodos[k].fnTransf.train(result[k]) * self.error
                 self.nodos[k].setDelta(self.deltas[k])
         else:            
-            for j in xrange(self.cant -1):
+            for j in xrange(self.cant):
                 self.error = 0.0
                 
-                for k in xrange(self.layers[post].cant -1):
+                for k in xrange(self.layers[post].cant):
                     self.error += self.layers[post].deltas[k] * self.layers[post].nodos[k].getPeso(k)
                 
                 self.deltas[j] = self.nodos[j] * self.error
@@ -75,8 +75,8 @@ class Layer(object):
         prev = self.id - 1
         
         #if self.id == len(self.layers) -1:
-        for j in xrange(self.layers[prev].cant) -1:
-            for k in xrange(self.cant) -1:
+        for j in xrange(self.layers[prev].cant):
+            for k in xrange(self.cant):
                 cambio = self.deltas[k] * self.layers[prev].nodos[j].salida
                 peso = self.nodos[k].getPeso(j)
                 self.nodos[k].setPeso(j, peso + rate*cambio)
