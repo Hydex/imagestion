@@ -44,12 +44,11 @@ class Perceptron(object):
     :author:  Miguelote
     """
 
-    def __init__(self,name,inputs,funcion):
+    def __init__(self,name,inputs,funcion,padre):
         self.entradas = [0 for x in xrange(inputs)] 
         self.pesos    = [random() for x in xrange(inputs)]
-        self.log      = []
         self.name     = name
-#        self.rate     = 0.5
+        self.padre    = padre
         self.bias     = 0.0
         self.wBias    = 0.0
         self.salida   = 0.0
@@ -221,15 +220,8 @@ class Perceptron(object):
         pass
         
     def addLog(self,str):
-        self.log.append(str)
-        #print str
-        pass
-        
-    def getLog(self):
-        log = self.log
-        self.log = []
-        return log
-        pass
+        if self.padre.debug :
+            self.padre.addLog(str)
         
     def printLog(self):
         #print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
