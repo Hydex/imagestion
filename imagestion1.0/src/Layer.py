@@ -39,13 +39,13 @@ from json import *
 from sys import *
 
 class Layer(object):
-    def __init__(self,capa,inputs,function,layers):
+    def __init__(self,capa,neurons,inputs,function,layers):
         self.error = 0.0
-        self.deltas = [0.0] * inputs
-        self.id = capa
-        self.cant = inputs
+        self.deltas = [0.0] * neurons
+        self.id = 'layer_'+str(capa)
+        self.cant = neurons
         self.layers = layers
-        self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function) for x in xrange(inputs)]
+        self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function) for x in xrange(neurons)]
         pass
         
     def getDeltas(self,expect,result):
@@ -81,4 +81,17 @@ class Layer(object):
                 peso = self.nodos[k].getPeso(j)
                 self.nodos[k].setPeso(j, peso + rate*cambio)
 
-        
+    def getConfiguracion(self):
+        capa = {
+            'id'     : self.id,
+            'error'  : self.error,
+            'deltas' : self.deltas,
+            'cant'   : self.cant,
+            'layers' : str(self.layers),
+            'nodos'  : [
+                self.nodos[x].getConfiguracion() 
+                for x in xrange(self.cant)
+            ]
+        }
+        return capa
+    

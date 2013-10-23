@@ -71,7 +71,7 @@ class Net(object):
         
         self.sinapsis[0] = [random() for x in xrange(entradas)]
                 
-        for i in range(self.nCapas):
+        for i in xrange(self.nCapas):
             inputs = entradas if i == 0 else layers[i-1]
             size   = layers[i]
             max    = size if size > max else max
@@ -79,7 +79,7 @@ class Net(object):
             
             self.sinapsis[i+1] = [random() for x in xrange(size)]
             #self.capas[i] = [Perceptron(str(i)+'x'+str(x),inputs,funciones[i]) for x in xrange(size)]
-            self.layers[i] = Layer(i,inputs,funciones[i],self.layers)
+            self.layers[i] = Layer(i,size,inputs,funciones[i],self.layers)
             self.neuronas += size
         pass
 
@@ -98,15 +98,15 @@ class Net(object):
     **/
     """
     def simular(self,inputs):
-        self.addLog("Red.simular -> inputs:"+str(inputs))
-        outputs = [None] * self.salidas
-        i,j,n = 0,0,0
+            self.addLog("Red.simular -> inputs:"+str(inputs))
+            outputs = [None] * self.salidas
+            i,j,n = 0,0,0
+            
+            for n in range(len(inputs)):
+                self.sinapsis[0][n] = inputs[n]
+            #print self.sinapsis
         
-        for n in range(len(inputs)):
-            self.sinapsis[0][n] = inputs[n]
-        #print self.sinapsis
-        
-        try:
+##        try:
             for i in xrange(self.nCapas):
                 #for j in range(len(self.capas[i])):
                 for j in xrange(self.layers[i].cant -1):
@@ -119,16 +119,16 @@ class Net(object):
                     if i == self.nCapas-1:
                         outputs[j] =  self.layers[i].nodos[j].salida 
                     #pass
-        except:
-            err = str(exc_info())
-            self.addLog("ERROR en Red.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
-            print("ERROR en Net.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
-            self.addLog(err)
-            self.addLog (self.layers[i].nodos[j].getLog())
-            self.panic = True
-            pass
+##        except:
+##            err = str(exc_info())
+##            self.addLog("ERROR en Red.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
+##            print("ERROR en Net.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
+##            self.addLog(err)
+##            self.addLog (self.layers[i].nodos[j].getLog())
+##            self.panic = True
+##            pass
         
-        return outputs
+            return outputs
         
     """
     /** 
@@ -156,18 +156,18 @@ class Net(object):
     ##        ])
 
     def entrenar(self,inputs,outputs):
-        self.addLog("Net.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
-        self.expect = outputs
-        idx = 0
-        minimo = 1
+            self.addLog("Net.entrenar -> inputs:"+str(inputs)+"\n outputs:"+str(outputs))
+            self.expect = outputs
+            idx = 0
+            minimo = 1
+            
+            # paso 1: Se inicializan los pesos de todas las neuronas con valores
+            #         aleatorios rango [0..1]
+            epochs = self.epochs if self.epochs != None else len(inputs) # N <= {[in1,in2,...,inN] [entrada2...]}
+            self.addLog("PASO 1: Se inicializan los pesos de todas las neuronas con valores aleatorios rango [0..1]")
+            self.addLog(">> epochs:"+str(epochs)+' idx=len(inputs[0]):'+str(len(inputs[0])))
         
-        # paso 1: Se inicializan los pesos de todas las neuronas con valores
-        #         aleatorios rango [0..1]
-        epochs = self.epochs if self.epochs != None else len(inputs) # N <= {[in1,in2,...,inN] [entrada2...]}
-        self.addLog("PASO 1: Se inicializan los pesos de todas las neuronas con valores aleatorios rango [0..1]")
-        self.addLog(">> epochs:"+str(epochs)+' idx=len(inputs[0]):'+str(len(inputs[0])))
-        
-        try:
+##        try:
             for ciclo in range(epochs):
             #for idx in range(len(inputs)):
                 #datos = [None] * self.entradas
@@ -215,13 +215,13 @@ class Net(object):
                     
                 epochs = epochs - 1
                 pass
-        except:
-            err = str(exc_info())
-            self.addLog("ERROR Net.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
-            print("ERROR Net.entrenar('"+str(err)+"'):\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
-            self.addLog(err)
-            self.panic = True
-            pass        
+##        except:
+##            err = str(exc_info())
+##            self.addLog("ERROR Net.entrenar():\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
+##            print("ERROR Net.entrenar('"+str(err)+"'):\niteracion idx="+str(idx)+" de "+str(len(inputs))+"\n")
+##            self.addLog(err)
+##            self.panic = True
+##            pass        
 
     """   
     #  backPropagation
@@ -259,53 +259,13 @@ class Net(object):
             self.panic = True 
         pass
         
-    ##    def getError(self,capa,result,expect):
-    ##        self.addLog("Net.getError -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-    ##        
-    ##        pass
-            
-    ##    def getErrorRed(self,capa,expect):
-    ##        self.addLog("Net.getErrorRed -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-    ##        error = 0.0;
-    ##        for i in xrange(len(self.capas[capa])):
-    ##            error += (self.capas[capa].getSalida() - expect[i])**2
-    ##            
-    ##        return error/self.neuronas
-        
-    ##    def getDelta(self,capa,result,expect):
-    ##        deltas = []
-    ##        post = capa + 1
-    ##        
-    ##        if capa == self.nCapas -1:
-    ##            deltas = [0] * len(result)
-    ##            error = 0.0
-    ##            
-    ##            for k in xrange(self.nCapas -1):
-    ##                error = expect[k] - result[k]
-    ##                deltas[k] = self.capas[capa][k].fnTransf.train(result[k]) * error
-    ##                self.capas[capa][k].setDelta(deltas[k])
-    ##                pass
-    ##        else:
-    ##            deltas = [0] * len(self.capas[capa])
-    ##            
-    ##            for j in xrange(len(self.capas[capa])):
-    ##                error = 0.0
-    ##                
-    ##                for k in xrange(len(self.capas[post]) -1):
-    ##                    error += deltas[k] * self.capas[post][k].getPeso(k)
-    ##                
-    ##                deltas[j] = self.capas[capa][j] * error
-    ##                pass
-    ##        
-    ##        return deltas
-        
     def backPropagation(self,capa,result,expect):
-        self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-        i,j = 0,0
-        delta = [0] * len(result)
-        prev = capa
+            self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+            i,j = 0,0
+            delta = [0] * len(result)
+            prev = capa
         
-        try:
+##        try:
             for i in xrange(len(delta)):
                 # calculo de delta en funcion de delta (esperado - resultado)
                 delta[i] = expect[i] - result[i]
@@ -350,19 +310,19 @@ class Net(object):
 
                 for i in xrange(self.layers[prev].cant):
                     self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.layers[prev].nodos[i].pesos]))
-                    self.layers[prev].nodos[i].balancearPesos()
+                    self.layers[prev].nodos[i].balancearPesos(self.rate)
                     self.addLog(self.layers[prev].nodos[i].getLog())
                     self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.layers[prev].nodos[i].pesos]))
             pass
                     
-        except:
-            err = str(exc_info())
-            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
-            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
-            self.addLog(err)
-            self.addLog(self.layers[capa].nodos[j].getLog())
-            self.addLog(self.layers[prev].nodos[i].getLog())
-            self.panic = True           
+##        except:
+##            err = str(exc_info())
+##            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
+##            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
+##            self.addLog(err)
+##            self.addLog(self.layers[capa].nodos[j].getLog())
+##            self.addLog(self.layers[prev].nodos[i].getLog())
+##            self.panic = True           
        
     """
     # Obtiene el error cuadratico de la red
@@ -381,7 +341,7 @@ class Net(object):
     # Obtiene una estructura de la instancia de la red neuronal
     # y la exporta en formato JSON 
     """
-    def getConfiguracion(self):
+    def __str__(self):
         data = {
             'nCapas':self.nCapas,
             'sinapsis':self.sinapsis,
@@ -389,10 +349,9 @@ class Net(object):
             'salidas':self.salidas,
             'funciones':self.transferencias   
         }
-        data['capas'] = [
+        data['layers'] = [
             [
-                self.layers[y].nodos[x].getConfiguracion() 
-                for x in xrange(self.layers[y].cant)
+                self.layers[y].getConfiguracion() 
             ] 
             for y in xrange(len(self.layers))
         ]
@@ -426,7 +385,7 @@ class Net(object):
         for i in range(self.nCapas):
             for j in range(self.layers[i].cant):
                 #lst.append("capas["+str(i)+"]["+str(j)+"].pesos:"+str(self.capas[i][j].pesos))
-                lst.append({ self.layers[i].nodos[j].name : self.layers[i].nodos[j].pesos})
+                lst.append({self.layers[i].nodos[j].name : self.layers[i].nodos[j].pesos})
                 
         #return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
         return str(lst)
