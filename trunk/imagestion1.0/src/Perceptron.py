@@ -49,7 +49,7 @@ class Perceptron(object):
         self.pesos    = [random() for x in xrange(inputs)]
         self.log      = []
         self.name     = name
-        self.rate     = 0.5
+#        self.rate     = 0.5
         self.bias     = 0.0
         self.wBias    = 0.0
         self.salida   = 0.0
@@ -129,13 +129,13 @@ class Perceptron(object):
         return self.pesos[i] * self.delta
      
     #def balancearPesos(self,e,salida):
-    def balancearPesos(self):
+    def balancearPesos(self,rate):
         #e = self.delta
         #e = self.neta
         e = self.error
         salida = self.salida
         #fn = self.fnTransf.train(e)
-        delta = self.rate * self.error * salida
+        delta = rate * self.error * salida
         #prod = self.rate * e * salida #self.salida 
          
         for i in range(len(self.pesos)):
@@ -143,7 +143,7 @@ class Perceptron(object):
             #prod = self.rate*self.delta*fn*Yprev 
             #self.addLog(str(peso + prod)+' = '+self.name+'.'+self.funcion+'('+str(e)+'):'+str(fn)+' * '+str(self.rate)+' * '+str(self.delta)+' * '+str(self.entradas[i])+' + '+str(peso))
             peso = self.pesos[i]
-            self.addLog(self.name+': '+str(peso + delta)+' = '+str(peso)+' + '+str(self.rate)+' * '+str(e)+' * '+str(salida))
+            self.addLog(self.name+': '+str(peso + delta)+' = '+str(peso)+' + '+str(rate)+' * '+str(e)+' * '+str(salida))
             self.pesos[i] = peso + delta
         
         #self.error = self.salida - self.delta
@@ -199,20 +199,19 @@ class Perceptron(object):
         
     def getConfiguracion(self):
         data = {
-            'entradas':self.entradas,
-            'pesos':self.pesos,
             'name':self.name,
-            'rate':self.rate,
+#            'rate':self.rate,
             'bias':self.bias,
             'wBias':self.wBias,
+            'error':self.error,
+            'funcion':self.funcion,
+            'entradas':self.entradas,
             'salida':self.salida,
             'delta':self.delta,
-            'error':self.error,
-            'funcion':self.funcion             
+            'pesos':self.pesos
         }
 
         return data
-        pass
         
     def getEntradas(self):
         return self.entradas
