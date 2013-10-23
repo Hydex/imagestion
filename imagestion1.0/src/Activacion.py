@@ -122,8 +122,8 @@ class Activacion(object):
         
     def logsig_derivada(self,val):
         valor = val * (1.0 - val)
-        #return valor 
-        return self.satlin(valor)    # Corregir que valores devueltos no se disparen durante entrenamiento
+        return valor 
+        #return self.satlin(valor)    # Corregir que valores devueltos no se disparen durante entrenamiento
         pass
         
     def tansig_derivada(self,valor):

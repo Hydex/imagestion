@@ -50,14 +50,14 @@ class Net(object):
     #net = Net(2,1,[2,1],['TANSIG','TANSIG'])
     #net = Net(2,1,[2,1],['LOGSIG','LOGSIG'])
     def __init__(self,entradas,salidas,layers,funciones):
+        ####################
+        self.debug    = True
+        ####################
         self.nCapas   = len(layers)
         max,size      = 0,0
         self.log      = []
-        #self.capas    = [None] * self.nCapas
         self.layers   = []        
-        # Layers(capa,neurons,inputs,function,layers)
         self.layers   = [None] * self.nCapas
-        #self.layers   = [Layer(i,layers[i],(entradas if i == 0 else layers[i]),funciones[i],self.layers) for i in xrange(len(layers))]
         self.sinapsis = [None] * (self.nCapas + 1)
         self.neuronas = 0
         self.rate     = 0.5
@@ -75,11 +75,9 @@ class Net(object):
             inputs = entradas if i == 0 else layers[i-1]
             size   = layers[i]
             max    = size if size > max else max
-            #print [i,size,max,inputs]
             
             self.sinapsis[i+1] = [random() for x in xrange(size)]
-            #self.capas[i] = [Perceptron(str(i)+'x'+str(x),inputs,funciones[i]) for x in xrange(size)]
-            self.layers[i] = Layer(i,size,inputs,funciones[i],self.layers)
+            self.layers[i] = Layer(i,size,inputs,funciones[i],self.layers,self)
             self.neuronas += size
         pass
 
@@ -109,7 +107,7 @@ class Net(object):
 ##        try:
             for i in xrange(self.nCapas):
                 #for j in range(len(self.capas[i])):
-                for j in xrange(self.layers[i].cant -1):
+                for j in xrange(self.layers[i].cant):
                     #if self.capas[i][j] != None:
                     for n in xrange(len(self.sinapsis[i])):
                         self.layers[i].nodos[j].entradas[n] = self.sinapsis[i][n]
@@ -124,7 +122,6 @@ class Net(object):
 ##            self.addLog("ERROR en Red.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
 ##            print("ERROR en Net.simular('"+str(err)+"')\nIteracion i="+str(i)+" j="+str(j)+" n="+str(n))
 ##            self.addLog(err)
-##            self.addLog (self.layers[i].nodos[j].getLog())
 ##            self.panic = True
 ##            pass
         
@@ -206,7 +203,7 @@ class Net(object):
                     # paso 4: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
-                    self.backPropagation(self.nCapas-1,resultado,expect)
+                    self.backPropagation2(self.nCapas-1,resultado,expect)
                     
                     self.addLog("PASO 5: Calculo de error cuadratico de la red")
                     errorCuadratico = self.getErrorCuadratico()
@@ -238,26 +235,24 @@ class Net(object):
     #
     """         
     def backPropagation2(self,capa,result,expect):
-        self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-        i,j = 0,0
-        prev = capa -1
-        post = capa +1
+            self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
+            i,j = 0,0
+            prev = capa -1
+            post = capa +1
                 
-        try:
+##        try:
             if capa > 0:
                 self.layers[capa].getDeltas(result,expect)
                 self.backPropagation2(prev,result,expect)
                 self.layers[capa].setPesos(self.rate)
             pass
-        except:
-            err = str(exc_info())
-            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
-            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
-            self.addLog(err)
-            self.addLog(self.layers[capa].nodos[j].getLog())
-            self.addLog(self.layers[prev].nodos[i].getLog())
-            self.panic = True 
-        pass
+##        except:
+##            err = str(exc_info())
+##            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
+##            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
+##            self.addLog(err)
+##            self.panic = True 
+##        pass
         
     def backPropagation(self,capa,result,expect):
             self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
@@ -311,7 +306,6 @@ class Net(object):
                 for i in xrange(self.layers[prev].cant):
                     self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.layers[prev].nodos[i].pesos]))
                     self.layers[prev].nodos[i].balancearPesos(self.rate)
-                    self.addLog(self.layers[prev].nodos[i].getLog())
                     self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.layers[prev].nodos[i].pesos]))
             pass
                     
@@ -320,8 +314,6 @@ class Net(object):
 ##            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
 ##            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
 ##            self.addLog(err)
-##            self.addLog(self.layers[capa].nodos[j].getLog())
-##            self.addLog(self.layers[prev].nodos[i].getLog())
 ##            self.panic = True           
        
     """
@@ -374,8 +366,8 @@ class Net(object):
         return self.layers[capa].nodos[w].getSalida()
         
     def addLog(self,str):
-        self.log.append(str)
-        #print str
+        if self.debug :
+            self.log.append(str)
         
     def getLog(self):
         return self.log

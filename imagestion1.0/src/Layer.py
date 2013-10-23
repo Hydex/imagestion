@@ -39,38 +39,46 @@ from json import *
 from sys import *
 
 class Layer(object):
-    def __init__(self,capa,neurons,inputs,function,layers):
+    def __init__(self,capa,neurons,inputs,function,layers,padre):
         self.error = 0.0
         self.deltas = [0.0] * neurons
-        self.id = 'layer_'+str(capa)
+        self.id = capa
         self.cant = neurons
         self.layers = layers
-        self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function) for x in xrange(neurons)]
+        self.padre = padre
+        self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function,padre) for x in xrange(neurons)]
         pass
         
     def getDeltas(self,expect,result):
+        self.addLog("Layer->getDeltas("+str(expect)+","+str(result)+")")
         post = self.id + 1
         self.deltas = [0.0] * self.cant
         
-        if self.id == len(self.layers) -1:
+        if self.id == self.cant: #len(self.layers) -1:
             self.error = 0.0
             
-            for k in xrange(self.cant -1):
+            for k in xrange(self.cant):
                 self.error = expect[k] - result[k]
-                self.deltas[k] = self.nodos[k].fnTransf.train(result[k]) * self.error
+                derivada = self.nodos[k].fnTransf.train(result[k])
+                self.deltas[k] = derivada * self.error
                 self.nodos[k].setDelta(self.deltas[k])
+                self.addLog(">> "+str(derivada)+"="+self.nodos[k].funcion+"("+str(expect[k])+"-"+str(result[k])+")")
+                self.addLog(">> "+str(self.deltas[k])+"="+str(derivada)+"*"+str(self.error))
         else:            
             for j in xrange(self.cant):
                 self.error = 0.0
                 
                 for k in xrange(self.layers[post].cant):
-                    self.error += self.layers[post].deltas[k] * self.layers[post].nodos[k].getPeso(k)
+                    peso = self.layers[post].nodos[k].getPeso(k)
+                    self.error += self.layers[post].deltas[k] * peso
+                    self.addLog(">> "+str(self.error)+"+="+str(self.layers[post].deltas[k])+"*"+str(peso))
                 
                 self.deltas[j] = self.nodos[j] * self.error
         
         return self.deltas
         
     def setPesos(self,rate):
+        self.addLog("Layer->setPesos("+str(rate)+")")
         post = self.id + 1
         prev = self.id - 1
         
@@ -80,6 +88,7 @@ class Layer(object):
                 cambio = self.deltas[k] * self.layers[prev].nodos[j].salida
                 peso = self.nodos[k].getPeso(j)
                 self.nodos[k].setPeso(j, peso + rate*cambio)
+                self.addLog(">> nodos["+str(k)+"].setPeso["+str(j)+"]="+str(peso)+"+"+str(rate)+"*"+str(cambio))
 
     def getConfiguracion(self):
         capa = {
@@ -94,4 +103,15 @@ class Layer(object):
             ]
         }
         return capa
+    
+    def getStrDeltas(self):
+        return {'layer_'+str(self.id) : [
+                self.nodos[x].getConfiguracion() 
+                for x in xrange(self.cant)
+            ]}
+            
+    def addLog(self,str):
+        if self.padre.debug :
+            self.padre.addLog(str)
+
     
