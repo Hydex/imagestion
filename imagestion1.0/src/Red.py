@@ -233,10 +233,11 @@ class Net(object):
             post = capa +1
                 
 ##        try:
-            if capa >= 0:
-                self.layers[capa].getDeltas(result,expect)
-                self.backPropagation2(prev,result,expect)
-                self.layers[capa].setPesos(self.rate)
+            #if capa >= 0:
+            for idx in xrange(self.nCapas):
+                self.layers[idx].getDeltas(result,expect)
+                #self.backPropagation2(prev,result,expect)
+                self.layers[idx].setPesos(self.rate)
             pass
 ##        except:
 ##            err = str(exc_info())
