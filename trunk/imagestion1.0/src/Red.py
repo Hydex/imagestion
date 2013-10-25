@@ -231,6 +231,7 @@ class Net(object):
             i,j = 0,0
             prev = capa -1
             post = capa +1
+            idx = capa
                 
 ##        try:
             #if capa >= 0:
