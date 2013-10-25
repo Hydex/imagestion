@@ -166,16 +166,12 @@ class Net(object):
         
 ##        try:
             for ciclo in range(epochs):
-            #for idx in range(len(inputs)):
-                #datos = [None] * self.entradas
-                self.addLog(">> idx:"+str(idx)+" -----------------------------------------------------------------------------------------")
+                self.addLog(">> ciclo:"+str(ciclo)+" ====================================================================================================================")
                 salidas = [[None] * len(outputs[0])] * len(outputs)
 
                 ## [[0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]]
                 for idx in range(len(inputs)):
-##                    self.addLog(' =========================================================================================')
-                    self.addLog('>> salidas:'+str(salidas))
-                    self.addLog('>> ciclo:'+str(ciclo)+' =========================================================================================')
+                    self.addLog('>> idx:'+str(idx)+' -------------------------------------------------------------------------------------------------------')
                     # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
                     self.addLog("PASO 2: Seleccionar el siguiente par de entrenamiento del conjunto de entrenamiento, aplicando el vector de entrada a la entrada de la red.")
@@ -187,28 +183,24 @@ class Net(object):
                     # paso 3: Calcular salida de la red    
                     resultado = self.simular(datos)
                     self.addLog("PASO 3: Calcular salida de la red")
-                    self.addLog(">> datos:"+str(datos)+" resultado:"+str(resultado)+' salidas:'+str(salidas))
+                    self.addLog(">> datos:"+str(datos)+" resultado:"+str(resultado)+" size:"+str(len(resultado))+" salidas:"+str(salidas))
                     
                     for i in range(len(salidas[idx])):
                         self.addLog('>> salidas['+str(idx)+']['+str(i)+']='+str(resultado[i]))
                         salidas[idx][i] = resultado[i]
                     
-                    # calcula el delta de error de la red buscando un minimo
-                    error = [None] * len(resultado)
-                    self.addLog("calcula el delta de error de la red buscando un minimo")
-                    self.addLog(">> nro de resultados: "+str(len(resultado)))
+                    #self.addLog("calcula el delta de error de la red buscando un minimo")
                     expect = outputs[idx]
                     
-    ##                    for ciclo in range(epochs):  ##
                     # paso 4: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
                     self.backPropagation2(self.nCapas-1,resultado,expect)
                     
-                    self.addLog("PASO 5: Calculo de error cuadratico de la red")
-                    errorCuadratico = self.getErrorCuadratico()
-                    self.historial.append({errorCuadratico:self.getPesos(), 'error':self.getErrores()})
-                    self.addLog(">> errorCuadratico = "+str(errorCuadratico))
+##                    self.addLog("PASO 5: Calculo de error cuadratico de la red")
+##                    errorCuadratico = self.getErrorCuadratico()
+##                    self.historial.append({errorCuadratico:self.getPesos(), 'error':self.getErrores()})
+##                    self.addLog(">> errorCuadratico = "+str(errorCuadratico))
                     
                 epochs = epochs - 1
                 pass
@@ -241,7 +233,7 @@ class Net(object):
             post = capa +1
                 
 ##        try:
-            if capa > 0:
+            if capa >= 0:
                 self.layers[capa].getDeltas(result,expect)
                 self.backPropagation2(prev,result,expect)
                 self.layers[capa].setPesos(self.rate)
@@ -286,7 +278,7 @@ class Net(object):
                     for j in xrange(self.layers[capa].cant):
                         dlta  = self.layers[prev].nodos[i].getDelta()
                         error = self.layers[prev].nodos[i].getError()
-
+                        
                         self.layers[prev].nodos[i].setDelta(dlta + self.layers[capa].nodos[j].getCoeficiente(i))                        
                         self.layers[prev].nodos[i].setError(error + self.layers[capa].nodos[j].getErrorCapa())
                         deltas[j] = self.layers[prev].nodos[i].getError()
@@ -302,7 +294,7 @@ class Net(object):
                 
                 self.addLog('propagacion hacia adelante en el calulo de pesos en funcion de delta')
                 # propagacion hacia adelante en el calulo de pesos en funcion de delta
-
+                
                 for i in xrange(self.layers[prev].cant):
                     self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.layers[prev].nodos[i].pesos]))
                     self.layers[prev].nodos[i].balancearPesos(self.rate)

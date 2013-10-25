@@ -34,6 +34,7 @@
 # +-----------------------------------------------------------------------+
 
 from math import *
+from sys import *
 
 class Activacion(object):
 
@@ -46,6 +47,7 @@ class Activacion(object):
     """
 
     def __init__(self,type):
+        self.padre = None
         self.tipo = type
         self.funciones = {
             "HARDLIM"   : "self.hardlim(expr)",
@@ -111,7 +113,8 @@ class Activacion(object):
         try:
             return 1.0 / (1.0 + exp(-val))
         except:
-            print 'ERROR logsig('+str(val)+'):'+str(exc_info())
+            err = str(exc_info())            
+            print 'ERROR logsig('+str(val)+'):'+err
             return 0.0
         
     def tansig(self,val):
@@ -122,13 +125,14 @@ class Activacion(object):
         
     def logsig_derivada(self,val):
         valor = val * (1.0 - val)
+        self.addLog("Activacion->logsig_derivada("+str(val)+") :: "+str(valor)+"="+str(val)+"*(1.0-"+str(val)+")")
         return valor 
         #return self.satlin(valor)    # Corregir que valores devueltos no se disparen durante entrenamiento
         pass
         
     def tansig_derivada(self,valor):
         val = valor #self.tansig(valor)
-        return 1 - val*val
+        return 1 - val**2
         pass
         
     def poslin_derivada(self,val):
@@ -143,7 +147,10 @@ class Activacion(object):
         return None
         pass
         
-    
-    
+    def addLog(self,str):
+        if self.padre != None :
+            if self.padre.debug :
+                self.padre.addLog(str)    
+        
 
 

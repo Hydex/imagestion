@@ -57,6 +57,7 @@ class Perceptron(object):
         self.error    = 0.0
         self.funcion  = funcion
         self.fnTransf = Activacion(funcion)
+        self.fnTransf.padre = padre
         self.expect   = 0
         pass
         
