@@ -52,9 +52,11 @@ class Layer(object):
     def getDeltas(self,expect,result):
         self.addLog("Layer->getDeltas("+str(expect)+","+str(result)+")")
         post = self.id + 1
+        prev = self.id -1
+        capa = self.id
         self.deltas = [0.0] * self.cant
         
-        if self.id == self.cant: #len(self.layers) -1:
+        if self.id == len(self.layers) -1:
             self.error = 0.0
             
             for k in xrange(self.cant):
@@ -62,18 +64,21 @@ class Layer(object):
                 derivada = self.nodos[k].fnTransf.train(result[k])
                 self.deltas[k] = derivada * self.error
                 self.nodos[k].setDelta(self.deltas[k])
-                self.addLog(">> "+str(derivada)+"="+self.nodos[k].funcion+"("+str(expect[k])+"-"+str(result[k])+")")
-                self.addLog(">> "+str(self.deltas[k])+"="+str(derivada)+"*"+str(self.error))
+                self.addLog(">> "+str(derivada)+"="+self.nodos[k].funcion+"("+str(str(result[k])+")"))
+                self.addLog(">> (s) "+str(self.deltas[k])+"="+str(derivada)+"*"+str(self.error))
         else:            
             for j in xrange(self.cant):
                 self.error = 0.0
                 
                 for k in xrange(self.layers[post].cant):
-                    peso = self.layers[post].nodos[k].getPeso(k)
+                    peso = self.layers[post].nodos[k].getPeso(j)
                     self.error += self.layers[post].deltas[k] * peso
-                    self.addLog(">> "+str(self.error)+"+="+str(self.layers[post].deltas[k])+"*"+str(peso))
+                    self.addLog(">> "+str(self.error)+"+="+str(self.layers[capa].deltas[k])+"*"+str(peso))
                 
-                self.deltas[j] = self.nodos[j] * self.error
+                derivada = self.nodos[j].fnTransf.train(self.nodos[j].salida)
+                self.deltas[j] = derivada * self.error
+                self.addLog(">> "+str(derivada)+"="+self.nodos[k].funcion+"("+str(self.nodos[j].salida)+")*"+str(self.error))
+                self.addLog(">> (o) "+str(self.deltas[j])+"="+str(derivada)+"*"+str(self.error))
         
         return self.deltas
         
