@@ -234,12 +234,12 @@ class Net(object):
             idx = capa
                 
 ##        try:
-            #if capa >= 0:
-            for idx in xrange(self.nCapas):
+            if capa >= 0:
+            #for idx in xrange(self.nCapas):
                 self.layers[idx].getDeltas(result,expect)
-                #self.backPropagation2(prev,result,expect)
+                self.backPropagation2(prev,result,expect)
                 self.layers[idx].setPesos(self.rate)
-            pass
+            #pass
 ##        except:
 ##            err = str(exc_info())
 ##            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
