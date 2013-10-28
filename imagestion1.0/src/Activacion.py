@@ -125,7 +125,7 @@ class Activacion(object):
         
     def logsig_derivada(self,val):
         valor = val * (1.0 - val)
-        self.addLog("Activacion->logsig_derivada("+str(val)+") :: "+str(valor)+"="+str(val)+"*(1.0-"+str(val)+")")
+        #self.addLog("Activacion->logsig_derivada("+str(val)+") :: "+str(valor)+"="+str(val)+"*(1.0-"+str(val)+")")
         return valor 
         #return self.satlin(valor)    # Corregir que valores devueltos no se disparen durante entrenamiento
         pass

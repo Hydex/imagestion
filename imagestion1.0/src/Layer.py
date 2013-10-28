@@ -71,14 +71,14 @@ class Layer(object):
                 self.error = 0.0
                 
                 for k in xrange(self.layers[post].cant):
-                    peso = self.layers[post].nodos[k].getPeso(j)
+                    peso = self.layers[post].nodos[k].getPeso(k)
                     delta = self.layers[post].deltas[k]
                     self.error += delta * peso
                     self.addLog(">> ["+str(j)+","+str(k)+"] "+str(self.error)+"+="+str(delta)+"*"+str(peso))
                 
                 derivada = self.nodos[j].fnTransf.train(self.nodos[j].salida)
                 self.deltas[j] = derivada * self.error
-                self.addLog(">> "+str(derivada)+"="+self.nodos[k].funcion+"("+str(self.nodos[j].salida)+")*"+str(self.error))
+                self.addLog(">> "+str(derivada)+"="+self.nodos[j].funcion+"("+str(self.nodos[j].salida)+")*"+str(self.error))
                 self.addLog(">> (o) "+str(self.deltas[j])+"="+str(derivada)+"*"+str(self.error))
         
         return self.deltas
