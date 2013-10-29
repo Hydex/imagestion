@@ -47,6 +47,7 @@ class Perceptron(object):
     def __init__(self,name,inputs,funcion,padre):
         self.entradas = [0 for x in xrange(inputs)] 
         self.pesos    = [random() for x in xrange(inputs)]
+        self.nInputs  = inputs
         self.name     = name
         self.padre    = padre
         self.bias     = 0.0

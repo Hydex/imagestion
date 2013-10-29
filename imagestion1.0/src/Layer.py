@@ -50,7 +50,7 @@ class Layer(object):
         pass
         
     def getDeltas(self,expect,result):
-        self.addLog("Layer->getDeltas("+str(expect)+","+str(result)+")")
+        self.addLog("Layer->getDeltas("+str(expect)+","+str(result)+") capa:"+str(self.id))
         post = self.id + 1
         prev = self.id -1
         capa = self.id
@@ -74,7 +74,7 @@ class Layer(object):
                     peso = self.layers[post].nodos[k].getPeso(k)
                     delta = self.layers[post].deltas[k]
                     self.error += delta * peso
-                    self.addLog(">> ["+str(j)+","+str(k)+"] "+str(self.error)+"+="+str(delta)+"*"+str(peso))
+                    self.addLog(">> nodo["+str(j)+"].peso["+str(k)+"] "+str(self.error)+"+="+str(delta)+"*"+str(peso))
                 
                 derivada = self.nodos[j].fnTransf.train(self.nodos[j].salida)
                 self.deltas[j] = derivada * self.error
@@ -84,17 +84,18 @@ class Layer(object):
         return self.deltas
         
     def setPesos(self,rate):
-        self.addLog("Layer->setPesos("+str(rate)+")")
+        self.addLog("Layer->setPesos("+str(rate)+") capa:"+str(self.id))
         post = self.id + 1
         prev = self.id - 1
         
         #if self.id == len(self.layers) -1:
-        for j in xrange(self.layers[prev].cant):
-            for k in xrange(self.cant):
-                cambio = self.deltas[k] * self.layers[prev].nodos[j].salida
+        #for j in xrange(self.layers[prev].cant):
+        for k in xrange(self.cant):
+            for j in xrange(self.nodos[k].nInputs):
+                cambio = self.deltas[k] * self.nodos[k].entradas[j]
                 peso = self.nodos[k].getPeso(j)
                 self.nodos[k].setPeso(j, peso + rate*cambio)
-                self.addLog(">> nodos["+str(k)+"].setPeso["+str(j)+"]="+str(peso)+"+"+str(rate)+"*"+str(cambio))
+                self.addLog(">> nodo["+str(k)+"].peso["+str(j)+"]="+str(peso)+"+"+str(rate)+"*"+str(cambio)+" = "+str(self.nodos[k].getPeso(j)))
 
     def getConfiguracion(self):
         capa = {
