@@ -61,6 +61,7 @@ class Layer(object):
             
             for k in xrange(self.cant):
                 self.error = expect[k] - result[k]
+                self.nodos[k].setError(self.error)
                 derivada = self.nodos[k].fnTransf.train(result[k])
                 self.deltas[k] = derivada * self.error
                 self.nodos[k].setDelta(self.deltas[k])
@@ -77,6 +78,7 @@ class Layer(object):
                     self.addLog(">> nodo["+str(j)+"].peso["+str(k)+"] "+str(self.error)+"+="+str(delta)+"*"+str(peso))
                 
                 derivada = self.nodos[j].fnTransf.train(self.nodos[j].salida)
+                self.nodos[j].setError(self.error)                
                 self.deltas[j] = derivada * self.error
                 self.addLog(">> "+str(derivada)+"="+self.nodos[j].funcion+"("+str(self.nodos[j].salida)+")*"+str(self.error))
                 self.addLog(">> (o) "+str(self.deltas[j])+"="+str(derivada)+"*"+str(self.error))
