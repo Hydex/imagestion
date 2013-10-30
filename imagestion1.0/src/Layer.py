@@ -80,6 +80,7 @@ class Layer(object):
                 derivada = self.nodos[j].fnTransf.train(self.nodos[j].salida)
                 self.nodos[j].setError(self.error)                
                 self.deltas[j] = derivada * self.error
+                self.nodos[j].setDelta(self.deltas[j])                
                 self.addLog(">> "+str(derivada)+"="+self.nodos[j].funcion+"("+str(self.nodos[j].salida)+")*"+str(self.error))
                 self.addLog(">> (o) "+str(self.deltas[j])+"="+str(derivada)+"*"+str(self.error))
         

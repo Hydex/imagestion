@@ -8,6 +8,7 @@ net = Net(2,1,[2,1],['TANSIG','TANSIG'])
 #net = Net(2,1,[2,1],['LOGSIG','LOGSIG'])
 
 print 'PESOS : '+str(net.getPesos())
+print 'DELTA : '+str(net.getDeltas())
 print 'ERROR : '+str(net.getErrores())
 
 print "0 SIMULAR"
@@ -33,6 +34,7 @@ for x in range(1):
     print str([I,I]) + ' => ' + str(net.simular([I,I]))
 
     print 'PESOS : '+str(net.getPesos())
+    print 'DELTA : '+str(net.getDeltas())
     print 'ERROR : '+str(net.getErrores())
 
 #print "SINAPSIS:"+json.dumps(net.sinapsis, sort_keys=True,indent=4, separators=(',', ': '))
