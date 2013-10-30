@@ -202,7 +202,7 @@ class Net(object):
                 self.historial.append({error:self.getPesos()})
                 self.addLog(">> errorCuadratico = "+str(error))
                     
-                if abs(error) < 0.001:
+                if error < 0.001:
                     break
             pass
         except:
