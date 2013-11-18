@@ -1,8 +1,8 @@
 from Red import *
 import json
 
-O = 0.0001 #0.000001
-I = 0.9999 #0.999999
+O = 0.1 #0.000001
+I = 0.9 #0.999999
 
 net = Net(2,1,[2,1],['TANSIG','TANSIG'])
 #net = Net(2,1,[2,1],['LOGSIG','LOGSIG'])
@@ -21,7 +21,6 @@ for x in range(1):
     print str(x+1)+" ENTRENAR"
     net.setEpochs(1000)
     net.entrenar([
-            #[0.0001,0.0001], [0.0001,1.0], [1.0,0.0001], [1.0,1.0]
             [O,O], [O,I], [I,O], [I,I]
         ],[
              [O],   [I],   [I],   [O]
