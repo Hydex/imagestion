@@ -83,8 +83,8 @@ class Perceptron(object):
     def calcular(self):
         #self.addLog("Perceptron.calcular(name:"+self.name+", entradas:"+str(self.entradas)+')')
         suma = self.getSumPesosEntradas()
-        self.setSalida(suma)
-        res = self.fnTransf.exe(self.salida)
+        res = self.fnTransf.exe(suma)
+        self.setSalida(res)
         return res
 
     """

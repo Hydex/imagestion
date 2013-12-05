@@ -122,6 +122,7 @@ if __name__ == '__main__':
     l = 0.5
     
     iniciar_perceptron()
+    clasificar(datos_ent)
     entrenar_perceptron(datos_ent, l)
     clasificar(datos_ent)
     
