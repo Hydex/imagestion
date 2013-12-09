@@ -196,7 +196,7 @@ class Net(object):
                     # paso 5: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
-                    error += self.backPropagation2(self.nCapas-1,resultado,expect)
+                    error += self.backPropagation(self.nCapas-1,resultado,expect)
                 pass
 
                 self.historial.append({error:self.getPesos()})
@@ -259,7 +259,7 @@ class Net(object):
         try:
             self.addLog(">> Calculo de deltas en la capa")
             for idx in xrange(self.nCapas -1, -1, -1):
-                self.layers[idx].getDeltas(result,expect)
+                self.layers[idx].setDeltas(result,expect)
                 
             self.addLog(">> Actuaizacion de pesos en la capa")
             for idx in xrange(self.nCapas):

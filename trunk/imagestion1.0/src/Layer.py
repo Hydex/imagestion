@@ -96,31 +96,35 @@ class Layer(object):
         capa = self.id
 
         if self.id == len(self.layers) -1:
+            self.error = 0.0
+            
             for k in xrange(self.cant):
                 delta = expect[k] - result[k]
-                self.nodos[k].setError(error)
+                self.nodos[k].setError(delta)
                 self.error += delta
                 self.deltas[k] = delta
-                self.nodos[k].setDelta(self.deltas[k])
+                self.nodos[k].setDelta(delta)
                 
                 self.addLog(">> "+str(self.deltas[k])+"="+str(expect[k])+"-"+str(result[k]))            
         else:  
+            self.error = 0.0
             for j in xrange(self.cant):
-                self.error = 0.0
+                error = 0.0
                 
                 for k in xrange(self.layers[post].cant):
                     peso = self.layers[post].nodos[k].getPeso(j)
                     delta = self.layers[post].deltas[k]
+                    error += delta * peso
                     self.error += delta * peso
                     
                     self.addLog(">> nodo["+str(j)+"].peso["+str(k)+"] "+str(self.error)+"+="+str(delta)+"*"+str(peso))
                 
-                self.nodos[j].setError(self.error)                
-                self.deltas[j] = derivada * self.error
+                self.nodos[j].setError(error)                
+                self.deltas[j] = error
                 self.nodos[j].setDelta(self.deltas[j])   
                 
-                self.addLog(">> "+str(derivada)+"="+self.nodos[j].funcion+"("+str(self.nodos[j].salida)+")*"+str(self.error))
-                self.addLog(">> (o) "+str(self.deltas[j])+"="+str(derivada)+"*"+str(self.error))                
+                #self.addLog(">> "+str(derivada)+"="+self.nodos[j].funcion+"("+str(self.nodos[j].salida)+")*"+str(self.error))
+                #self.addLog(">> (o) "+str(self.deltas[j])+"="+str(derivada)+"*"+str(self.error))                
               
             pass
             
@@ -133,7 +137,8 @@ class Layer(object):
         #for j in xrange(self.layers[prev].cant):
         for k in xrange(self.cant):
             for j in xrange(self.nodos[k].nInputs):
-                cambio = self.deltas[k] * self.nodos[k].entradas[j]
+                derivada = self.nodos[k].fnTransf.train(self.nodos[k].getError())
+                cambio = self.deltas[k] * derivada * self.nodos[k].entradas[j]
                 peso = self.nodos[k].getPeso(j)
                 self.nodos[k].setPeso(j, peso + rate*cambio)
                 self.addLog(">> nodo["+str(k)+"].peso["+str(j)+"]="+str(peso)+"+"+str(rate)+"*"+str(cambio)+" = "+str(self.nodos[k].getPeso(j)))
