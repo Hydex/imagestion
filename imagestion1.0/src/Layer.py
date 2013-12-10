@@ -137,7 +137,7 @@ class Layer(object):
         #for j in xrange(self.layers[prev].cant):
         for k in xrange(self.cant):
             for j in xrange(self.nodos[k].nInputs):
-                derivada = self.nodos[k].fnTransf.train(self.nodos[k].getError())
+                derivada = self.nodos[k].fnTransf.train(self.nodos[k].getSalidaNeta())
                 cambio = self.deltas[k] * derivada * self.nodos[k].entradas[j]
                 peso = self.nodos[k].getPeso(j)
                 self.nodos[k].setPeso(j, peso + rate*cambio)

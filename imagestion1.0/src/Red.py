@@ -68,6 +68,7 @@ class Net(object):
         self.panic    = False
         self.expect   = []
         self.historial = []
+        self.error    = 0.0
         
         self.sinapsis[0] = [random() for x in xrange(entradas)]
                 
@@ -165,7 +166,7 @@ class Net(object):
             for ciclo in range(epochs):
                 self.addLog(">> ciclo:"+str(ciclo)+" ====================================================================================================================")
                 salidas = [[None] * len(outputs[0])] * len(outputs)
-                error = 0.0
+                self.error = 0.0
 
                 ## [[0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]]
                 for idx in range(len(inputs)):
@@ -196,13 +197,13 @@ class Net(object):
                     # paso 5: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
-                    error += self.backPropagation(self.nCapas-1,resultado,expect)
+                    self.error += self.backPropagation(self.nCapas-1,resultado,expect)
                 pass
 
-                self.historial.append({error:self.getPesos()})
-                self.addLog(">> errorCuadratico = "+str(error))
+                self.historial.append({self.error:self.getPesos()})
+                self.addLog(">> errorCuadratico = "+str(self.error))
                     
-                if error < 0.001:
+                if abs(self.error) < 0.001:
                     break
             pass
         except:
@@ -255,13 +256,17 @@ class Net(object):
         
     def backPropagation(self,capa,result,expect):
         self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-        
+        i,j = 0,0
+        prev = capa -1
+        post = capa +1
+        idx = capa
+                
         try:
             self.addLog(">> Calculo de deltas en la capa")
             for idx in xrange(self.nCapas -1, -1, -1):
                 self.layers[idx].setDeltas(result,expect)
                 
-            self.addLog(">> Actuaizacion de pesos en la capa")
+            self.addLog(">> Actualizacion de pesos en la capa")
             for idx in xrange(self.nCapas):
                 self.layers[idx].setPesos(self.rate)
                 
@@ -269,8 +274,8 @@ class Net(object):
             return self.getErrorCuadratico(result,expect)
         except:
             err = str(exc_info())
-            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
-            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
+            self.addLog("ERROR Net.backPropagation(): capa:"+str(capa)+" iteracion idx="+str(idx)+" de "+str(self.nCapas)+"\n")
+            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(capa)+" iteracion idx="+str(idx)+" de "+str(self.nCapas)+"\n")
             self.addLog(err)
             self.panic = True 
         pass
