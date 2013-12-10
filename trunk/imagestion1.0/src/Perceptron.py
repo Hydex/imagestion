@@ -164,6 +164,9 @@ class Perceptron(object):
     def getSalida(self):
         return self.salida
     
+    def getSalidaNeta(self):
+        return self.neta
+    
     def getwBias(self):
         return self.wBias
     
