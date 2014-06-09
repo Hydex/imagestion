@@ -117,12 +117,17 @@ if __name__ == '__main__':
     ]
         
     nodos_ent = 2
-    nodos_ocu = 1
+    nodos_ocu = 2
     nodos_sal = 1
     l = 0.5
     
     iniciar_perceptron()
+    print 'ANTES'
     clasificar(datos_ent)
     entrenar_perceptron(datos_ent, l)
+    print 'DESPUES'
     clasificar(datos_ent)
+    
+    print 'PESOS ENT: '+str(pesos_ent)
+    print 'PESOS SAL: '+str(pesos_sal)
     
