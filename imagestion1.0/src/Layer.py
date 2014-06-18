@@ -149,7 +149,7 @@ class Layer(object):
             'error'  : self.error,
             'deltas' : self.deltas,
             'cant'   : self.cant,
-            'layers' : str(self.layers),
+            #'layers' : self.layers,
             'nodos'  : [
                 self.nodos[x].getConfiguracion() 
                 for x in xrange(self.cant)

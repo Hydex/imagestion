@@ -440,4 +440,23 @@ class Net(object):
             
     def printLog(self):
         print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
+        
+    def getConfiguracion(self):
+        red = {
+            'nCapas'    : self.nCapas,
+            'layers'    : [
+                self.layers[x].getConfiguracion() 
+                for x in xrange(self.nCapas)
+            ],       
+            'sinapsis'  : self.sinapsis,
+            'neuronas'  : self.neuronas,
+            'rate'      : self.rate,
+            'entradas'  : self.entradas,
+            'salidas'   : self.salidas,
+            'funciones' : self.transferencias,
+            'epochs'    : self.epochs,
+            'expect'    : self.expect,
+            'error'     : self.error
+        }
+        return red
 
