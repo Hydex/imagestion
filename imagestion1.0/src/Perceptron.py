@@ -201,22 +201,6 @@ class Perceptron(object):
     def inicializarPesos(self):
         pass
         
-    def getConfiguracion(self):
-        data = {
-            'name':self.name,
-#            'rate':self.rate,
-            'bias':self.bias,
-            'wBias':self.wBias,
-            'error':self.error,
-            'funcion':self.funcion,
-            'entradas':self.entradas,
-            'salida':self.salida,
-            'delta':self.delta,
-            'pesos':self.pesos
-        }
-
-        return data
-        
     def getEntradas(self):
         return self.entradas
         pass
@@ -228,6 +212,34 @@ class Perceptron(object):
         if self.padre.debug :
             self.padre.addLog(str)
         
+    def getConfiguracion(self):
+        data = {
+            'name':self.name,
+            'bias':self.bias,
+            'wBias':self.wBias,
+            'error':self.error,
+            'nInputs':self.nInputs,
+            'funcion':self.funcion,
+            'entradas':self.entradas,
+            'salida':self.salida,
+            'delta':self.delta,
+            'pesos':self.pesos
+        }
+
+        return data
+    
+    def setConfiguracion(self,data):
+        self.name = data['name']
+        self.bias = data['bias']
+        self.wBias = data['wBias']
+        self.error = data['error']
+        self.funcion = data['funcion']
+        self.entradas = data['entradas']
+        self.salida = data['salida']
+        self.delta = data['delta']
+        self.pesos = data['pesos']
+        self.nInputs = data['nInputs']
+                    
     def printLog(self):
         #print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         pass
