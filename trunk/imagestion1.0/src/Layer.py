@@ -143,20 +143,6 @@ class Layer(object):
                 self.nodos[k].setPeso(j, peso + rate*cambio)
                 self.addLog(">> nodo["+str(k)+"].peso["+str(j)+"]="+str(peso)+"+"+str(rate)+"*"+str(cambio)+" = "+str(self.nodos[k].getPeso(j)))
 
-    def getConfiguracion(self):
-        capa = {
-            'id'     : self.id,
-            'error'  : self.error,
-            'deltas' : self.deltas,
-            'cant'   : self.cant,
-            #'layers' : self.layers,
-            'nodos'  : [
-                self.nodos[x].getConfiguracion() 
-                for x in xrange(self.cant)
-            ]
-        }
-        return capa
-    
     def getStrDeltas(self):
         return {'layer_'+str(self.id) : [
                 self.nodos[x].getConfiguracion() 
@@ -167,4 +153,32 @@ class Layer(object):
         if self.padre.debug :
             self.padre.addLog(str)
 
+    def getConfiguracion(self):
+        capa = {
+            'id'     : self.id,
+            'error'  : self.error,
+            'deltas' : self.deltas,
+            'cant'   : self.cant,
+            'nodos'  : [
+                self.nodos[x].getConfiguracion() 
+                for x in xrange(self.cant)
+            ]
+        }
+        return capa
     
+    def setConfiguracion(self,data):
+        self.id = data['id']
+        self.error = data['error']
+        self.cant = data['cant']
+        self.deltas = data['deltas']
+        self.nodos = [
+            Perceptron( data['nodos'][x]['name'],
+                        data['nodos'][x]['nInputs'],
+                        data['nodos'][x]['funcion'],
+                        self.padre
+            ) for x in xrange(data['cant'])
+        ]
+        for x in xrange(data['cant']):
+            self.nodos[x].setConfiguracion(data['nodos'][x])
+        pass
+        

@@ -32,11 +32,10 @@
 # +-----------------------------------------------------------------------+
 # | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 # +-----------------------------------------------------------------------+
-
+import json
 from Perceptron import *
 from Layer import *
 from random import *
-from json import *
 from sys import *
 
 class Net(object):
@@ -54,7 +53,7 @@ class Net(object):
         self.debug    = True
         ####################
         self.nCapas   = len(layers)
-        max,size      = 0,0
+        self.capas    = layers
         self.log      = []
         self.layers   = []        
         self.layers   = [None] * self.nCapas
@@ -71,6 +70,7 @@ class Net(object):
         self.error    = 0.0
         
         self.sinapsis[0] = [random() for x in xrange(entradas)]
+        max,size = 0,0
                 
         for i in xrange(self.nCapas):
             inputs = entradas if i == 0 else layers[i-1]
@@ -280,69 +280,7 @@ class Net(object):
             self.panic = True 
         pass
         
-    """    
-    ##    def backPropagation(self,capa,result,expect):
-    ##            self.addLog("Net.backPropagation -> capa:"+str(capa)+" result:"+str(result)+" expect:"+str(expect))
-    ##            i,j = 0,0
-    ##            delta = [0] * len(result)
-    ##            prev = capa
-    ##        
-    ##        try:
-    ##            for i in xrange(len(delta)):
-    ##                # calculo de delta en funcion de delta (esperado - resultado)
-    ##                delta[i] = expect[i] - result[i]
-    ##                self.layers[capa].nodos[i].setDelta(delta[i])
-    ##                if capa == self.nCapas -1:
-    ##                    self.layers[capa].nodos[i].setError(delta[i]*self.layers[capa].nodos[i].fnTransf.train(result[i]))
-    ##                self.addLog('>> delta['+str(i)+']:'+str(delta[i])+' = '+str(expect[i])+' - '+str(result[i]))
-    ##                                        
-    ##            self.addLog('>> neuronas:'+str(self.layers[capa].cant))
-    ##            
-    ##            if capa > 0 and self.layers[capa].cant > 0:
-    ##                prev = capa -1
-    ##                self.addLog('propagacion hacia atras en el calulo para ajuste de delta [capa:'+str(capa)+'][prev:'+str(prev)+']')
-    ##                
-    ##                # calculo del error para la capa
-    ##                deltas = [0] * self.layers[prev].cant
-    ##                expect = [0] * self.layers[prev].cant
-    ##                
-    ##                for i in xrange(self.layers[prev].cant):
-    ##                    # calcula la sumatoria de los pesos con el coeficiente de error delta
-    ##                    self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'] errores:'+str(self.getErrores()))
-    ##                    
-    ##                    for j in xrange(self.layers[capa].cant):
-    ##                        dlta  = self.layers[prev].nodos[i].getDelta()
-    ##                        error = self.layers[prev].nodos[i].getError()
-    ##                        
-    ##                        self.layers[prev].nodos[i].setDelta(dlta + self.layers[capa].nodos[j].getCoeficiente(i))                        
-    ##                        self.layers[prev].nodos[i].setError(error + self.layers[capa].nodos[j].getErrorCapa())
-    ##                        deltas[j] = self.layers[prev].nodos[i].getError()
-    ##                        expect[j] = self.layers[prev].nodos[i].getSalida()
-    ##
-    ##                    self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'] errores:'+str(self.getErrores()))
-    ##                
-    ##                self.addLog('>> Net.deltas[]:'+str(self.getDeltas()))
-    ##                
-    ##                self.addLog('llamada recursiva para retropropagacion en el calculo de delta')
-    ##                # llamada recursiva para retropropagacion en el calculo de delta
-    ##                self.backPropagation(prev, deltas, expect)
-    ##                
-    ##                self.addLog('propagacion hacia adelante en el calulo de pesos en funcion de delta')
-    ##                # propagacion hacia adelante en el calulo de pesos en funcion de delta
-    ##                
-    ##                for i in xrange(self.layers[prev].cant):
-    ##                    self.addLog('<< capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.layers[prev].nodos[i].pesos]))
-    ##                    self.layers[prev].nodos[i].balancearPesos(self.rate)
-    ##                    self.addLog('>> capa[prev:'+str(prev)+'][i:'+str(i)+'].pesos:'+str([self.layers[prev].nodos[i].pesos]))
-    ##            pass
-    ##                    
-    ##        except:
-    ##            err = str(exc_info())
-    ##            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
-    ##            print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
-    ##            self.addLog(err)
-    ##            self.panic = True  
-    """         
+      
        
     """
     # Obtiene el error cuadratico de la red
@@ -391,7 +329,6 @@ class Net(object):
         self.layers[capa].nodos[w].setPeso(i,valor)
         
     def getSalida(self,w,capa):
-        #return self.capas[capa][w].getSalida()
         return self.layers[capa].nodos[w].getSalida()
         
     def addLog(self,str):
@@ -405,10 +342,8 @@ class Net(object):
         lst = []
         for i in range(self.nCapas):
             for j in range(self.layers[i].cant):
-                #lst.append("capas["+str(i)+"]["+str(j)+"].pesos:"+str(self.capas[i][j].pesos))
                 lst.append({self.layers[i].nodos[j].name : self.layers[i].nodos[j].pesos})
                 
-        #return dumps(lst, sort_keys=True,indent=4, separators=(',', ': '))
         return str(lst)
 
     def getDeltas(self):
@@ -444,11 +379,11 @@ class Net(object):
     def getConfiguracion(self):
         red = {
             'nCapas'    : self.nCapas,
+            'capas'     : self.capas,
             'layers'    : [
                 self.layers[x].getConfiguracion() 
                 for x in xrange(self.nCapas)
             ],       
-            'sinapsis'  : self.sinapsis,
             'neuronas'  : self.neuronas,
             'rate'      : self.rate,
             'entradas'  : self.entradas,
@@ -459,4 +394,23 @@ class Net(object):
             'error'     : self.error
         }
         return red
+    
+    def setConfiguracion(self,js):
+        data = json.loads(js)
+        self.nCapas   = data['nCapas']
+        self.capas    = data['capas']
+        self.neuronas = data['neuronas']
+        self.entradas = data['entradas']
+        self.salidas  = data['salidas']
+        self.rate     = data['rate']
+        self.epochs   = data['epochs']
+        self.error    = data['error']
+        self.transferencias = data['funciones']
+        self.expect   = data['expect']
+        self.layers   = [None] * self.nCapas
+        
+        for i in xrange(self.nCapas):
+            self.layers[i] = Layer(i,data['capas'][i],data['entradas'],data['funciones'][i],self.layers,self)
+            self.layers[i].setConfiguracion(data['layers'][i])
+        pass
 
