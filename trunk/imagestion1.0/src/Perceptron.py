@@ -34,8 +34,8 @@
 # +-----------------------------------------------------------------------+
 
 from Activacion import *
-from random import *
 from json import *
+import random
 
 class Perceptron(object):
 
@@ -44,12 +44,12 @@ class Perceptron(object):
     :author:  Miguelote
     """
 
-    def __init__(self,name,inputs,funcion,padre):
+    def __init__(self,name,inputs,funcion,padre,capa):
         self.entradas = [0 for x in xrange(inputs)] 
-        self.pesos    = [random() for x in xrange(inputs)]
         self.nInputs  = inputs
         self.name     = name
         self.padre    = padre
+        self.capa     = capa
         self.bias     = 0.0
         self.wBias    = 0.0
         self.salida   = 0.0
@@ -60,6 +60,8 @@ class Perceptron(object):
         self.fnTransf = Activacion(funcion)
         self.fnTransf.padre = padre
         self.expect   = 0
+        self.pesos    = [random.uniform(-0.5,0.5) for x in xrange(inputs)]
+        #self.pesos = [1.0 for x in xrange(inputs)] if self.capa == 0 else [random.uniform(-0.5,0.5) for x in xrange(inputs)]
         pass
         
     def getSumPesosEntradas(self):
@@ -84,6 +86,7 @@ class Perceptron(object):
         #self.addLog("Perceptron.calcular(name:"+self.name+", entradas:"+str(self.entradas)+')')
         suma = self.getSumPesosEntradas()
         res = self.fnTransf.exe(suma)
+        #res = suma if self.capa == 0 else self.fnTransf.exe(suma)
         self.setSalida(res)
         return res
 
@@ -215,6 +218,7 @@ class Perceptron(object):
     def getConfiguracion(self):
         data = {
             'name':self.name,
+            'capa':self.capa,
             'bias':self.bias,
             'wBias':self.wBias,
             'error':self.error,
@@ -230,6 +234,7 @@ class Perceptron(object):
     
     def setConfiguracion(self,data):
         self.name = data['name']
+        self.capa = data['capa']
         self.bias = data['bias']
         self.wBias = data['wBias']
         self.error = data['error']

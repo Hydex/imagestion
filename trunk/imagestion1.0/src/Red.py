@@ -197,7 +197,7 @@ class Net(object):
                     # paso 5: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
-                    self.error += self.backPropagation(self.nCapas-1,resultado,expect)
+                    self.error += self.backPropagation2(self.nCapas-1,resultado,expect)
                 pass
 
                 self.historial.append({self.error:self.getPesos()})

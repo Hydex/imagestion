@@ -33,7 +33,7 @@
 # | Author: Miguel Vargas Welch <miguelote@gmail.com>                     |
 # +-----------------------------------------------------------------------+
 
-from math import *
+import math
 from sys import *
 
 class Activacion(object):
@@ -111,15 +111,16 @@ class Activacion(object):
         
     def logsig(self,val):
         try:
-            return 1.0 / (1.0 + exp(-val))
+            return 1.0 / (1.0 + math.exp(-val))
         except:
             err = str(exc_info())            
             print 'ERROR logsig('+str(val)+'):'+err
             return 0.0
         
     def tansig(self,val):
-        valor = (exp(val) - exp(-val)) / (exp(val) + exp(-val))      
-        return self.satlin(valor)    # Corregir que valores devueltos no se disparen durante entrenamiento
+        #valor = (exp(val) - exp(-val)) / (exp(val) + exp(-val))      
+        #return self.satlin(valor)    # Corregir que valores devueltos no se disparen durante entrenamiento
+        return math.tanh(val)
         
     def radbas(self,val):
         pass
