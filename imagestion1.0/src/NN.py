@@ -1,6 +1,7 @@
 import math
 import random
 import string
+from json import *
 
 def matriz(x,y) :
     m = []
@@ -128,6 +129,6 @@ if __name__ == '__main__':
     print 'DESPUES'
     clasificar(datos_ent)
     
-    print 'PESOS ENT: '+str(pesos_ent)
-    print 'PESOS SAL: '+str(pesos_sal)
+    print 'PESOS ENT: '+ dumps(pesos_ent, sort_keys=True,indent=4, separators=(',', ': ')) #str(pesos_ent)
+    print 'PESOS SAL: '+ dumps(pesos_sal, sort_keys=True,indent=4, separators=(',', ': ')) #str(pesos_sal)
     

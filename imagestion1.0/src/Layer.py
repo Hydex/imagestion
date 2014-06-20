@@ -46,7 +46,7 @@ class Layer(object):
         self.cant = neurons
         self.layers = layers
         self.padre = padre
-        self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function,padre) for x in xrange(neurons)]
+        self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function,padre,capa) for x in xrange(neurons)]
         pass
         
     def getDeltas(self,expect,result):
@@ -175,7 +175,8 @@ class Layer(object):
             Perceptron( data['nodos'][x]['name'],
                         data['nodos'][x]['nInputs'],
                         data['nodos'][x]['funcion'],
-                        self.padre
+                        self.padre,
+                        self.id
             ) for x in xrange(data['cant'])
         ]
         for x in xrange(data['cant']):
