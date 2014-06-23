@@ -5,8 +5,8 @@ O = 0 #0.01 #0.000001
 I = 1 #0.99 #0.999999
 
 # Net(entradas,salidas,[nodos,...],[funciones])
-net = Net(2,1,[2,1],['TANSIG','TANSIG'])
-#net = Net(2,1,[2,2,1],['LOGSIG','LOGSIG','LOGSIG'])
+#net = Net(2,1,[2,1],['TANSIG','TANSIG'])
+net = Net(2,1,[2,1],['LOGSIG','LOGSIG'])
 print 'NET   : Net(2,1,[2,1],[LOGSIG,LOGSIG])'
 print 'PESOS : '+str(net.getPesos())
 print 'DELTA : '+str(net.getDeltas())
