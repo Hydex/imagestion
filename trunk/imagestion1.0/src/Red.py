@@ -188,16 +188,12 @@ class Net(object):
                         self.addLog('>> salidas['+str(idx)+']['+str(i)+']='+str(resultado[i]))
                         salidas[idx][i] = resultado[i]
                     
-                    #self.addLog("calcula el delta de error de la red buscando un minimo")
                     expect = outputs[idx]
-                    
-                    #self.historial.append({error:self.getPesos(), 'resultado':str([expect,resultado])})
-                    #self.addLog(">> errorCuadratico = "+str(error))
                                         
                     # paso 5: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
-                    self.error += self.backPropagation2(self.nCapas-1,resultado,expect)
+                    self.error += self.backPropagation(self.nCapas-1,resultado,expect)
                 pass
 
                 self.historial.append({self.error:self.getPesos()})
@@ -238,9 +234,9 @@ class Net(object):
         try:
             self.addLog(">> Calculo de deltas en la capa")
             for idx in xrange(self.nCapas -1, -1, -1):
-                self.layers[idx].getDeltas(result,expect)
+                self.layers[idx].setDeltas(result,expect)
                 
-            self.addLog(">> Actuaizacion de pesos en la capa")
+            self.addLog(">> Actualizacion de pesos en la capa")
             for idx in xrange(self.nCapas -1, -1, -1):
                 self.layers[idx].setPesos(self.rate)
                 
@@ -248,7 +244,7 @@ class Net(object):
             return self.getErrorCuadratico(result,expect)
         except:
             err = str(exc_info())
-            self.addLog("ERROR Net.backPropagation(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
+            self.addLog("ERROR Net.backPropagation2(): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
             print("ERROR Net.backPropagation('"+str(err)+"'): capa:"+str(prev)+" iteracion i="+str(i)+" de "+str(self.layers[prev].cant)+"\n")
             self.addLog(err)
             self.panic = True 
