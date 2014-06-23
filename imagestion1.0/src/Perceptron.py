@@ -132,25 +132,15 @@ class Perceptron(object):
         #if i<=len(self.pesos):
         return self.pesos[i] * self.delta
      
-    #def balancearPesos(self,e,salida):
     def balancearPesos(self,rate):
-        #e = self.delta
-        #e = self.neta
         e = self.error
         salida = self.salida
-        #fn = self.fnTransf.train(e)
         delta = rate * self.error * salida
-        #prod = self.rate * e * salida #self.salida 
          
         for i in range(len(self.pesos)):
-            #Yprev = self.entradas[i]  # salida del nodo conectado referente al peso
-            #prod = self.rate*self.delta*fn*Yprev 
-            #self.addLog(str(peso + prod)+' = '+self.name+'.'+self.funcion+'('+str(e)+'):'+str(fn)+' * '+str(self.rate)+' * '+str(self.delta)+' * '+str(self.entradas[i])+' + '+str(peso))
             peso = self.pesos[i]
             self.addLog(self.name+': '+str(peso + delta)+' = '+str(peso)+' + '+str(rate)+' * '+str(e)+' * '+str(salida))
-            self.pesos[i] = peso + delta
-        
-        #self.error = self.salida - self.delta
+            self.pesos[i] = peso + delta        
         pass
          
     def setBias(self,bias):
