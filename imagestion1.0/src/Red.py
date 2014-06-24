@@ -50,7 +50,7 @@ class Net(object):
     #net = Net(2,1,[2,1],['LOGSIG','LOGSIG'])
     def __init__(self,entradas,salidas,layers,funciones):
         ####################
-        self.debug    = True
+        self.debug    = False
         ####################
         self.nCapas   = len(layers)
         self.capas    = layers
