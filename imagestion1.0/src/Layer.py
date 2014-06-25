@@ -58,18 +58,20 @@ class Layer(object):
         prev = self.id -1
         capa = self.id
 
+        # capa salida
         if self.id == len(self.layers) -1:
             self.error = 0.0
             
             for k in xrange(self.cant):
                 delta = expect[k] - result[k]
                 self.nodos[k].setError(delta)
-                self.nodos[k].setDelta(delta)
                 self.deltas[k] = self.nodos[k].getErrorDelta()
+                self.nodos[k].setDelta(self.deltas[k])
                 self.error += self.deltas[k]
                 
-                self.addLog(">> "+str(self.deltas[k])+"="+str(expect[k])+"-"+str(result[k]))            
+                self.addLog(">> "+str(self.deltas[k])+" = "+str(expect[k])+" - "+str(result[k]))            
         else:  
+        # capas ocultas
             self.error = 0.0
             for j in xrange(self.cant):
                 error = 0.0
@@ -80,7 +82,7 @@ class Layer(object):
                     error += delta * peso
                     self.error += delta * peso
                     
-                    self.addLog(">> nodo["+str(j)+"].peso["+str(k)+"] "+str(self.error)+"+="+str(delta)+"*"+str(peso))
+                    self.addLog(">> nodo["+str(j)+"].peso["+str(k)+"]: "+str(self.error)+" += "+str(delta)+"*"+str(peso))
                 
                 self.nodos[j].setError(error)                
                 #self.deltas[j] = self.nodos[j].fnTransf.train(self.nodos[j].getSalidaNeta()) * error
@@ -95,13 +97,10 @@ class Layer(object):
         
         for k in xrange(self.cant):
             for j in xrange(self.nodos[k].nInputs):
-                #derivada = self.nodos[k].fnTransf.train(self.nodos[k].getSalidaNeta())
-                #derivada = self.nodos[k].fnTransf.train(self.nodos[k].getSalida())
-                #cambio = self.deltas[k] * derivada * self.nodos[k].entradas[j]
                 cambio = self.deltas[k] * self.nodos[k].entradas[j]
                 peso = self.nodos[k].getPeso(j)
                 self.nodos[k].setPeso(j, peso + rate*cambio)
-                self.addLog(">> nodo["+str(k)+"].peso["+str(j)+"]="+str(peso)+"+"+str(rate)+"*"+str(cambio)+" = "+str(self.nodos[k].getPeso(j)))
+                self.addLog(">> nodo["+str(k)+"].peso["+str(j)+"]: "+str(peso)+" + "+str(rate)+"*"+str(cambio)+" = "+str(self.nodos[k].getPeso(j))+"   diff("+str(rate*cambio)+")")
 
     def getStrDeltas(self):
         return {'layer_'+str(self.id) : [
