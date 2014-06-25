@@ -114,9 +114,6 @@ class Perceptron(object):
         pass
         
     def getErrorDelta(self):
-##        error = 0.0
-##        for i in range(len(self.pesos)):
-##            error += self.error * self.pesos[i]
         return self.fnTransf.train(self.salida) * self.error
         pass
      
@@ -128,19 +125,18 @@ class Perceptron(object):
         return (self.expect - self.fnTransf.exe(deltas))**2
         
     def getCoeficiente(self,i):
-        #if i<=len(self.pesos):
         return self.pesos[i] * self.delta
      
-    def balancearPesos(self,rate):
-        e = self.error
-        salida = self.salida
-        delta = rate * self.error * salida
-         
-        for i in range(len(self.pesos)):
-            peso = self.pesos[i]
-            self.addLog(self.name+': '+str(peso + delta)+' = '+str(peso)+' + '+str(rate)+' * '+str(e)+' * '+str(salida))
-            self.pesos[i] = peso + delta        
-        pass
+##    def balancearPesos(self,rate):
+##        e = self.error
+##        salida = self.salida
+##        delta = rate * self.error + salida
+##         
+##        for i in range(len(self.pesos)):
+##            peso = self.pesos[i]
+##            self.addLog(self.name+': '+str(peso + delta)+' = '+str(peso)+' + '+str(rate)+' * '+str(e)+' * '+str(salida))
+##            self.pesos[i] = peso + delta        
+##        pass
          
     def setBias(self,bias):
         self.bias = bias

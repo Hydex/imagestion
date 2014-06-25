@@ -170,10 +170,11 @@ class Net(object):
 
                 ## [[0.0,0.0], [0.0,1.0], [1.0,0.0], [1.0,1.0]]
                 for idx in range(len(inputs)):
-                    self.addLog('>> idx:'+str(idx)+' -------------------------------------------------------------------------------------------------------')
                     # paso 2: Seleccionar el siguiente par de entrenamiento del conjunto de
                     #         entrenamiento, aplicando el vector de entrada a la entrada de la red.
-                    self.addLog("PASO 2: Seleccionar el siguiente par de entrenamiento del conjunto de entrenamiento, aplicando el vector de entrada a la entrada de la red.")
+                    self.addLog('>> idx:'+str(idx)+' -------------------------------------------------------------------------------------------------------')
+                    self.addLog("PASO 2: Seleccionar el siguiente par de entrenamiento para el vector de entrada a la red.")
+                    
                     datos = [None] * len(inputs[idx])
                     
                     for i in range(len(inputs[idx])):
@@ -181,6 +182,7 @@ class Net(object):
                     
                     # paso 3: Calcular salida de la red    
                     resultado = self.simular(datos)
+                    
                     self.addLog("PASO 3: Calcular salida de la red")
                     self.addLog(">> datos:"+str(datos)+" resultado:"+str(resultado)+" size:"+str(len(resultado))+" salidas:"+str(salidas))
                     
@@ -193,6 +195,7 @@ class Net(object):
                     # paso 5: balancea los pesos en funcion a la variacion del delta de error
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
+                    
                     self.error += self.backPropagation(self.nCapas-1,resultado,expect)
                 pass
 
@@ -285,10 +288,8 @@ class Net(object):
         error = 0
         
         for j in xrange(len(expect)):
-            error += 0.5 * (expect[j] - resultado[j])
-                
-        self.rate = error
-        
+            error += 0.5 * (expect[j] - resultado[j])**2
+            
         return error
 
         
