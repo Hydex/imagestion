@@ -52,12 +52,12 @@ class Net(object):
         ####################
         self.debug    = False
         ####################
+        #layers[0]     = layers[0] +1
         self.nCapas   = len(layers)
         self.capas    = layers
         self.log      = []
         self.layers   = []        
         self.layers   = [None] * self.nCapas
-        self.sinapsis = [None] * (self.nCapas + 1)
         self.neuronas = 0
         self.rate     = 0.5
         self.entradas = entradas
@@ -69,7 +69,7 @@ class Net(object):
         self.historial = []
         self.error    = 0.0
         
-        self.sinapsis[0] = [random() for x in xrange(entradas)]
+##        self.sinapsis[0] = [random() for x in xrange(entradas)]
         max,size = 0,0
                 
         for i in xrange(self.nCapas):
@@ -77,7 +77,7 @@ class Net(object):
             size   = layers[i]
             max    = size if size > max else max
             
-            self.sinapsis[i+1] = [random() for x in xrange(size)]
+##            self.sinapsis[i+1] = [random() for x in xrange(size)]
             self.layers[i] = Layer(i,size,inputs,funciones[i],self.layers,self)
             self.neuronas += size
         pass
@@ -98,29 +98,40 @@ class Net(object):
     """
     def simular(self,inputs):
         self.addLog("Red.simular -> inputs:"+str(inputs))
-        outputs = [None] * self.salidas
+        outputs  = [None] * self.salidas
+        sinapsis = [None] * (self.nCapas + 1)
         i,j,n = 0,0,0
+
         
-        for n in range(len(inputs)):
-            self.sinapsis[0][n] = inputs[n]
+        for i in xrange(self.nCapas):
+            #sinapsis[i]   = [None] * (self.layers[i].cant)
+            sinapsis[i]   = [None] * (self.entradas)
+            sinapsis[i+1] = sinapsis[i]
+
+        sinapsis[0] = inputs
+##        print str(sinapsis)
         
-        try:
-            for i in xrange(self.nCapas):
-                for j in xrange(self.layers[i].cant):
-                    for n in xrange(self.layers[i].nodos[j].nInputs):
-                        self.layers[i].nodos[j].entradas[n] = self.sinapsis[i][n]
-                    
-                    self.sinapsis[i+1][j] =  self.layers[i].nodos[j].calcular();
-                    
-                    if i == self.nCapas-1:
-                        outputs[j] =  self.layers[i].nodos[j].salida 
-        except:
-            err = str(exc_info())
-            self.addLog("ERROR en Red.simular('"+str(err)+"') Iteracion i="+str(i)+" j="+str(j)+" n="+str(n))
-            self.addLog(err)
-            self.addLog(str(self.sinapsis))
-            self.panic = True
-            pass
+##    #try:
+        for i in xrange(self.nCapas):
+##            sinapsis[i] = [None] * (self.layers[i].cant) if i>0 else inputs
+            
+            for j in xrange(self.layers[i].cant):
+                self.layers[i].nodos[j].setEntradas(sinapsis[i])
+                sinapsis[i+1][j] =  self.layers[i].nodos[j].calcular();
+##                print str(sinapsis)
+
+                
+##                    if i == self.nCapas-1:
+##                        outputs[j] =  self.layers[i].nodos[j].salida 
+
+        outputs = sinapsis[self.nCapas]
+##    except:
+##        err = str(exc_info())
+##        self.addLog("ERROR en Red.simular('"+str(err)+"') Iteracion i="+str(i)+" j="+str(j)+" n="+str(n))
+##        self.addLog(err)
+##        self.addLog(str(sinapsis))
+##        self.panic = True
+##        pass
         
         return outputs
         

@@ -127,7 +127,7 @@ def entrenar_perceptron(patron, l, max_iter=1000):
         
 def addLog(str):
     global log
-    log.append(str)        
+    #log.append(str)        
     
 if __name__ == '__main__':
     datos_ent = [
@@ -150,7 +150,7 @@ if __name__ == '__main__':
     print 'DESPUES'
     clasificar(datos_ent)
     
-    print 'ACTIV ENT: '+ dumps(act_ent, sort_keys=True,indent=4, separators=(',', ': ')) #str(pesos_ent)
+    print('ACTIV ENT: '+ dumps(act_ent, sort_keys=True,indent=4, separators=(',', ': '))) #str(pesos_ent)
     print('PESOS ENT: '+ dumps(pesos_ent, sort_keys=True,indent=4, separators=(',', ': '))) #str(pesos_ent)
     print('ACTIV OCU: '+ dumps(act_ocu, sort_keys=True,indent=4, separators=(',', ': '))) #str(pesos_ent)
     print('PESOS SAL: '+ dumps(pesos_sal, sort_keys=True,indent=4, separators=(',', ': '))) #str(pesos_sal)

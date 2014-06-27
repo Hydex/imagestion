@@ -5,11 +5,11 @@ O = 0 #0.000001
 I = 1 #0.999999
 
 # Net(entradas,salidas,[capa1,capa2,...],[funciones])
-net = Net(2,1,[2,2,1],['TANSIG','TANSIG','TANSIG'])
+net = Net(2,1,[2,1],['TANSIG','TANSIG'])
 #net = Net(2,1,[2,1],['LOGSIG','LOGSIG'])
 net.debug = True
 
-print 'NET   : Net(2,1,[2,1],'+str(net.transferencias)+')'
+print 'NET   : Net(2,1,'+str(net.capas)+','+str(net.transferencias)+')'
 print 'PESOS : '+str(net.getPesos())
 print 'DELTA : '+str(net.getDeltas())
 print 'ERROR : '+str(net.getErrores())
