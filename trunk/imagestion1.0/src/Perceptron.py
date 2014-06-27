@@ -50,7 +50,7 @@ class Perceptron(object):
         self.name     = name
         self.padre    = padre
         self.capa     = capa
-        self.bias     = 0.0
+        self.bias     = 1.0
         self.wBias    = 0.0
         self.salida   = 0.0
         self.neta     = 0.0
@@ -70,7 +70,7 @@ class Perceptron(object):
         
         try:
             for i in range(len(self.entradas)):
-                suma += self.entradas[i] * self.pesos[i]
+                suma += self.entradas[i] * (self.pesos[i] + self.wBias)
                 #self.addLog(str(suma)+" = "+str(self.entradas[i])+" * "+str(self.pesos[i]))
             pass
             
@@ -85,8 +85,7 @@ class Perceptron(object):
     def calcular(self):
         #self.addLog("Perceptron.calcular(name:"+self.name+", entradas:"+str(self.entradas)+')')
         suma = self.getSumPesosEntradas()
-        res = self.fnTransf.exe(suma)
-        #res = suma if self.capa == 0 else self.fnTransf.exe(suma)
+        res  = self.fnTransf.exe(suma)
         self.setSalida(res)
         return res
 
@@ -117,12 +116,12 @@ class Perceptron(object):
         return self.fnTransf.train(self.salida) * self.error
         pass
      
-    def getErrorCuadratico(self):
-        deltas = 0.0
-        for i in range(len(self.pesos)):
-            deltas += self.fnTransf.train(self.pesos[i]) * self.entradas[i] - self.fnTransf.train(self.salida)
-            
-        return (self.expect - self.fnTransf.exe(deltas))**2
+##    def getErrorCuadratico(self):
+##        deltas = 0.0
+##        for i in range(len(self.pesos)):
+##            deltas += self.fnTransf.train(self.pesos[i]) * self.entradas[i] - self.fnTransf.train(self.salida)
+##            
+##        return (self.expect - self.fnTransf.exe(deltas))**2
         
     def getCoeficiente(self,i):
         return self.pesos[i] * self.delta
@@ -191,6 +190,13 @@ class Perceptron(object):
         
     def getEntradas(self):
         return self.entradas
+        pass
+        
+    def setEntradas(self,inputs):
+##        print '{'+str(inputs)+'}'
+        for n in xrange(self.nInputs):
+##            print n
+            self.entradas[n] = inputs[n]
         pass
         
     def setConfiguracion(self):
