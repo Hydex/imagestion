@@ -100,7 +100,17 @@ class Layer(object):
                 cambio = self.deltas[k] * self.nodos[k].entradas[j]
                 peso = self.nodos[k].getPeso(j)
                 self.nodos[k].setPeso(j, peso + rate*cambio)
-                self.addLog(">> nodo["+str(k)+"].peso["+str(j)+"]: "+str(peso)+" + "+str(rate)+"*"+str(cambio)+" = "+str(self.nodos[k].getPeso(j))+"   diff("+str(rate*cambio)+")")
+                self.addLog(">> nodo["+str(k)+"].peso["+str(j)+"]: "+str(peso)+
+                            " + "+str(rate)+"*"+str(cambio)+" = "+str(self.nodos[k].getPeso(j))+
+                            "   diff("+str(rate*cambio)+")")
+                if self.id == 0:
+                    cambio = self.deltas[k] * self.nodos[k].entradas[j]
+                    peso = self.nodos[k].getwBias()
+                    self.nodos[k].setwBias(peso + rate*cambio)
+                    self.addLog(">> nodo["+str(k)+"].wBias: "+str(peso)+
+                                " + "+str(rate)+"*"+str(cambio)+" = "+str(self.nodos[k].getwBias())+
+                                "   diff("+str(rate*cambio)+")")
+                
 
     def getStrDeltas(self):
         return {'layer_'+str(self.id) : [

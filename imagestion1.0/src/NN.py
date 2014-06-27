@@ -127,7 +127,7 @@ def entrenar_perceptron(patron, l, max_iter=1000):
         
 def addLog(str):
     global log
-    #log.append(str)        
+    log.append(str)        
     
 if __name__ == '__main__':
     datos_ent = [
