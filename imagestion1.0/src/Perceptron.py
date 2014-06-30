@@ -51,7 +51,7 @@ class Perceptron(object):
         self.padre    = padre
         self.capa     = capa
         self.bias     = 1.0
-        self.wBias    = 0.0
+        self.wBias    = random.uniform(-0.5,0.5) if capa==0 else 0.0
         self.salida   = 0.0
         self.neta     = 0.0
         self.delta    = 0.0
@@ -70,7 +70,7 @@ class Perceptron(object):
         
         try:
             for i in range(len(self.entradas)):
-                suma += self.entradas[i] * (self.pesos[i] + self.wBias)
+                suma += self.entradas[i] * self.pesos[i]
                 #self.addLog(str(suma)+" = "+str(self.entradas[i])+" * "+str(self.pesos[i]))
             pass
             
@@ -151,7 +151,9 @@ class Perceptron(object):
         return self.pesos[idx]
     
     def getPesos(self):
-        return self.pesos    
+        pesos = self.pesos
+        pesos.add(self.wBias)
+        return pesos    
         
     def setError(self,err):
         self.error = err
