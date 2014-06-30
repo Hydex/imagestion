@@ -50,21 +50,21 @@ def actualiza_nodos(entradas):
     
     for i in range(nodos_ent -1):
         act_ent[i] = float(entradas[i])
-        addLog('  act_ent['+str(i)+']: '+str(act_ent[i]))
+    addLog('  act_ent[]: '+str(act_ent))
         
     for j in range(nodos_ocu):
         sum = 0.0
         for i in range(nodos_ent):
             sum = sum + pesos_ent[i][j] * act_ent[i]
         act_ocu[j] = sigmoide(sum)
-        addLog('  act_ocu['+str(j)+']: '+str(act_ocu[j]))
+    addLog('  act_ocu[]: '+str(act_ocu))
        
     for k in range(nodos_sal):
         sum = 0.0
         for j in range(nodos_ocu):
             sum = sum + pesos_sal[j][k] * act_ocu[j]
         act_sal[k] = sigmoide(sum)
-        addLog('  act_sal['+str(k)+']: '+str(act_sal[k]))
+    addLog('  act_sal[]: '+str(act_sal))
         
     addLog('< act_sal: '+str(act_sal[:]))
     return act_sal[:]
@@ -80,7 +80,7 @@ def retropropagacion(objetivo,l):
     for k in range(nodos_sal):
         error = objetivo[k] - act_sal[k]
         delta_salida[k] = dsigmoide(act_sal[k]) * error
-        addLog('  delta_salida['+str(k)+']: '+str(delta_salida[k]))
+    addLog('  delta_salida[]: '+str(delta_salida))
         
     delta_oculto = [0.0] * nodos_ocu
     for j in range(nodos_ocu):
@@ -88,19 +88,19 @@ def retropropagacion(objetivo,l):
         for k in range(nodos_sal):
             error = error + delta_salida[k]*pesos_sal[j][k]
         delta_oculto[j] = dsigmoide(act_ocu[j]) * error
-        addLog('  delta_oculto['+str(j)+']: '+str(delta_oculto[j]))
+    addLog('  delta_oculto[]: '+str(delta_oculto))
         
     for j in range(nodos_ocu):
         for k in range(nodos_sal):
             cambio = delta_salida[k]*act_ocu[j]
             pesos_sal[j][k] = pesos_sal[j][k] + l*cambio
-        addLog('  pesos_sal['+str(j)+']: '+str(pesos_sal[j]))
+    addLog('  pesos_sal[]: '+str(pesos_sal))
             
     for i in range(nodos_ent):
         for j in range(nodos_ocu):
             cambio = delta_oculto[j]*act_ent[i]
             pesos_ent[i][j] = pesos_ent[i][j] + l*cambio
-        addLog('  pesos_ent['+str(i)+']: '+str(pesos_ent[i]))
+    addLog('  pesos_ent[]: '+str(pesos_ent))
             
     error = 0.0
     for k in range(len(objetivo)):
@@ -127,7 +127,7 @@ def entrenar_perceptron(patron, l, max_iter=1000):
         
 def addLog(str):
     global log
-    #log.append(str)        
+    log.append(str)        
     
 if __name__ == '__main__':
     datos_ent = [
