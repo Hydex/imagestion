@@ -195,7 +195,7 @@ class Net(object):
                     self.addLog("PASO 4: balancea los pesos en funcion a la variacion del delta de error")
                     self.addLog(">> epochs:"+str(epochs)+' pesos:'+self.getPesos())
                     
-                    self.error += self.backPropagation(self.nCapas-1,resultado,expect)
+                    self.error = self.backPropagation(self.nCapas-1,resultado,expect)
                 pass
 
                 self.historial.append({self.error:self.getPesos()})
@@ -290,28 +290,7 @@ class Net(object):
             error += 0.5 * (expect[j] - resultado[j])**2
             
         return error
-
         
-    """
-    # Obtiene una estructura de la instancia de la red neuronal
-    # y la exporta en formato JSON 
-    """
-    def __str__(self):
-        data = {
-            'nCapas':self.nCapas,
-            'sinapsis':self.sinapsis,
-            'entradas':self.entradas,
-            'salidas':self.salidas,
-            'funciones':self.transferencias   
-        }
-        data['layers'] = [
-            [
-                self.layers[y].getConfiguracion() 
-            ] 
-            for y in xrange(len(self.layers))
-        ]
-        return dumps(data, sort_keys=True,indent=4, separators=(',', ': '))
-
     def getEpochs(self):
         return self.epochs
         
@@ -372,6 +351,10 @@ class Net(object):
     def printLog(self):
         print dumps(self.log, sort_keys=True,indent=4, separators=(',', ': '))
         
+    """
+    # Obtiene una estructura de la instancia de la red neuronal
+    # y la exporta en formato JSON 
+    """
     def getConfiguracion(self):
         red = {
             'nCapas'    : self.nCapas,
@@ -410,3 +393,19 @@ class Net(object):
             self.layers[i].setConfiguracion(data['layers'][i])
         pass
 
+
+##    def __str__(self):
+##        data = {
+##            'nCapas':self.nCapas,
+##            'sinapsis':self.sinapsis,
+##            'entradas':self.entradas,
+##            'salidas':self.salidas,
+##            'funciones':self.transferencias   
+##        }
+##        data['layers'] = [
+##            [
+##                self.layers[y].getConfiguracion() 
+##            ] 
+##            for y in xrange(len(self.layers))
+##        ]
+##        return dumps(data, sort_keys=True,indent=4, separators=(',', ': '))
