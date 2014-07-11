@@ -156,4 +156,4 @@ if __name__ == '__main__':
     print('PESOS SAL: '+ dumps(pesos_sal, sort_keys=True,indent=4, separators=(',', ': '))) #str(pesos_sal)
     print('ACTIV SAL: '+ dumps(act_sal, sort_keys=True,indent=4, separators=(',', ': '))) #str(pesos_ent)
     
-    print dumps(log, sort_keys=True,indent=4, separators=(',', ': '))
+    #print dumps(log, sort_keys=True,indent=4, separators=(',', ': '))
