@@ -60,6 +60,7 @@ class Layer(object):
 
         # capa salida
         if self.id == len(self.layers) -1:
+            self.addLog(">> capa salida ID:"+str(self.id))
             self.error = 0.0
             
             for k in xrange(self.cant):
@@ -72,6 +73,7 @@ class Layer(object):
                 self.addLog(">> "+str(self.deltas[k])+" = "+str(expect[k])+" - "+str(result[k]))            
         else:  
         # capas ocultas
+            self.addLog(">> capa oculta ID:"+str(self.id))
             self.error = 0.0
             for j in xrange(self.cant):
                 error = 0.0

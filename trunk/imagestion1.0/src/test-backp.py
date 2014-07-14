@@ -20,7 +20,7 @@ print str([O,I]) + ' => ' + str(net.simular([O,I]))
 print str([I,O]) + ' => ' + str(net.simular([I,O]))
 print str([I,I]) + ' => ' + str(net.simular([I,I]))
 
-for x in range(2):
+for x in range(1):
     print str(x+1)+" ENTRENAR"
     net.setEpochs(100)
     net.entrenar([
@@ -40,9 +40,6 @@ for x in range(2):
     print 'LIST_ERR : '+str(net.getErrores())
     print 'CUAD_ERR : '+str(net.error)
 
-#net.panic = True
-#print net.getHistorial()
-
 print ""
 print "print CONFIGURACION:"
 print net.getConfiguracion()
@@ -50,6 +47,9 @@ print net.getConfiguracion()
 
 with open("neural-network.json", "w") as text_file:
     text_file.write(dumps(net.getConfiguracion(), sort_keys=True,indent=4, separators=(',', ': ')))
+
+net.panic = True
+#print net.getHistorial()
     
 if net.panic:
     print "print LOG"
