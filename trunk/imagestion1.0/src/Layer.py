@@ -48,6 +48,12 @@ class Layer(object):
         self.padre = padre
         self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function,padre,capa) for x in xrange(neurons)]
         pass
+      
+    def getPeso(self, x, y):
+        pass
+        
+    def getEntrada(self, x, y):
+        pass
         
     def getDeltas(self):
         return self.deltas
