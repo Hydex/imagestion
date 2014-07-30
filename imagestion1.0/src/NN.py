@@ -48,23 +48,23 @@ def actualiza_nodos(entradas):
     if len(entradas) != nodos_ent -1:
         raise ValueError('Numero de nodos de entrada incorrecto')
     
-    for i in range(nodos_ent -1):
+    for i in range(nodos_ent -1):canción del mundial
         act_ent[i] = float(entradas[i])
-    addLog('  act_ent[]: '+str(act_ent))
+    #addLog('  act_ent[]: '+str(act_ent))
         
     for j in range(nodos_ocu):
         sum = 0.0
         for i in range(nodos_ent):
             sum = sum + pesos_ent[i][j] * act_ent[i]
         act_ocu[j] = sigmoide(sum)
-    addLog('  act_ocu[]: '+str(act_ocu))
+    #addLog('  act_ocu[]: '+str(act_ocu))
        
     for k in range(nodos_sal):
         sum = 0.0
         for j in range(nodos_ocu):
             sum = sum + pesos_sal[j][k] * act_ocu[j]
         act_sal[k] = sigmoide(sum)
-    addLog('  act_sal[]: '+str(act_sal))
+    #addLog('  act_sal[]: '+str(act_sal))
         
     addLog('< act_sal: '+str(act_sal[:]))
     return act_sal[:]
