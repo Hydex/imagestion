@@ -49,7 +49,11 @@ class Layer(object):
         self.nodos = [Perceptron(str(capa)+'x'+str(x),inputs,function,padre,capa) for x in xrange(neurons)]
         pass
       
-    def getPeso(self, x, y):
+    def getPeso(self, i, j):
+        capa = self.id
+        post = capa + 1
+        prev = capa -1
+        return self.layers[post].nodos[i].getPeso(j)
         pass
         
     def getEntrada(self, x, y):
