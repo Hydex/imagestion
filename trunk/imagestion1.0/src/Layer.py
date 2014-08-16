@@ -56,6 +56,13 @@ class Layer(object):
         return self.layers[post].nodos[i].getPeso(j)
         pass
         
+    def setPeso(self, i, j, value):
+        capa = self.id
+        post = capa + 1
+        prev = capa -1
+        self.layers[post].nodos[i].setPeso(j, value)
+        pass
+        
     def getEntrada(self, x, y):
         pass
         
